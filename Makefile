@@ -22,7 +22,7 @@ LIBS = -lsfml-network \
 	-lGLU \
 	-lGLEW 
 	
-OBJS = main.o
+OBJS = main.o Mesh3DS.o Character.o Shader.o
 
 all: sd
 
