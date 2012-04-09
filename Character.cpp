@@ -10,6 +10,12 @@
 Character::Character() :
   characterMesh("models/main_character.3ds") {
 
+  shader = new Shader("shaders/character");
+
+  if (!shader->loaded()) {
+    cerr << shader->errors() << endl;
+    exit(-1);
+  }
 }
 
 Character::~Character() {
@@ -23,7 +29,7 @@ void Character::render() {
 void Character::nodeRender(aiNode* node) {
   //save matrix
   glPushMatrix();
-  //multiply our transfor,
+  //multiply our transform
   GLfloat matrix[16] = { node->mTransformation.a1, node->mTransformation.b1,
       node->mTransformation.c1, node->mTransformation.d1,
       node->mTransformation.a2, node->mTransformation.b2,

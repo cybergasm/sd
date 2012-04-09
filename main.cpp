@@ -8,21 +8,35 @@
 
 #include "Character.h"
 
-// SFML automatically includes SDL headers
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include "Framework.h"
 
 //sfml window settings
 sf::WindowSettings settings(24, 8, 2);
 sf::Window window(sf::VideoMode(800, 600), "SD", sf::Style::Close, settings);
 
-
-Character mainCharacter;
+Character* mainCharacter;
 
 using namespace std;
 
 float cameraX = 0.0f, cameraY = 0.0f, cameraZ = 1.0f;
 
+void glInit() {
+#ifdef FRAMEWORK_USE_GLEW
+  GLint error = glewInit();
+  if (GLEW_OK != error) {
+    std::cerr << glewGetErrorString(error) << std::endl;
+    exit(-1);
+  }
+  if (!GLEW_VERSION_2_0 || !GL_EXT_framebuffer_object) {
+    std::cerr << "This program requires OpenGL 2.0 and FBOs" << std::endl;
+    exit(-1);
+  }
+#endif
+  glViewport(0, 0, window.GetWidth(), window.GetHeight());
+
+  glClearDepth(1.f);
+  glClearColor(0.0f, 0.0f, .0f, 0.f);
+}
 void handleInput() {
   sf::Event evt;
   while (window.GetEvent(evt)) {
@@ -65,11 +79,13 @@ void createView() {
 }
 
 int main() {
+  glInit();
+  mainCharacter = new Character();
   while (window.IsOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     handleInput();
     createView();
-    mainCharacter.render();
+    mainCharacter->render();
     window.Display();
   }
 }

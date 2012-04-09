@@ -17,6 +17,7 @@
 #include <GL/glew.h>
 
 #include "Mesh3DS.h"
+#include "Shader.h"
 
 class Character {
   public:
@@ -37,6 +38,11 @@ class Character {
      * Renders a node in the given mesh
      */
     void nodeRender(aiNode* node);
+
+    /**
+     * Character shader.
+     */
+    Shader* shader;
 };
 
 #endif /* CHARACTER_H_ */
