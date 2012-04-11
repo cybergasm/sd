@@ -1,5 +1,5 @@
 //for opacity mapping
-uniform sampler opacityMap;
+uniform sampler textureImg;
 
 varying vec3 normal;
 varying vec3 eyePosition;
@@ -13,6 +13,8 @@ uniform vec3 Ka = vec3(.35, .55, .46);
 
 void main() {
   vec3 Kd = color.rgb;
+  vec4 texColor = texture2D(textureImg, texcoord);
+
   float alpha = 3;
   //Basis of Phong as in assignment 3/2
   vec3 N = normalize(normal);
@@ -22,7 +24,7 @@ void main() {
   //Diffuse
   float Rd = max(0.0, dot(L, N));
   
-  vec3 Td = color.rgb;
+  vec3 Td = texColor.rgb;
   vec3 diffuse = Rd * Kd * Td * gl_LightSource[0].diffuse.rgb;
   
   //Specular
@@ -30,15 +32,12 @@ void main() {
   float Rs = pow(max(0.0, dot(V, R)), alpha);
 
   
-  vec3 Ts = color.rgb;
+  vec3 Ts = texColor.rgb;
   vec3 specular = Rs * Ks * Ts * gl_LightSource[0].specular.rgb;
 
   //Ambient
   vec3 ambient = Ka * gl_LightSource[0].ambient.rgb;
-  
-  float opac = 1;
-  if (texcoord.x != -1.0) {
-    opac = texture2D(opacityMap, texcoord).r;
-  }
-  gl_FragColor = vec4(diffuse + specular + ambient, opac);
+
+	  
+  gl_FragColor = vec4(diffuse + specular + ambient, 1.0f);
 }

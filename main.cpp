@@ -36,7 +36,22 @@ void glInit() {
 
   glClearDepth(1.f);
   glClearColor(0.0f, 0.0f, .0f, 0.f);
+
+  //lighting
+  //Enable lighting and set some color
+  GLfloat lightDiffuse[] = { 0.34f, .04f, .86f, 1.0f };
+  GLfloat lightSpecular[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+  GLfloat lightAmbient[] = { 0.1f, 0.1f, 0.3f, 1.0f };
+  glEnable(GL_LIGHTING);
+
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+
+  GLfloat lightPosition[] = { 0, 1, 0, 0.0};
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
+
 void handleInput() {
   sf::Event evt;
   while (window.GetEvent(evt)) {

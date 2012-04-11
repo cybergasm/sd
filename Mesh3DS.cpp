@@ -11,9 +11,9 @@ Mesh3DS::Mesh3DS(string modelPath_) :
   modelPath(modelPath_) {
   scene = importer.ReadFile(
       modelPath,
-      aiProcess_CalcTangentSpace | aiProcess_Triangulate
-          | aiProcess_JoinIdenticalVertices
-          | aiProcessPreset_TargetRealtime_Quality);
+      aiProcess_CalcTangentSpace | aiProcess_SortByPType
+          | aiProcess_ValidateDataStructure | aiProcess_JoinIdenticalVertices
+          | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
   if (!scene || scene->mNumMeshes <= 0) {
     cerr << importer.GetErrorString() << endl;
@@ -50,20 +50,20 @@ const aiScene* Mesh3DS::getScene() {
   return scene;
 }
 
-vector<vector<unsigned>* > Mesh3DS::getMeshIndices() {
+vector<vector<unsigned>*> Mesh3DS::getMeshIndices() {
   return meshIndices;
 }
 
 void Mesh3DS::loadMeshes() {
   for (unsigned int mesh = 0; mesh < scene->mNumMeshes; mesh++) {
     aiMesh* curMesh = scene->mMeshes[mesh];
-      vector<unsigned>* indexBuf = new vector<unsigned> ();
-      for (unsigned int faceIdx = 0; faceIdx < curMesh->mNumFaces; faceIdx++) {
-        for (unsigned int faceVertexIdx = 0; faceVertexIdx
-            < curMesh->mFaces[faceIdx].mNumIndices; faceVertexIdx++) {
-          indexBuf->push_back(curMesh->mFaces[faceIdx].mIndices[faceVertexIdx]);
-        }
+    vector<unsigned>* indexBuf = new vector<unsigned> ();
+    for (unsigned int faceIdx = 0; faceIdx < curMesh->mNumFaces; faceIdx++) {
+      for (unsigned int faceVertexIdx = 0; faceVertexIdx
+          < curMesh->mFaces[faceIdx].mNumIndices; faceVertexIdx++) {
+        indexBuf->push_back(curMesh->mFaces[faceIdx].mIndices[faceVertexIdx]);
       }
-      meshIndices.push_back(indexBuf);
+    }
+    meshIndices.push_back(indexBuf);
   }
 }

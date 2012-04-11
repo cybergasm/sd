@@ -22,6 +22,6 @@ void main() {
   normal = gl_NormalMatrix * normalIn;
   
   gl_Position = (gl_ProjectionMatrix * gl_ModelViewMatrix * vec4(positionIn, 1));
-  color = vec4(colorIn, 1);
+  color = vec4(colorIn, 1.0f);
   texcoord = texCoordIn;
 }
