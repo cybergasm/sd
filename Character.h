@@ -28,7 +28,27 @@ class Character {
      * Displays character on screen
      */
     void render();
+
+    /**
+     * Functions moving character along
+     * specified axis
+     */
+    void move(aiVector3D translation);
+
   private:
+    /**
+     * Animation time tracker
+     */
+    float aniTime;
+
+    /**
+     * Whether time is increasing or decreasing
+     */
+    float aniTimeDir;
+    /**
+     * Position of character
+     */
+    float xPos, yPos, zPos;
     /**
      * Mesh of character and related attributes
      */

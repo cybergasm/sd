@@ -11,7 +11,7 @@ Mesh3DS::Mesh3DS(string modelPath_) :
   modelPath(modelPath_) {
   scene = importer.ReadFile(
       modelPath,
-      aiProcess_CalcTangentSpace | aiProcess_SortByPType
+      aiProcess_CalcTangentSpace
           | aiProcess_ValidateDataStructure | aiProcess_JoinIdenticalVertices
           | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 

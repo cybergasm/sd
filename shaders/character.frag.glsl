@@ -12,8 +12,8 @@ uniform vec3 Ks = vec3(.3, .4, 0.34);
 uniform vec3 Ka = vec3(.35, .55, .46);
 
 void main() {
-  vec3 Kd = color.rgb;
   vec4 texColor = texture2D(textureImg, texcoord);
+  vec3 Kd = texColor.rgb;
 
   float alpha = 3;
   //Basis of Phong as in assignment 3/2

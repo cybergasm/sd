@@ -17,8 +17,8 @@
 #include <stdio.h>
 
 Character::Character() :
-  characterMesh("models/main_character.3ds") {
-
+  aniTime(0), aniTimeDir(1), xPos(0), yPos(0), zPos(0),
+      characterMesh("models/main_character.3ds") {
   shader = new Shader("shaders/character");
 
   if (!shader->loaded()) {
@@ -33,15 +33,30 @@ Character::Character() :
 }
 
 Character::~Character() {
-  // TODO Auto-generated destructor stub
+}
+
+void Character::move(aiVector3D translation) {
+  xPos += translation.x;
+  yPos += translation.y;
+  zPos += translation.z;
 }
 
 void Character::render() {
+  aniTime +=  aniTimeDir*.02;
+  if (aniTime > 10) {
+    aniTimeDir = -1;
+  } else if (aniTime < 0) {
+    aniTimeDir = 1;
+  }
+
   GLint oldId;
   glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
   GL_CHECK(glUseProgram(shader->programID()));
+  glPushMatrix();
+  glTranslatef(xPos, yPos, zPos);
   nodeRender(characterMesh.getScene()->mRootNode);
   GL_CHECK(glUseProgram(oldId));
+  glPopMatrix();
 }
 
 void Character::nodeRender(aiNode* node) {
@@ -62,11 +77,19 @@ void Character::nodeRender(aiNode* node) {
   for (u_int child = 0; child < node->mNumChildren; child++) {
     nodeRender(node->mChildren[child]);
   }
+  const aiScene* scene = characterMesh.getScene();
 
   for (unsigned int mesh = 0; mesh < node->mNumMeshes; mesh++) {
     //Only render Triangles
-    if (characterMesh.getScene()->mMeshes[node->mMeshes[mesh]]->mPrimitiveTypes
+    if (scene->mMeshes[node->mMeshes[mesh]]->mPrimitiveTypes
         == aiPrimitiveType_TRIANGLE) {
+      aiMesh* meshObj = scene->mMeshes[node->mMeshes[mesh]];
+      glPushMatrix();
+      if (meshObj->mName == aiString("0") || meshObj->mName == aiString("1")) {
+        glRotatef(aniTime, 1, 1, 0);
+      } else if (meshObj->mName == aiString("2")) {
+        glScalef(1, 1 - aniTime*.06, 1);
+      }
       //Load the character texture
       setTexture();
       //Set the material properties
@@ -81,6 +104,7 @@ void Character::nodeRender(aiNode* node) {
               GL_TRIANGLES,
               3 * characterMesh.getScene()->mMeshes[node->mMeshes[mesh]]->mNumFaces,
               GL_UNSIGNED_INT, &curIndices[0]));
+      glPopMatrix();
     }
   }
   glPopMatrix();

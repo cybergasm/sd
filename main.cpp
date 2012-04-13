@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "Character.h"
+#include "InputResponder.h"
 
 #include "Framework.h"
 
@@ -14,11 +15,15 @@
 sf::WindowSettings settings(24, 8, 2);
 sf::Window window(sf::VideoMode(800, 600), "SD", sf::Style::Close, settings);
 
+//The user's avatar
 Character* mainCharacter;
+
+//Input handling
+InputResponder input;
 
 using namespace std;
 
-float cameraX = 0.0f, cameraY = 0.0f, cameraZ = 1.0f;
+float cameraX = 0.0f, cameraY = 3.0f, cameraZ = 4.0f;
 
 void glInit() {
 #ifdef FRAMEWORK_USE_GLEW
@@ -48,31 +53,14 @@ void glInit() {
   glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
   glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
 
-  GLfloat lightPosition[] = { 0, 1, 0, 0.0};
+  GLfloat lightPosition[] = { 0, 1, 1, 0.0};
   glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
 void handleInput() {
   sf::Event evt;
   while (window.GetEvent(evt)) {
-    switch (evt.Type) {
-      case sf::Event::Closed:
-        // Close the window.  This will cause the game loop to exit,
-        // because the IsOpened() function will no longer return true.
-        window.Close();
-        break;
-      case sf::Event::KeyPressed:
-        if (evt.Key.Code == sf::Key::W) {
-          cameraZ -= .1f;
-        } else if (evt.Key.Code == sf::Key::S) {
-          cameraZ += .1f;
-        } else if (evt.Key.Code == sf::Key::A) {
-          cameraX -= .1f;
-        } else if (evt.Key.Code == sf::Key::D) {
-          cameraX += .1f;
-        }
-        break;
-    }
+    input.inputIs(evt);
   }
 }
 
@@ -93,9 +81,15 @@ void createView() {
 
 }
 
+void init() {
+  mainCharacter = new Character();
+  input.characterIs(mainCharacter);
+  input.windowIs(&window);
+}
+
 int main() {
   glInit();
-  mainCharacter = new Character();
+  init();
   while (window.IsOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     handleInput();
