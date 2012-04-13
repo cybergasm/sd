@@ -17,7 +17,7 @@
 #include <stdio.h>
 
 Character::Character() :
-  aniTime(0), aniTimeDir(1), xPos(0), yPos(0), zPos(0),
+  cyclicAniTime(0), straightAniTime(0), aniTimeRate(1), xPos(0), yPos(0), zPos(0),
       characterMesh("models/main_character.3ds") {
   shader = new Shader("shaders/character");
 
@@ -41,28 +41,51 @@ void Character::move(aiVector3D translation) {
   zPos += translation.z;
 }
 
-void Character::render() {
-  aniTime +=  aniTimeDir*.02;
-  if (aniTime > 10) {
-    aniTimeDir = -1;
-  } else if (aniTime < 0) {
-    aniTimeDir = 1;
-  }
+void Character::updateTime(float framerate) {
+  cyclicAniTime += aniTimeRate * framerate * 6.0f;
+  straightAniTime += framerate * 6.0f;
 
+  if (cyclicAniTime > 10) {
+    aniTimeRate = -1;
+  } else if (cyclicAniTime < 0) {
+    aniTimeRate = 1;
+  }
+}
+
+void Character::render(float framerate) {
+  //move internal animation timer forward
+  updateTime(framerate);
+
+  //Remember the program at time of call so we can
+  //reset
   GLint oldId;
   glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
   GL_CHECK(glUseProgram(shader->programID()));
+
+  //Save old state and translate model
   glPushMatrix();
   glTranslatef(xPos, yPos, zPos);
+
   nodeRender(characterMesh.getScene()->mRootNode);
-  GL_CHECK(glUseProgram(oldId));
+
   glPopMatrix();
+
+  GL_CHECK(glUseProgram(oldId));
+}
+
+void Character::meshAnimate(aiString meshName) {
+  if (meshName == aiString("0") || meshName == aiString("1")) {
+    glRotatef(cyclicAniTime, 1, 1, 0);
+  } else if (meshName == aiString("2")) {
+    glScalef(1, 1 - cyclicAniTime * .06, 1);
+  }
 }
 
 void Character::nodeRender(aiNode* node) {
   //save matrix
   glPushMatrix();
-  //multiply our transform
+
+  //multiply the transform transform
   GLfloat matrix[16] = { node->mTransformation.a1, node->mTransformation.b1,
       node->mTransformation.c1, node->mTransformation.d1,
       node->mTransformation.a2, node->mTransformation.b2,
@@ -83,17 +106,20 @@ void Character::nodeRender(aiNode* node) {
     //Only render Triangles
     if (scene->mMeshes[node->mMeshes[mesh]]->mPrimitiveTypes
         == aiPrimitiveType_TRIANGLE) {
+      //Need the name of this mesh
       aiMesh* meshObj = scene->mMeshes[node->mMeshes[mesh]];
+
+      //save pre-animation matrix
       glPushMatrix();
-      if (meshObj->mName == aiString("0") || meshObj->mName == aiString("1")) {
-        glRotatef(aniTime, 1, 1, 0);
-      } else if (meshObj->mName == aiString("2")) {
-        glScalef(1, 1 - aniTime*.06, 1);
-      }
+
+      //animate this mesh
+      meshAnimate(meshObj->mName);
+
       //Load the character texture
       setTexture();
       //Set the material properties
-      //setMeshMaterials(node->mMeshes[mesh]);
+      setMeshMaterials(node->mMeshes[mesh]);
+
       //Set vertices, normals, and tex coords
       setMeshData(node->mMeshes[mesh]);
 
@@ -104,6 +130,8 @@ void Character::nodeRender(aiNode* node) {
               GL_TRIANGLES,
               3 * characterMesh.getScene()->mMeshes[node->mMeshes[mesh]]->mNumFaces,
               GL_UNSIGNED_INT, &curIndices[0]));
+
+      //reset the animation transformation
       glPopMatrix();
     }
   }
@@ -119,6 +147,9 @@ void Character::setMeshData(u_int meshIdx) {
   GLint texcoord = glGetAttribLocation(shader->programID(), "texCoordIn");
   GLint normal = glGetAttribLocation(shader->programID(), "normalIn");
 
+  //mesh animation time
+  GLint time = glGetUniformLocation(shader->programID(), "t");
+
   if (position == -1) {
     cerr << "Position ID not found." << endl;
   }
@@ -129,6 +160,10 @@ void Character::setMeshData(u_int meshIdx) {
 
   if (normal == -1) {
     cerr << "Normal ID not found." << endl;
+  }
+
+  if (time == -1) {
+    cerr << "TIME ID not found." << endl;
   }
 
   GL_CHECK(glEnableVertexAttribArray(position));
@@ -144,6 +179,9 @@ void Character::setMeshData(u_int meshIdx) {
   GL_CHECK(glEnableVertexAttribArray(normal));
   GL_CHECK(glVertexAttribPointer(normal, 3, GL_FLOAT, 0, sizeof(aiVector3D),
           mesh->mNormals));
+
+  //time
+  GL_CHECK(glUniform1f(time, straightAniTime));
 }
 
 //This is a slight modification of my 248 assignment 3 code which sets the material information

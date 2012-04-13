@@ -10,12 +10,14 @@ varying vec2 texcoord;
 //most tiles  
 uniform vec3 Ks = vec3(.3, .4, 0.34);
 uniform vec3 Ka = vec3(.35, .55, .46);
+uniform vec3 Kd = vec3(.2, .1, .4);
+uniform float alpha = .8;
+uniform float t = 0;
 
 void main() {
-  vec4 texColor = texture2D(textureImg, texcoord);
-  vec3 Kd = texColor.rgb;
+  vec2 tcoord = texcoord + cos(.1*t)/2.0f;
+  vec4 texColor = texture2D(textureImg, tcoord);
 
-  float alpha = 3;
   //Basis of Phong as in assignment 3/2
   vec3 N = normalize(normal);
   vec3 L = normalize(gl_LightSource[0].position.xyz);
@@ -37,7 +39,6 @@ void main() {
 
   //Ambient
   vec3 ambient = Ka * gl_LightSource[0].ambient.rgb;
-
 	  
   gl_FragColor = vec4(diffuse + specular + ambient, 1.0f);
 }

@@ -27,7 +27,7 @@ class Character {
     /**
      * Displays character on screen
      */
-    void render();
+    void render(float framerate);
 
     /**
      * Functions moving character along
@@ -37,18 +37,25 @@ class Character {
 
   private:
     /**
-     * Animation time tracker
+     * Animation time tracker that goes between 0, 10
      */
-    float aniTime;
+    float cyclicAniTime;
 
     /**
-     * Whether time is increasing or decreasing
+     * Timer that simply increments
      */
-    float aniTimeDir;
+    float straightAniTime;
+    /**
+     * Whether time is increasing or decreasing and
+     * the rate of change
+     */
+    float aniTimeRate;
+
     /**
      * Position of character
      */
     float xPos, yPos, zPos;
+
     /**
      * Mesh of character and related attributes
      */
@@ -83,6 +90,17 @@ class Character {
      * Sets relevant mesh data such as position, texcoords, and normals
      */
     void setMeshData(u_int mesh);
+
+    /**
+     * Moves time proportional to rate
+     */
+    void updateTime(float framerate);
+
+    /**
+     * Animates arms and body depending on mesh index
+     * to give sense of liveliness
+     */
+    void meshAnimate(aiString meshName);
 };
 
 #endif /* CHARACTER_H_ */
