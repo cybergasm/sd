@@ -10,6 +10,7 @@
 
 #include "Framework.h"
 #include "Character.h"
+#include "Camera.h"
 
 class InputResponder {
   public:
@@ -23,9 +24,14 @@ class InputResponder {
 
     /**
      * Register a character to modify as
-     * response to movement events
+     * response to actions
      */
     void characterIs(Character* character);
+
+    /**
+     * Register a camera for camera movement
+     */
+    void cameraIs(Camera* camera);
 
     /**
      * Register a window respond to window
@@ -34,9 +40,14 @@ class InputResponder {
     void windowIs(sf::Window* window);
   private:
     /**
-     * User character to respond to moves
+     * User character
      */
     Character* character;
+
+    /**
+     * Camera to control movement
+     */
+    Camera* camera;
 
     /**
      * Window to respond to windowing events like

@@ -8,6 +8,7 @@
 
 #include "Character.h"
 #include "InputResponder.h"
+#include "Camera.h"
 
 #include "Framework.h"
 
@@ -21,9 +22,10 @@ Character* mainCharacter;
 //Input handling
 InputResponder input;
 
-using namespace std;
+//Camera controls
+Camera* camera;
 
-float cameraX = 0.0f, cameraY = 3.0f, cameraZ = 4.0f;
+using namespace std;
 
 void glInit() {
 #ifdef FRAMEWORK_USE_GLEW
@@ -40,7 +42,10 @@ void glInit() {
   glViewport(0, 0, window.GetWidth(), window.GetHeight());
 
   glClearDepth(1.f);
-  glClearColor(0.0f, 0.0f, .0f, 0.f);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.f);
+
+  glEnable(GL_DEPTH_TEST);
+  glDepthMask(GL_TRUE);
 
   //lighting
   //Enable lighting and set some color
@@ -49,11 +54,15 @@ void glInit() {
   GLfloat lightAmbient[] = { 0.1f, 0.1f, 0.3f, 1.0f };
   glEnable(GL_LIGHTING);
 
+  //Enable the following so we can still use glColor for triangles
+  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+  glEnable(GL_COLOR_MATERIAL);
+
   glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
   glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
 
-  GLfloat lightPosition[] = { 0, 1, 1, 0.0};
+  GLfloat lightPosition[] = { 0, 1, 1, 0.0 };
   glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
@@ -64,26 +73,17 @@ void handleInput() {
   }
 }
 
-void createView() {
+void init() {
   // Set up the projection and model-view matrices
-  GLfloat aspectRatio = (GLfloat) window.GetWidth() / window.GetHeight();
-  GLfloat nearClip = 0.1f;
+  GLfloat nearClip = .1f;
   GLfloat farClip = 500.0f;
   GLfloat fieldOfView = 45.0f; // Degrees
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(fieldOfView, aspectRatio, nearClip, farClip);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  gluLookAt(cameraX, cameraY, cameraZ, 0, 0, 0, 0, 1, 0);
-
-}
-
-void init() {
   mainCharacter = new Character();
+  camera = new Camera(nearClip, farClip, fieldOfView, window.GetHeight(),
+      window.GetWidth(), mainCharacter);
   input.characterIs(mainCharacter);
+  input.cameraIs(camera);
   input.windowIs(&window);
 }
 
@@ -93,8 +93,32 @@ int main() {
   while (window.IsOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     handleInput();
-    createView();
+    camera->posCameraSetupView();
+    glBegin(GL_TRIANGLES);
+    glColor3f(.34f, 0, 0);
+    glVertex3f(0, 2, 0);
+    glVertex3f(-1, 0, 0);
+    glVertex3f(1, 0, 0);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    for (int i=0; i<5; i++) {
+    glColor3f(.34f, .34f, .34f);
+    glVertex3f(.5, 0, 0);
+    glVertex3f(-.5, 0, 0);
+    glVertex3f(-.5, 0, 2*i);
+    glVertex3f(.5, 0, 2*i);
+    }
+    glEnd();
+    glBegin(GL_TRIANGLES);
+    glColor3f(.0f, .0f, .34f);
+    glVertex3f(0, 0, -2);
+    glVertex3f(-1, 0, 0);
+    glVertex3f(1, 0, 0);
+
+    glEnd();
     mainCharacter->render(window.GetFrameTime());
+
     window.Display();
   }
 }

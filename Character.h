@@ -35,6 +35,10 @@ class Character {
      */
     void move(aiVector3D translation);
 
+    /**
+     * Returns position
+     */
+    aiVector3D getPos();
   private:
     /**
      * Animation time tracker that goes between 0, 10

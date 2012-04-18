@@ -17,8 +17,8 @@
 #include <stdio.h>
 
 Character::Character() :
-  cyclicAniTime(0), straightAniTime(0), aniTimeRate(1), xPos(0), yPos(0), zPos(0),
-      characterMesh("models/main_character.3ds") {
+  cyclicAniTime(0), straightAniTime(0), aniTimeRate(1), xPos(0), yPos(.25),
+      zPos(0), characterMesh("models/main_character.3ds") {
   shader = new Shader("shaders/character");
 
   if (!shader->loaded()) {
@@ -30,6 +30,15 @@ Character::Character() :
     cerr << "Error loading character textures." << endl;
   }
 
+  glActiveTexture(GL_TEXTURE0);
+  texture.Bind();
+  glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+      GL_LINEAR_MIPMAP_NEAREST);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glGenerateMipmapEXT(GL_TEXTURE_2D);
 }
 
 Character::~Character() {
@@ -39,6 +48,10 @@ void Character::move(aiVector3D translation) {
   xPos += translation.x;
   yPos += translation.y;
   zPos += translation.z;
+}
+
+aiVector3D Character::getPos() {
+  return aiVector3D(xPos, yPos, zPos);
 }
 
 void Character::updateTime(float framerate) {
@@ -65,7 +78,7 @@ void Character::render(float framerate) {
   //Save old state and translate model
   glPushMatrix();
   glTranslatef(xPos, yPos, zPos);
-
+  glScalef(.25, .25, .25);
   nodeRender(characterMesh.getScene()->mRootNode);
 
   glPopMatrix();
