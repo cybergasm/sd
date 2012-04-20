@@ -7,7 +7,8 @@
 
 #include "InputResponder.h"
 
-InputResponder::InputResponder() {
+InputResponder::InputResponder() :
+  mouseReady(false) {
   // TODO Auto-generated constructor stub
 
 }
@@ -28,6 +29,14 @@ void InputResponder::windowIs(sf::Window* window_) {
   window = window_;
 }
 
+void InputResponder::mouseMoved(int mouseX, int mouseY) {
+  float deltaX = mouseX - 0.5f * window->GetWidth();
+  float deltaY = mouseY - 0.5f * window->GetHeight();
+  camera->rotateIncrementally(-1 * deltaX, -1 * deltaY);
+  window->SetCursorPosition(0.5f * window->GetWidth(),
+      0.5f * window->GetHeight());
+}
+
 void InputResponder::inputIs(sf::Event event) {
   switch (event.Type) {
     case sf::Event::Closed:
@@ -36,26 +45,41 @@ void InputResponder::inputIs(sf::Event event) {
       break;
     case sf::Event::KeyPressed:
       /**
-       * Movement
+       * Key movement, moves character forward and then sets the camera
+       * to be anchored to new position
        */
-      float degreesToRadians = M_PI / 180;
       if (event.Key.Code == sf::Key::W) {
-        character->move(aiVector3D(camera->atX()*-.1, 0, camera->atZ()*-.1));
+        character->move(aiVector3D(camera->atX() * -1, 0, camera->atZ() * -1));
       } else if (event.Key.Code == sf::Key::S) {
-        character->move(aiVector3D(camera->atX()*.1, 0, camera->atZ()*.1));
+        character->move(aiVector3D(camera->atX(), 0, camera->atZ()));
       } else if (event.Key.Code == sf::Key::A) {
-        character->move(aiVector3D(camera->sideDirection().x*-.1, 0, camera->sideDirection().z*.1));
+        character->move(
+            aiVector3D(camera->sideDirection().x * -1, 0,
+                camera->sideDirection().z));
       } else if (event.Key.Code == sf::Key::D) {
-        character->move(aiVector3D(camera->sideDirection().x*.1, 0, camera->sideDirection().z*.1));
-      } else if (event.Key.Code == sf::Key::U) {
-        camera->rotateAroundAngle(0, -degreesToRadians);
-      } else if (event.Key.Code == sf::Key::J) {
-        camera->rotateAroundAngle(0, degreesToRadians);
-      } else if (event.Key.Code == sf::Key::H) {
-        camera->rotateAroundAngle(degreesToRadians, 0);
-      } else if (event.Key.Code == sf::Key::K) {
-        camera->rotateAroundAngle(-degreesToRadians, 0);
+        character->move(
+            aiVector3D(camera->sideDirection().x, 0, camera->sideDirection().z));
       }
+      camera->setAnchor(character->getPos());
+      break;
+    case sf::Event::MouseMoved:
+      /**
+       * Mouse movement rotates the camera around the camera and then
+       * tells the character of the new x-rotation so we can rotate it
+       * so its back is to the camera
+       */
+      if (window->GetInput().IsMouseButtonDown(sf::Mouse::Left)) {
+        if (!mouseReady) {
+          window->SetCursorPosition(0.5f * window->GetWidth(),
+              0.5f * window->GetHeight());
+          mouseReady = true;
+        } else {
+          mouseMoved(event.MouseMove.X, event.MouseMove.Y);
+        }
+      } else {
+        mouseReady = false;
+      }
+      character->setCameraRotation(camera->totalXAngle() * (180.0f / M_PI));
       break;
   }
 }

@@ -11,15 +11,10 @@
 
 #include "assimp/aiTypes.h"
 
-
-Camera::Camera(float nClip, float fClip, float fov_, int wH, int wW, Character* char_) :
-  zOffset(.5), yOffset(.25), character(char_), nearClip(nClip), farClip(fClip), fov(fov_), winHeight(wH), winWidth(wW),
-      yAxisMax(.95), rateOfMovement(.1), totYAngle(0.0f), totXAngle(0.0f),
-      sensitivity(1) {
-  position.x = 0.0f;
-  position.y = 1.0f;
-  position.z = 1.01f;
-
+Camera::Camera(float nClip, float fClip, float fov_, int wH, int wW) :
+  zOffset(0), yOffset(.25), nearClip(nClip), farClip(fClip), fov(fov_),
+      winHeight(wH), winWidth(wW), yAxisMax(.95), rateOfMovement(.1),
+      totYAngle(0.0f), totXAngle(0.0f), sensitivity(1) {
   lookAt.x = 0.0f;
   lookAt.y = 0.0f;
   lookAt.z = -1.0f;
@@ -29,8 +24,10 @@ Camera::Camera(float nClip, float fClip, float fov_, int wH, int wW, Character* 
   upVec.y = 1.0f;
   upVec.z = 0.0f;
 
+  //Shift our camera so it is 15 degrees at an angle looking at the back
+  //of our character
   float degreesToRadians = M_PI / 180;
-  rotateAroundAngle(-1*M_PI, 15*degreesToRadians);
+  rotateAroundAngle(-1 * M_PI, 15 * degreesToRadians);
 }
 
 Camera::~Camera() {
@@ -89,26 +86,29 @@ void Camera::rotateAroundAngle(float angleX, float angleY) {
   }
 
   //Look left and right
-  aiMatrix4x4 rotateAroundY = aiMatrix4x4::RotationY(angleX,
-      rotateAroundY);
+  aiMatrix4x4 rotateAroundY = aiMatrix4x4::RotationY(angleX, rotateAroundY);
   lookAt *= rotateAroundY;
 
   lookAt.Normalize();
 }
+
 void Camera::posCameraSetupView() {
-  glMatrixMode( GL_PROJECTION);
+  glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(fov, winHeight / winWidth, nearClip, farClip);
 
-  glMatrixMode( GL_MODELVIEW);
+  glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  position = character->getPos() + aiVector3D(0, yOffset, zOffset);
   gluLookAt(position.x, position.y, position.z, position.x + lookAt.x,
       position.y + lookAt.y, position.z + lookAt.z, upVec.x, upVec.y, upVec.z);
 }
 
+void Camera::setAnchor(aiVector3D anchor) {
+  position = anchor + aiVector3D(0, yOffset, zOffset);
+}
+
 /**
- * Movement
+ * Movement for a camera constrained in the y position
  */
 void Camera::moveBackwards() {
   position.z += .1;

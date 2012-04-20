@@ -54,6 +54,19 @@ class InputResponder {
      * close
      */
     sf::Window* window;
+
+    /**
+     * State variable to tell us if we are ready to move mouse,
+     * namely ensures we center it between moves so we get
+     * a constant measure of how much it has moved
+     */
+    bool mouseReady;
+
+    /**
+     * Handles mouse movement by changing current angle
+     * and updating where we are looking at.
+     */
+    void mouseMoved(int mouseX, int mouseY);
 };
 
 #endif /* INPUTRESPONDER_H_ */

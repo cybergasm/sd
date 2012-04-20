@@ -62,7 +62,7 @@ void glInit() {
   glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
   glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
 
-  GLfloat lightPosition[] = { 0, 1, 1, 0.0 };
+  GLfloat lightPosition[] = { 0, .15, 5, 0.0 };
   glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
@@ -81,7 +81,11 @@ void init() {
 
   mainCharacter = new Character();
   camera = new Camera(nearClip, farClip, fieldOfView, window.GetHeight(),
-      window.GetWidth(), mainCharacter);
+      window.GetWidth());
+
+  window.ShowMouseCursor(false);
+
+  camera->setAnchor(mainCharacter->getPos());
   input.characterIs(mainCharacter);
   input.cameraIs(camera);
   input.windowIs(&window);
@@ -102,12 +106,12 @@ int main() {
     glEnd();
 
     glBegin(GL_QUADS);
-    for (int i=0; i<5; i++) {
-    glColor3f(.34f, .34f, .34f);
-    glVertex3f(.5, 0, 0);
-    glVertex3f(-.5, 0, 0);
-    glVertex3f(-.5, 0, 2*i);
-    glVertex3f(.5, 0, 2*i);
+    for (int i = 0; i < 5; i++) {
+      glColor3f(.34f, .34f, .34f);
+      glVertex3f(.5, 0, 0);
+      glVertex3f(-.5, 0, 0);
+      glVertex3f(-.5, 0, 2 * i);
+      glVertex3f(.5, 0, 2 * i);
     }
     glEnd();
     glBegin(GL_TRIANGLES);

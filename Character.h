@@ -36,10 +36,27 @@ class Character {
     void move(aiVector3D translation);
 
     /**
+     * Specifies how much the camera has rotated around
+     * the player
+     */
+    void setCameraRotation(float cameraRot);
+
+    /**
      * Returns position
      */
     aiVector3D getPos();
   private:
+    /**
+     * Movement rate of the character
+     */
+    float movementRate;
+
+    /**
+     * The angle that the camera has rotated around to make the
+     * character's orientation line up
+     */
+    float cameraRotation;
+
     /**
      * Animation time tracker that goes between 0, 10
      */
@@ -49,6 +66,7 @@ class Character {
      * Timer that simply increments
      */
     float straightAniTime;
+
     /**
      * Whether time is increasing or decreasing and
      * the rate of change

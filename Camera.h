@@ -22,7 +22,7 @@
 #include "assimp/aiVector3D.h"
 class Camera {
   public:
-    Camera(float nClip, float fClip, float fov, int wH, int wW, Character* char_);
+    Camera(float nClip, float fClip, float fov, int wH, int wW);
     virtual ~Camera();
 
     /**
@@ -43,11 +43,15 @@ class Camera {
     void rotateIncrementally(int dX, int dY);
 
     /**
-     * Given absolute angle, rotates camera
+     * Given absolute angle in radians, rotates camera. This is used to
+     * position the third person camera at the angle desired around the
+     * anchor point.
      */
     void rotateAroundAngle(float angleX, float angleY);
+
     /**
-     * Moves the camera along the lookAt vector in the specified direction
+     * Moves the camera. This camera is constrained in that it forward and
+     * backwards corresponds to movement along the z axis only.
      */
     void moveForward();
     void moveBackwards();
@@ -57,9 +61,16 @@ class Camera {
     void moveDown();
 
     /**
-     * Positions the camera in space
+     * Positions the camera in space by setting modelview and projection
+     * matrices
      */
     void posCameraSetupView();
+
+    /**
+     * Anchors the camera around a point
+     */
+    void setAnchor(aiVector3D anchor);
+
     /**
      * Getters for different parameters
      */
@@ -79,9 +90,6 @@ class Camera {
 
     //Camera positioning with respect to character
     float zOffset, yOffset;
-
-    //Character to anchor to
-    Character* character;
 
     //Viewing set-up parameters
     float nearClip;

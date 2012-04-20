@@ -17,8 +17,11 @@
 #include <stdio.h>
 
 Character::Character() :
-  cyclicAniTime(0), straightAniTime(0), aniTimeRate(1), xPos(0), yPos(.25),
-      zPos(0), characterMesh("models/main_character.3ds") {
+  movementRate(.05), cameraRotation(0), cyclicAniTime(0), straightAniTime(0),
+      aniTimeRate(1), xPos(0), yPos(.25), zPos(0),
+      characterMesh("models/main_character.3ds") {
+
+  //load the character shader that animates the mesh
   shader = new Shader("shaders/character");
 
   if (!shader->loaded()) {
@@ -26,28 +29,29 @@ Character::Character() :
     exit(-1);
   }
 
+  //grab our texture
   if (!texture.LoadFromFile("textures/main_char_tex.jpg")) {
     cerr << "Error loading character textures." << endl;
   }
 
   glActiveTexture(GL_TEXTURE0);
+  //mipmap the texture
   texture.Bind();
-  glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-      GL_LINEAR_MIPMAP_NEAREST);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glGenerateMipmapEXT(GL_TEXTURE_2D);
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+          GL_LINEAR_MIPMAP_NEAREST));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
 }
 
 Character::~Character() {
 }
 
 void Character::move(aiVector3D translation) {
-  xPos += translation.x;
-  yPos += translation.y;
-  zPos += translation.z;
+  xPos += movementRate * translation.x;
+  yPos += movementRate * translation.y;
+  zPos += movementRate * translation.z;
 }
 
 aiVector3D Character::getPos() {
@@ -65,6 +69,10 @@ void Character::updateTime(float framerate) {
   }
 }
 
+void Character::setCameraRotation(float cameraRot) {
+  cameraRotation = cameraRot;
+}
+
 void Character::render(float framerate) {
   //move internal animation timer forward
   updateTime(framerate);
@@ -77,8 +85,13 @@ void Character::render(float framerate) {
 
   //Save old state and translate model
   glPushMatrix();
+  //Move it to position
   glTranslatef(xPos, yPos, zPos);
+  //Make it smaller so it fits better
   glScalef(.25, .25, .25);
+  //Rotate it so its back is to the camera
+  glRotatef(cameraRotation, 0, 1, 0);
+
   nodeRender(characterMesh.getScene()->mRootNode);
 
   glPopMatrix();
@@ -90,7 +103,7 @@ void Character::meshAnimate(aiString meshName) {
   if (meshName == aiString("0") || meshName == aiString("1")) {
     glRotatef(cyclicAniTime, 1, 1, 0);
   } else if (meshName == aiString("2")) {
-    glScalef(1, 1 - cyclicAniTime * .06, 1);
+    glScalef(1, 1 - cyclicAniTime * .09, 1);
   }
 }
 
