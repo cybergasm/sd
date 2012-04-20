@@ -3,6 +3,8 @@
  *  CS248-Final-Project
  *  Created by Matthew Fichman on 1/25/11.
  *
+ *  Edited by Emin Topalovic to add support for easier information passing
+ *  to shader
  *  NOTE: Students should not need to modify this file.
  *  
  */
@@ -12,7 +14,19 @@
 #include "Shader.h"
 #include <fstream>
 
+#include <iostream>
+
+using namespace std;
+
 #define ERROR_BUFSIZE 1024
+
+#define GL_CHECK(x) {\
+  (x);\
+  GLenum error = glGetError();\
+  if (GL_NO_ERROR != error) {\
+    printf("%s\n", gluErrorString(error));\
+  }\
+}
 
 Shader::Shader(const std::string& path) :
 	path_(path),
@@ -112,4 +126,36 @@ const std::string& Shader::errors() const {
 
 bool Shader::loaded() const {
 	return loaded_;
+}
+
+void Shader::setVertexAttribArray(std::string idName, GLint size, GLint type,
+    bool normalized, GLsizei stride, GLvoid* data) {
+  GLint id = glGetAttribLocation(programID_, idName.c_str());
+
+  if (id == -1) {
+    cerr << "Location for id "<<idName<<" could not be found."<<endl;
+  }
+
+  GL_CHECK(glEnableVertexAttribArray(id));
+  GL_CHECK(glVertexAttribPointer(id, size, type, normalized, stride, data));
+}
+
+void Shader::setUniform1f(std::string idName, float value) {
+  GLint id = glGetUniformLocation(programID_, idName.c_str());
+
+  if (id == -1) {
+    cerr << "Location for id "<<idName<<" could not be found."<<endl;
+  }
+
+  GL_CHECK(glUniform1f(id, value));
+}
+
+void Shader::setUniform3f(std::string idName, float value1, float value2, float value3) {
+  GLint id = glGetUniformLocation(programID_, idName.c_str());
+
+  if (id == -1) {
+    cerr << "Location for id "<<idName<<" could not be found."<<endl;
+  }
+
+  GL_CHECK(glUniform3f(id, value1, value2, value3));
 }

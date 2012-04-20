@@ -168,46 +168,14 @@ void Character::nodeRender(aiNode* node) {
 void Character::setMeshData(u_int meshIdx) {
   const aiScene* scene = characterMesh.getScene();
   aiMesh* mesh = scene->mMeshes[meshIdx];
-  // Get a handle to the variables for the vertex data inside the shader.
-  GLint position = glGetAttribLocation(shader->programID(), "positionIn");
-  GLint texcoord = glGetAttribLocation(shader->programID(), "texCoordIn");
-  GLint normal = glGetAttribLocation(shader->programID(), "normalIn");
 
-  //mesh animation time
-  GLint time = glGetUniformLocation(shader->programID(), "t");
-
-  if (position == -1) {
-    cerr << "Position ID not found." << endl;
-  }
-
-  if (texcoord == -1) {
-    cerr << "Texcoord ID not found." << endl;
-  }
-
-  if (normal == -1) {
-    cerr << "Normal ID not found." << endl;
-  }
-
-  if (time == -1) {
-    cerr << "TIME ID not found." << endl;
-  }
-
-  GL_CHECK(glEnableVertexAttribArray(position));
-  GL_CHECK(glVertexAttribPointer(position, 3, GL_FLOAT, 0, sizeof(aiVector3D),
-          mesh->mVertices));
-
-  // Texture coords.  Note the [0] at the end, very important
-  GL_CHECK(glEnableVertexAttribArray(texcoord));
-  GL_CHECK(glVertexAttribPointer(texcoord, 2, GL_FLOAT, 0, sizeof(aiVector3D),
-          mesh->mTextureCoords[0]));
-
-  // Normals
-  GL_CHECK(glEnableVertexAttribArray(normal));
-  GL_CHECK(glVertexAttribPointer(normal, 3, GL_FLOAT, 0, sizeof(aiVector3D),
-          mesh->mNormals));
-
-  //time
-  GL_CHECK(glUniform1f(time, straightAniTime));
+  shader->setVertexAttribArray("normalIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
+      mesh->mNormals);
+  shader->setVertexAttribArray("texCoordIn", 2, GL_FLOAT, 0,
+      sizeof(aiVector3D), mesh->mTextureCoords[0]);
+  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
+      sizeof(aiVector3D), mesh->mVertices);
+  shader->setUniform1f("t", straightAniTime);
 }
 
 //This is a slight modification of my 248 assignment 3 code which sets the material information
@@ -216,47 +184,19 @@ void Character::setMeshMaterials(u_int meshIdx) {
   aiMaterial* material =
       scene->mMaterials[scene->mMeshes[meshIdx]->mMaterialIndex];
   aiColor3D color;
-
-  // Get a handle to the diffuse, specular, and ambient variables
-  // inside the shader.  Then set them with the diffuse, specular, and
-  // ambient color.
-  GLint diffuse = glGetUniformLocation(shader->programID(), "Kd");
-  GLint specular = glGetUniformLocation(shader->programID(), "Ks");
-  GLint ambient = glGetUniformLocation(shader->programID(), "Ka");
-  GLint shininess = glGetUniformLocation(shader->programID(), "alpha");
-
-  if (diffuse == -1) {
-    cerr << "Diffuse ID not found." << endl;
-  }
-
-  if (specular == -1) {
-    cerr << "Specular ID not found." << endl;
-  }
-
-  if (ambient == -1) {
-    cerr << "Ambient ID not found." << endl;
-  }
-
-  if (shininess == -1) {
-    cerr << "Shininess ID not found." << endl;
-  }
   material->Get(AI_MATKEY_COLOR_DIFFUSE,color) ;
-  GL_CHECK(glUniform3f(diffuse, color.r, color.g, color.b));
+  shader->setUniform3f("Kd", color.r, color.g, color.b);
 
-  // Specular material
-  material->Get(AI_MATKEY_COLOR_DIFFUSE,color) ;
-  GL_CHECK(glUniform3f(specular, color.r, color.g, color.b));
+  shader->setUniform3f("Ks", color.r, color.g, color.b);
 
-  // Ambient material
-  material->Get(AI_MATKEY_COLOR_DIFFUSE,color) ;
-  GL_CHECK(glUniform3f(ambient, color.r, color.g, color.b));
+  shader->setUniform3f("Ka", color.r, color.g, color.b);
 
   // Specular power
   float value;
   if (AI_SUCCESS == material->Get(AI_MATKEY_SHININESS,value) ) {
-    GL_CHECK(glUniform1f(shininess, value));
+    shader->setUniform1f("alpha", value);
   } else {
-    GL_CHECK(glUniform1f(shininess, 1));
+    shader->setUniform1f("alpha", 1);
   }
 }
 
