@@ -143,6 +143,7 @@ void Character::nodeRender(aiNode* node) {
 
       //Load the character texture
       setTexture();
+
       //Set the material properties
       setMeshMaterials(node->mMeshes[mesh]);
 
@@ -202,6 +203,11 @@ void Character::setMeshMaterials(u_int meshIdx) {
 
 void Character::setTexture() {
   GLint textureHandle = glGetUniformLocation(shader->programID(), "textureImg");
+
+  if (textureHandle == -1) {
+    cerr << "Error retrieving id for character texture."<<endl;
+  }
+
   glUniform1i(textureHandle, 0); // Making the texture be GL_TEXTURE0
   glActiveTexture(GL_TEXTURE0);
   texture.Bind();

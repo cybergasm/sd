@@ -9,6 +9,7 @@
 #include "Character.h"
 #include "InputResponder.h"
 #include "Camera.h"
+#include "StoneTile.h"
 
 #include "Framework.h"
 
@@ -24,6 +25,9 @@ InputResponder input;
 
 //Camera controls
 Camera* camera;
+
+//Tile to setup environment
+StoneTile* tile;
 
 using namespace std;
 
@@ -80,6 +84,7 @@ void init() {
   GLfloat fieldOfView = 45.0f; // Degrees
 
   mainCharacter = new Character();
+  tile = new StoneTile();
   camera = new Camera(nearClip, farClip, fieldOfView, window.GetHeight(),
       window.GetWidth());
 
@@ -105,7 +110,13 @@ int main() {
     glVertex3f(1, 0, 0);
     glEnd();
 
-    glBegin(GL_QUADS);
+    glPushMatrix();
+    for (int i=0; i < 1; i++) {
+      //glTranslatef(0, 0, .5);
+      tile->render();
+    }
+    glPopMatrix();
+/*    glBegin(GL_QUADS);
     for (int i = 0; i < 5; i++) {
       glColor3f(.34f, .34f, .34f);
       glVertex3f(.5, 0, 0);
@@ -114,6 +125,7 @@ int main() {
       glVertex3f(.5, 0, 2 * i);
     }
     glEnd();
+    */
     glBegin(GL_TRIANGLES);
     glColor3f(.0f, .0f, .34f);
     glVertex3f(0, 0, -2);
