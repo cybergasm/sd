@@ -79,8 +79,8 @@ void handleInput() {
 
 void init() {
   // Set up the projection and model-view matrices
-  GLfloat nearClip = -100.0f;
-  GLfloat farClip = 100.0f;
+  GLfloat nearClip = 0.1f;
+  GLfloat farClip = 500.0f;
   GLfloat fieldOfView = 45.0f; // Degrees
 
   camera = new Camera(nearClip, farClip, fieldOfView, window.GetHeight(),
@@ -105,11 +105,12 @@ int main() {
     handleInput();
     camera->posCameraSetupView();
     glPushMatrix();
-    glRotatef(90, 1, 0, 0);
+    glScalef(.6, .6, .6);
     tile->render();
     glPopMatrix();
 
     glPushMatrix();
+    glRotatef(90, 1, 0, 0);
     glScalef(.35, .35, .35);
     for (int j = 0; j < 5; j++) {
       glPushMatrix();

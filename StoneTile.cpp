@@ -30,17 +30,17 @@ StoneTile::StoneTile(Camera* camera_) :
     exit(-1);
   }
 
-  if (!diffuse.LoadFromFile("textures/cobble_tile_diffuse.jpg")) {
+  if (!diffuse.LoadFromFile("textures/brick_tile_diffuse.jpg")) {
     cerr << "Could not load tile diffuse texture." << endl;
     exit(-1);
   }
 
-  if (!height.LoadFromFile("textures/cobble_tile_displacement.jpg")) {
+  if (!height.LoadFromFile("textures/brick_tile_displacement.jpg")) {
     cerr << "Could not load tile displacement texture." << endl;
     exit(-1);
   }
 
-  if (!normal.LoadFromFile("textures/cobble_tile_normal.jpg")) {
+  if (!normal.LoadFromFile("textures/brick_tile_normal.jpg")) {
     cerr << "Coult not load tile normal texture." << endl;
     exit(-1);
   }

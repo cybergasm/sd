@@ -32,7 +32,7 @@ void InputResponder::windowIs(sf::Window* window_) {
 void InputResponder::mouseMoved(int mouseX, int mouseY) {
   float deltaX = mouseX - 0.5f * window->GetWidth();
   float deltaY = mouseY - 0.5f * window->GetHeight();
-  camera->rotateIncrementally(-1 * deltaX, -1 * deltaY);
+  camera->rotateIncrementally(deltaX, deltaY);
   window->SetCursorPosition(0.5f * window->GetWidth(),
       0.5f * window->GetHeight());
 }
@@ -49,9 +49,9 @@ void InputResponder::inputIs(sf::Event event) {
        * to be anchored to new position
        */
       if (event.Key.Code == sf::Key::W) {
-        character->move(aiVector3D(camera->atX() * -1, 0, camera->atZ() * -1));
-      } else if (event.Key.Code == sf::Key::S) {
         character->move(aiVector3D(camera->atX(), 0, camera->atZ()));
+      } else if (event.Key.Code == sf::Key::S) {
+        character->move(aiVector3D(camera->atX() * -1, 0, camera->atZ() * -1));
       } else if (event.Key.Code == sf::Key::A) {
         character->move(
             aiVector3D(camera->sideDirection().x * -1, 0,

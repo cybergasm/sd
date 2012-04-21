@@ -22,7 +22,7 @@ void main() {
 	
 	//scale and bias to try and represent physical property of
 	//surface better.
-	float scale = .08;
+	float scale = .04;
 	float bias = .05;
 	
 	float newHeight = scale*height - bias;
@@ -56,7 +56,7 @@ void main() {
    	// Calculate the specular coefficient
   	vec3 R = reflect(-L, N);
   	float Rs = pow(max(0.0, dot(V, R)), alpha);
-  	vec3 Ts = diffuseColor.brg;
+  	vec3 Ts = .3;
   	vec3 specular = Rs * Ks * Ts * gl_LightSource[0].specular.rgb;
   	
   	// Ambient
