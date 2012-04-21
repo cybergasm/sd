@@ -53,8 +53,8 @@ void glInit() {
 
   //lighting
   //Enable lighting and set some color
-  GLfloat lightDiffuse[] = { 0.34f, .04f, .86f, 1.0f };
-  GLfloat lightSpecular[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+  GLfloat lightDiffuse[] = { 1.00f, 1.00f, 1.0f, 1.0f };
+  GLfloat lightSpecular[] = { 1.00f, 1.00f, 1.00f, 1.00f };
   GLfloat lightAmbient[] = { 0.1f, 0.1f, 0.3f, 1.0f };
   glEnable(GL_LIGHTING);
 
@@ -79,14 +79,15 @@ void handleInput() {
 
 void init() {
   // Set up the projection and model-view matrices
-  GLfloat nearClip = .1f;
-  GLfloat farClip = 500.0f;
+  GLfloat nearClip = -100.0f;
+  GLfloat farClip = 100.0f;
   GLfloat fieldOfView = 45.0f; // Degrees
 
-  mainCharacter = new Character();
-  tile = new StoneTile();
   camera = new Camera(nearClip, farClip, fieldOfView, window.GetHeight(),
       window.GetWidth());
+
+  mainCharacter = new Character();
+  tile = new StoneTile(camera);
 
   window.ShowMouseCursor(false);
 
@@ -103,36 +104,23 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     handleInput();
     camera->posCameraSetupView();
-    glBegin(GL_TRIANGLES);
-    glColor3f(.34f, 0, 0);
-    glVertex3f(0, 2, 0);
-    glVertex3f(-1, 0, 0);
-    glVertex3f(1, 0, 0);
-    glEnd();
+    glPushMatrix();
+    glRotatef(90, 1, 0, 0);
+    tile->render();
+    glPopMatrix();
 
     glPushMatrix();
-    for (int i=0; i < 1; i++) {
-      //glTranslatef(0, 0, .5);
-      tile->render();
+    glScalef(.35, .35, .35);
+    for (int j = 0; j < 5; j++) {
+      glPushMatrix();
+      glTranslatef(-1.6*j, 0, 0);
+      for (int i = 0; i < 5; i++) {
+        tile->render();
+        glTranslatef(0, 0, 1.6);
+      }
+      glPopMatrix();
     }
     glPopMatrix();
-/*    glBegin(GL_QUADS);
-    for (int i = 0; i < 5; i++) {
-      glColor3f(.34f, .34f, .34f);
-      glVertex3f(.5, 0, 0);
-      glVertex3f(-.5, 0, 0);
-      glVertex3f(-.5, 0, 2 * i);
-      glVertex3f(.5, 0, 2 * i);
-    }
-    glEnd();
-    */
-    glBegin(GL_TRIANGLES);
-    glColor3f(.0f, .0f, .34f);
-    glVertex3f(0, 0, -2);
-    glVertex3f(-1, 0, 0);
-    glVertex3f(1, 0, 0);
-
-    glEnd();
     mainCharacter->render(window.GetFrameTime());
 
     window.Display();

@@ -17,10 +17,11 @@
 
 #include "Mesh3DS.h"
 #include "Shader.h"
+#include "Camera.h"
 
 class StoneTile {
   public:
-    StoneTile();
+    StoneTile(Camera* camera_);
     virtual ~StoneTile();
 
     /**
@@ -28,6 +29,11 @@ class StoneTile {
      */
     void render();
   private:
+    /**
+     * We need a camera position for the parallax mapping
+     */
+    Camera* camera;
+
     /**
      * Shader that does parallax
      */
@@ -42,6 +48,16 @@ class StoneTile {
      * Diffuse texture
      */
     sf::Image diffuse;
+
+    /**
+     * Height map
+     */
+    sf::Image height;
+
+    /**
+     * Normal map
+     */
+    sf::Image normal;
 
     /**
      * Renders one node of the mesh

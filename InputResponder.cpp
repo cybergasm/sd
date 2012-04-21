@@ -59,6 +59,12 @@ void InputResponder::inputIs(sf::Event event) {
       } else if (event.Key.Code == sf::Key::D) {
         character->move(
             aiVector3D(camera->sideDirection().x, 0, camera->sideDirection().z));
+      } else if (event.Key.Code == sf::Key::Space) {
+        character->move(
+                    aiVector3D(0, -.3, 0));
+      } else if (event.Key.Code == sf::Key::V) {
+        character->move(
+                    aiVector3D(0, .3, 0));
       }
       camera->setAnchor(character->getPos());
       break;

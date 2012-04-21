@@ -20,8 +20,8 @@ using namespace std;
   }\
 }
 
-StoneTile::StoneTile() :
-  tileMesh("models/tile.3ds") {
+StoneTile::StoneTile(Camera* camera_) :
+  camera(camera_), tileMesh("models/tile.3ds") {
   //load the parallax shader
   shader = new Shader("shaders/parallax");
 
@@ -34,6 +34,48 @@ StoneTile::StoneTile() :
     cerr << "Could not load tile diffuse texture." << endl;
     exit(-1);
   }
+
+  if (!height.LoadFromFile("textures/cobble_tile_displacement.jpg")) {
+    cerr << "Could not load tile displacement texture." << endl;
+    exit(-1);
+  }
+
+  if (!normal.LoadFromFile("textures/cobble_tile_normal.jpg")) {
+    cerr << "Coult not load tile normal texture." << endl;
+    exit(-1);
+  }
+
+  tileMesh.printInfo();
+
+  glActiveTexture(GL_TEXTURE0);
+  //mipmap the texture
+  height.Bind();
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+          GL_LINEAR_MIPMAP_NEAREST));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
+
+  glActiveTexture(GL_TEXTURE0);
+  //mipmap the texture
+  diffuse.Bind();
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+          GL_LINEAR_MIPMAP_NEAREST));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
+
+  glActiveTexture(GL_TEXTURE0);
+  //mipmap the texture
+  normal.Bind();
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+          GL_LINEAR_MIPMAP_NEAREST));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
 }
 
 StoneTile::~StoneTile() {
@@ -100,22 +142,44 @@ void StoneTile::setMeshData(u_int meshIdx) {
   const aiScene* scene = tileMesh.getScene();
   aiMesh* mesh = scene->mMeshes[meshIdx];
 
-  /*shader->setVertexAttribArray("normalIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
-   mesh->mNormals);*/
+  shader->setVertexAttribArray("normalIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
+      mesh->mNormals);
   shader->setVertexAttribArray("texCoordIn", 2, GL_FLOAT, 0,
       sizeof(aiVector3D), mesh->mTextureCoords[0]);
   shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
       sizeof(aiVector3D), mesh->mVertices);
+  shader->setVertexAttribArray("tangentIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
+      mesh->mTangents);
+  shader->setVertexAttribArray("bitangentIn", 3, GL_FLOAT, 0,
+      sizeof(aiVector3D), mesh->mBitangents);
 }
 
 void StoneTile::setTextures() {
   GLint diffuseHandle = glGetUniformLocation(shader->programID(), "diffuseTex");
+  GLint heightHandle = glGetUniformLocation(shader->programID(), "heightMap");
+  GLint normHandle = glGetUniformLocation(shader->programID(), "normalMap");
 
   if (diffuseHandle == -1) {
-    cerr << "Error getting id for tile diffuse texture."<<endl;
+    cerr << "Error getting id for tile diffuse texture." << endl;
+  }
+
+  if (heightHandle == -1) {
+    cerr << "Error getting id for tile height map." << endl;
+  }
+
+  if (normHandle == -1) {
+    cerr << "Error getting id for normal map." << endl;
   }
 
   glUniform1i(diffuseHandle, 0); // Making the texture be GL_TEXTURE0
   glActiveTexture(GL_TEXTURE0);
   diffuse.Bind();
+
+  glUniform1i(heightHandle, 1);
+  glActiveTexture(GL_TEXTURE1);
+  height.Bind();
+
+  glUniform1i(heightHandle, 2);
+  glActiveTexture(GL_TEXTURE2);
+  normal.Bind();
 }

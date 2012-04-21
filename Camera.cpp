@@ -12,7 +12,7 @@
 #include "assimp/aiTypes.h"
 
 Camera::Camera(float nClip, float fClip, float fov_, int wH, int wW) :
-  zOffset(0), yOffset(.25), nearClip(nClip), farClip(fClip), fov(fov_),
+  zOffset(0), yOffset(0), nearClip(nClip), farClip(fClip), fov(fov_),
       winHeight(wH), winWidth(wW), yAxisMax(.95), rateOfMovement(.1),
       totYAngle(0.0f), totXAngle(0.0f), sensitivity(1) {
   lookAt.x = 0.0f;
