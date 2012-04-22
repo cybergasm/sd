@@ -12,7 +12,7 @@
 #include "assimp/aiTypes.h"
 
 Camera::Camera(float nClip, float fClip, float fov_, int wH, int wW) :
-  zOffset(-1), yOffset(.1), nearClip(nClip), farClip(fClip), fov(fov_),
+  zOffset(-2), yOffset(.1), nearClip(nClip), farClip(fClip), fov(fov_),
       winHeight(wH), winWidth(wW), yAxisMax(.95), rateOfMovement(.1),
       totYAngle(0.0f), totXAngle(0.0f), sensitivity(1) {
   lookAt.x = 0.0f;
@@ -99,55 +99,58 @@ void Camera::posCameraSetupView() {
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt(position.x - lookAt.x, position.y - lookAt.y, position.z - lookAt.z, position.x,
-      position.y - yOffset, position.z - zOffset, upVec.x, upVec.y, upVec.z);
+  float dist = sqrt(zOffset * zOffset + yOffset * yOffset);
+  gluLookAt(anchor.x - dist * lookAt.x, anchor.y - dist * lookAt.y,
+      anchor.z - dist * lookAt.z, anchor.x, anchor.y, anchor.z,
+      upVec.x, upVec.y, upVec.z);
 }
 
-void Camera::setAnchor(aiVector3D anchor) {
-  position = anchor + aiVector3D(0, yOffset, zOffset);
+void Camera::setAnchor(aiVector3D anchor_) {
+  anchor = anchor_;
 }
 
 /**
- * Movement for a camera constrained in the y position
+ * Movement for a camera done by moving the point around which it is
+ * anchored
  */
 void Camera::moveBackwards() {
-  position += .1*lookAt;
+  anchor += .1 * lookAt;
 }
 
 void Camera::moveForward() {
-  position -= .1*lookAt;
+  anchor -= .1 * lookAt;
 }
 
 void Camera::moveUp() {
-  position += upVec * rateOfMovement;
+  anchor += upVec * rateOfMovement;
 }
 
 void Camera::moveDown() {
-  position -= upVec * rateOfMovement;
+  anchor -= upVec * rateOfMovement;
 }
 
 void Camera::moveLeft() {
-  position -= sideDirection() * rateOfMovement;
+  anchor -= sideDirection() * rateOfMovement;
 }
 
 void Camera::moveRight() {
-  position += sideDirection() * rateOfMovement;
+  anchor += sideDirection() * rateOfMovement;
 }
 
 /**
  * Getters
  */
 
-float Camera::posX() {
-  return position.x;
+float Camera::anchorX() {
+  return anchor.x;
 }
 
-float Camera::posY() {
-  return position.y;
+float Camera::anchorY() {
+  return anchor.y;
 }
 
-float Camera::posZ() {
-  return position.z;
+float Camera::anchorZ() {
+  return anchor.z;
 }
 
 float Camera::atX() {

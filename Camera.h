@@ -74,9 +74,9 @@ class Camera {
     /**
      * Getters for different parameters
      */
-    float posX();
-    float posY();
-    float posZ();
+    float anchorX();
+    float anchorY();
+    float anchorZ();
 
     float atX();
     float atY();
@@ -86,7 +86,7 @@ class Camera {
     float totalYAngle();
   private:
     //Camera positioning
-    aiVector3D position, lookAt, upVec;
+    aiVector3D anchor, lookAt, upVec;
 
     //Camera positioning with respect to character
     float zOffset, yOffset;
