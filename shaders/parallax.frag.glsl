@@ -67,6 +67,5 @@ void main() {
     	vec3 ambient = Ka * gl_LightSource[lightIndex].ambient.rgb;
     	finalColor += vec4(diffuse + specular + ambient, 1);
 	}
-	
 	gl_FragColor = finalColor;
 }

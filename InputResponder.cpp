@@ -65,6 +65,8 @@ void InputResponder::inputIs(sf::Event event) {
       } else if (event.Key.Code == sf::Key::V) {
         character->move(
                     aiVector3D(0, .3, 0));
+      } else if (event.Key.Code == sf::Key::J) {
+
       }
       camera->setAnchor(character->getPos());
       break;

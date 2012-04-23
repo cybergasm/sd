@@ -66,9 +66,29 @@ void glInit() {
 
 void handleInput() {
   sf::Event evt;
+  static GLfloat lightPosition[] = {13.4, 5, -15.6};
   while (window.GetEvent(evt)) {
     input.inputIs(evt);
+
+    if (evt.Key.Code == sf::Key::J) {
+      lightPosition[0] -= .1;
+      cout << lightPosition[0] << " " << lightPosition[1] << " "
+          << lightPosition[2] << endl;
+    } else if (evt.Key.Code == sf::Key::K) {
+      lightPosition[2] -= .1;
+      cout << lightPosition[0] << " " << lightPosition[1] << " "
+          << lightPosition[2] << endl;
+    } else if (evt.Key.Code == sf::Key::L) {
+      lightPosition[0] += .1;
+      cout << lightPosition[0] << " " << lightPosition[1] << " "
+          << lightPosition[2] << endl;
+    } else if (evt.Key.Code == sf::Key::I) {
+      lightPosition[2] += .1;
+      cout << lightPosition[0] << " " << lightPosition[1] << " "
+          << lightPosition[2] << endl;
+    }
   }
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
 void init() {
@@ -91,8 +111,6 @@ void init() {
 }
 
 void setLightPositions() {
-  GLfloat lightPosition[] = { 2, 5, 3 };
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
 int main() {
@@ -125,8 +143,8 @@ int main() {
     glPopMatrix();
 
     glPushMatrix();
-    //glRotatef(90, 1, 0, 0);
     //glTranslatef(0, 0, 5);
+    //glRotatef(90, 1, 0, 0);
     for (int j = 0; j < 5; j++) {
       glPushMatrix();
       glTranslatef(-1.6 * j, 0, 0);
@@ -137,6 +155,7 @@ int main() {
       glPopMatrix();
     }
     glPopMatrix();
+
     mainCharacter->render(window.GetFrameTime());
 
     window.Display();
