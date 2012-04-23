@@ -9,7 +9,7 @@
 #include "Character.h"
 #include "InputResponder.h"
 #include "Camera.h"
-#include "StoneTile.h"
+#include "Tile.h"
 
 #include "Framework.h"
 
@@ -25,9 +25,6 @@ InputResponder input;
 
 //Camera controls
 Camera* camera;
-
-//Tile to setup environment
-StoneTile* tile;
 
 using namespace std;
 
@@ -53,9 +50,9 @@ void glInit() {
 
   //lighting
   //Enable lighting and set some color
-  GLfloat lightDiffuse[] = { 1.00f, 1.00f, 1.0f, 1.0f };
-  GLfloat lightSpecular[] = { 1.00f, 1.00f, 1.00f, 1.00f };
-  GLfloat lightAmbient[] = { 0.1f, 0.1f, 0.3f, 1.0f };
+  GLfloat lightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  GLfloat lightSpecular[] = { 0.10f, 0.10f, 0.10f, 1.0f };
+  GLfloat lightAmbient[] = { 0.1f, 0.1f, 0.1f, 1.0f };
   glEnable(GL_LIGHTING);
 
   //Enable the following so we can still use glColor for triangles
@@ -65,9 +62,6 @@ void glInit() {
   glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
   glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
-
-  GLfloat lightPosition[] = { 0, .15, 5, 0.0 };
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
 void handleInput() {
@@ -87,7 +81,6 @@ void init() {
       window.GetWidth());
 
   mainCharacter = new Character();
-  tile = new StoneTile(camera);
 
   window.ShowMouseCursor(false);
 
@@ -97,26 +90,48 @@ void init() {
   input.windowIs(&window);
 }
 
+void setLightPositions() {
+  GLfloat lightPosition[] = { 2, 5, 3 };
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+}
+
 int main() {
   glInit();
   init();
+
+  Tile* cobbleTile = new Tile("cobble");
+  Tile* brickTile = new Tile("brick");
+
   while (window.IsOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     handleInput();
+
+    setLightPositions();
+
     camera->posCameraSetupView();
+
     glPushMatrix();
-    glScalef(.6, .6, .6);
-    tile->render();
+    glTranslatef(0, 6, 6);
+    glRotatef(90, 1, 0, 0);
+    for (int j = 0; j < 5; j++) {
+      glPushMatrix();
+      glTranslatef(-1.6 * j, 0, 0);
+      for (int i = 0; i < 5; i++) {
+        brickTile->render();
+        glTranslatef(0, 0, 1.6);
+      }
+      glPopMatrix();
+    }
     glPopMatrix();
 
     glPushMatrix();
-    glRotatef(90, 1, 0, 0);
-    glScalef(.35, .35, .35);
+    //glRotatef(90, 1, 0, 0);
+    //glTranslatef(0, 0, 5);
     for (int j = 0; j < 5; j++) {
       glPushMatrix();
-      glTranslatef(-1.6*j, 0, 0);
+      glTranslatef(-1.6 * j, 0, 0);
       for (int i = 0; i < 5; i++) {
-        tile->render();
+        cobbleTile->render();
         glTranslatef(0, 0, 1.6);
       }
       glPopMatrix();

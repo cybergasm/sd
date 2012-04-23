@@ -20,25 +20,31 @@ void main() {
 
   //Basis of Phong as in assignment 3/2
   vec3 N = normalize(normal);
-  vec3 L = normalize(gl_LightSource[0].position.xyz);
   vec3 V = normalize(-eyePosition);
+
+  vec4 finalColor;
   
-  //Diffuse
-  float Rd = max(0.0, dot(L, N));
+  for (int lightIndex = 0; lightIndex < 1; lightIndex++) {
+  	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz - eyePosition);
   
-  vec3 Td = texColor.rgb;
-  vec3 diffuse = Rd * Kd * Td * gl_LightSource[0].diffuse.rgb;
+  	//Diffuse
+  	float Rd = max(0.0, dot(L, N));
   
-  //Specular
-  vec3 R = reflect(-L, N);
-  float Rs = pow(max(0.0, dot(V, R)), alpha);
+  	vec3 Td = texColor.rgb;
+  	vec3 diffuse = Rd * Kd * Td * gl_LightSource[lightIndex].diffuse.rgb;
+    
+    //Specular
+  	vec3 R = reflect(-L, N);
+  	float Rs = pow(max(0.0, dot(V, R)), alpha);
 
   
-  vec3 Ts = texColor.rgb;
-  vec3 specular = Rs * Ks * Ts * gl_LightSource[0].specular.rgb;
+  	vec3 Ts = texColor.rgb;
+  	vec3 specular = Rs * Ks * Ts * gl_LightSource[lightIndex].specular.rgb;
 
-  //Ambient
-  vec3 ambient = Ka * gl_LightSource[0].ambient.rgb;
-	  
-  gl_FragColor = vec4(diffuse + specular + ambient, 1.0f);
+  	//Ambient
+  	vec3 ambient = Ka * gl_LightSource[lightIndex].ambient.rgb;
+  	finalColor += vec4(diffuse + specular + ambient, 1.0f);
+  }
+  
+  gl_FragColor = finalColor;
 }

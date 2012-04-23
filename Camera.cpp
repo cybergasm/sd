@@ -100,9 +100,11 @@ void Camera::posCameraSetupView() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   float dist = sqrt(zOffset * zOffset + yOffset * yOffset);
+  position = aiVector3D(anchor.x - dist * lookAt.x, anchor.y - dist * lookAt.y,
+      anchor.z - dist * lookAt.z);
   gluLookAt(anchor.x - dist * lookAt.x, anchor.y - dist * lookAt.y,
-      anchor.z - dist * lookAt.z, anchor.x, anchor.y, anchor.z,
-      upVec.x, upVec.y, upVec.z);
+      anchor.z - dist * lookAt.z, anchor.x, anchor.y, anchor.z, upVec.x,
+      upVec.y, upVec.z);
 }
 
 void Camera::setAnchor(aiVector3D anchor_) {
@@ -140,6 +142,18 @@ void Camera::moveRight() {
 /**
  * Getters
  */
+
+float Camera::getX() {
+  return position.x;
+}
+
+float Camera::getY() {
+  return position.y;
+}
+
+float Camera::getZ() {
+  return position.z;
+}
 
 float Camera::anchorX() {
   return anchor.x;

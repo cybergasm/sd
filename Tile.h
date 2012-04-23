@@ -19,21 +19,16 @@
 #include "Shader.h"
 #include "Camera.h"
 
-class StoneTile {
+class Tile {
   public:
-    StoneTile(Camera* camera_);
-    virtual ~StoneTile();
+    Tile(string tileTexture);
+    virtual ~Tile();
 
     /**
      * Displays the tile
      */
     void render();
   private:
-    /**
-     * We need a camera position for the parallax mapping
-     */
-    Camera* camera;
-
     /**
      * Shader that does parallax
      */

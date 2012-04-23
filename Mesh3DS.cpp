@@ -11,9 +11,9 @@ Mesh3DS::Mesh3DS(string modelPath_) :
   modelPath(modelPath_) {
   scene = importer.ReadFile(
       modelPath,
-      aiProcess_CalcTangentSpace
-          | aiProcess_ValidateDataStructure | aiProcess_JoinIdenticalVertices
-          | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
+      aiProcess_CalcTangentSpace | aiProcess_Triangulate
+                | aiProcess_JoinIdenticalVertices
+                | aiProcessPreset_TargetRealtime_Quality);
 
   if (!scene || scene->mNumMeshes <= 0) {
     cerr << importer.GetErrorString() << endl;

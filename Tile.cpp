@@ -5,7 +5,7 @@
  *      Author: emint
  */
 
-#include "StoneTile.h"
+#include "Tile.h"
 
 #include <iostream>
 #include <stdio.h>
@@ -20,8 +20,8 @@ using namespace std;
   }\
 }
 
-StoneTile::StoneTile(Camera* camera_) :
-  camera(camera_), tileMesh("models/tile.3ds") {
+Tile::Tile(string tileTexture) :
+  tileMesh("models/tile.3ds") {
   //load the parallax shader
   shader = new Shader("shaders/parallax");
 
@@ -30,22 +30,20 @@ StoneTile::StoneTile(Camera* camera_) :
     exit(-1);
   }
 
-  if (!diffuse.LoadFromFile("textures/brick_tile_diffuse.jpg")) {
+  if (!diffuse.LoadFromFile("textures/"+tileTexture+"_tile_diffuse.jpg")) {
     cerr << "Could not load tile diffuse texture." << endl;
     exit(-1);
   }
 
-  if (!height.LoadFromFile("textures/brick_tile_displacement.jpg")) {
+  if (!height.LoadFromFile("textures/"+tileTexture+"_tile_displacement.jpg")) {
     cerr << "Could not load tile displacement texture." << endl;
     exit(-1);
   }
 
-  if (!normal.LoadFromFile("textures/brick_tile_normal.jpg")) {
-    cerr << "Coult not load tile normal texture." << endl;
+  if (!normal.LoadFromFile("textures/"+tileTexture+"_tile_normal.jpg")) {
+    cerr << "Could not load tile normal texture." << endl;
     exit(-1);
   }
-
-  tileMesh.printInfo();
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
@@ -78,10 +76,10 @@ StoneTile::StoneTile(Camera* camera_) :
   GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
 }
 
-StoneTile::~StoneTile() {
+Tile::~Tile() {
 }
 
-void StoneTile::render() {
+void Tile::render() {
   //Remember the program at time of call so we can
   //reset
   GLint oldId;
@@ -93,7 +91,7 @@ void StoneTile::render() {
   GL_CHECK(glUseProgram(oldId));
 }
 
-void StoneTile::nodeRender(aiNode* node) {
+void Tile::nodeRender(aiNode* node) {
   //save matrix
   glPushMatrix();
 
@@ -138,7 +136,7 @@ void StoneTile::nodeRender(aiNode* node) {
   glPopMatrix();
 }
 
-void StoneTile::setMeshData(u_int meshIdx) {
+void Tile::setMeshData(u_int meshIdx) {
   const aiScene* scene = tileMesh.getScene();
   aiMesh* mesh = scene->mMeshes[meshIdx];
 
@@ -154,7 +152,7 @@ void StoneTile::setMeshData(u_int meshIdx) {
       sizeof(aiVector3D), mesh->mBitangents);
 }
 
-void StoneTile::setTextures() {
+void Tile::setTextures() {
   GLint diffuseHandle = glGetUniformLocation(shader->programID(), "diffuseTex");
   GLint heightHandle = glGetUniformLocation(shader->programID(), "heightMap");
   GLint normHandle = glGetUniformLocation(shader->programID(), "normalMap");

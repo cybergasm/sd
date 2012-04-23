@@ -22,7 +22,7 @@ LIBS = -lsfml-network \
 	-lGLU \
 	-lGLEW 
 	
-OBJS = main.o Mesh3DS.o Shader.o Character.o InputResponder.o Camera.o StoneTile.o
+OBJS = main.o Mesh3DS.o Shader.o Character.o InputResponder.o Camera.o Tile.o
 
 all: sd
 

@@ -55,7 +55,7 @@ void InputResponder::inputIs(sf::Event event) {
       } else if (event.Key.Code == sf::Key::A) {
         character->move(
             aiVector3D(camera->sideDirection().x * -1, 0,
-                camera->sideDirection().z));
+                camera->sideDirection().z * -1));
       } else if (event.Key.Code == sf::Key::D) {
         character->move(
             aiVector3D(camera->sideDirection().x, 0, camera->sideDirection().z));
