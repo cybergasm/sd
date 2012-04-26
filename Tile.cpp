@@ -169,7 +169,7 @@ void Tile::setTextures() {
     cerr << "Error getting id for normal map." << endl;
   }
 
-  glUniform1i(diffuseHandle, 0); // Making the texture be GL_TEXTURE0
+  glUniform1i(diffuseHandle, 0);
   glActiveTexture(GL_TEXTURE0);
   diffuse.Bind();
 

@@ -27,7 +27,7 @@ Camera::Camera(float nClip, float fClip, float fov_, int wH, int wW) :
   //Shift our camera so it is 15 degrees at an angle looking at the back
   //of our character
   float degreesToRadians = M_PI / 180;
-  rotateAroundAngle(-1 * M_PI, 15 * degreesToRadians);
+  rotateAroundAngle(-1 * M_PI, -15 * degreesToRadians);
 }
 
 Camera::~Camera() {

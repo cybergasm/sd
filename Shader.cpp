@@ -135,7 +135,6 @@ void Shader::setVertexAttribArray(std::string idName, GLint size, GLint type,
   if (id == -1) {
     cerr << "Location for id "<<idName<<" could not be found."<<endl;
   }
-
   GL_CHECK(glEnableVertexAttribArray(id));
   GL_CHECK(glVertexAttribPointer(id, size, type, normalized, stride, data));
 }
