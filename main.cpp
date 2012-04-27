@@ -38,6 +38,7 @@ Camera* camera;
 //Shader to texture quad
 Shader* textureShader;
 Shader* illuminanceFilter;
+Shader* blurFilter;
 
 using namespace std;
 
@@ -132,6 +133,7 @@ void init() {
 
   textureShader = new Shader("shaders/simpletexture");
   illuminanceFilter = new Shader("shaders/luminancefilter");
+  blurFilter = new Shader("shaders/blurfilter");
 
   if (!textureShader->loaded()) {
     cerr << textureShader->errors() << endl;
@@ -142,9 +144,12 @@ void init() {
     cerr << illuminanceFilter->errors() << endl;
     exit(-1);
   }
+
+  if (!blurFilter->loaded()) {
+    cerr << blurFilter->errors() << endl;
+    exit(-1);
+  }
 }
-
-
 
 /**
  * Initializes a texture to be bound to the color attachment of a framebuffer
@@ -206,16 +211,6 @@ void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture) {
   //reset the buffer
   GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
 }
-void writeTextureToImage() {
-  GLubyte* data = new GLubyte[1024 * 1024 * 4];
-  sf::Image img(1024, 1024, sf::Color::White);
-  glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-  if (!img.LoadFromPixels(1024, 1024, data)) {
-    cerr << "Error writing texture to file";
-  }
-  img.SaveToFile("Frame.jpg");
-  delete[] data;
-}
 
 void displayTexture(GLuint texture, Shader* shader) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -266,10 +261,13 @@ int main() {
 
   GLuint renderFbo = 0;
   GLuint initialRenderTexture = 0;
+  GLuint luminanceTexture = 0;
+  GLuint bluredTexture = 0;
   GLuint renderDepthTexture = 0;
 
   initFBOAndTexture(renderFbo, initialRenderTexture, renderDepthTexture);
-
+  initColorTexture(luminanceTexture);
+  initColorTexture(bluredTexture);
   while (window.IsOpened()) {
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, renderFbo));
 
@@ -313,11 +311,19 @@ int main() {
     glPopMatrix();
 
     mainCharacter->render(window.GetFrameTime());
+    //bind the luminance texture so that we render to it
+    bindTexturesToBuffer(luminanceTexture, renderDepthTexture, renderFbo);
+    //render to texture
+    displayTexture(initialRenderTexture, illuminanceFilter);
+    //bind the blur texture so that we render to it
+    bindTexturesToBuffer(bluredTexture, renderDepthTexture, renderFbo);
+    //blur the current luminance storing it to the bound blured texture
+    displayTexture(luminanceTexture, blurFilter);
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
-    displayTexture(initialRenderTexture, textureShader);
-    //writeTextureToImage();
-
+    displayTexture(luminanceTexture, textureShader);
 
     window.Display();
+
+    bindTexturesToBuffer(initialRenderTexture, renderDepthTexture, renderFbo);
   }
 }
