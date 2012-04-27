@@ -208,7 +208,7 @@ void Character::setTexture() {
     cerr << "Error retrieving id for character texture."<<endl;
   }
 
-  glUniform1i(textureHandle, 4);
-  glActiveTexture(GL_TEXTURE4);
+  glUniform1i(textureHandle, 0);
+  glActiveTexture(GL_TEXTURE0);
   texture.Bind();
 }

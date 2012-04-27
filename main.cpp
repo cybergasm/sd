@@ -37,6 +37,7 @@ Camera* camera;
 
 //Shader to texture quad
 Shader* textureShader;
+Shader* illuminanceFilter;
 
 using namespace std;
 
@@ -78,6 +79,15 @@ void glInit() {
 
 void handleInput() {
   sf::Event evt;
+  while (window.GetEvent(evt)) {
+    input.inputIs(evt);
+  }
+}
+
+//This function is just a quick hack to let me set
+//lighting
+void lightingPosition() {
+  sf::Event evt;
   static GLfloat lightPosition[] = { 13.4, 5, -15.6 };
   while (window.GetEvent(evt)) {
     input.inputIs(evt);
@@ -102,7 +112,6 @@ void handleInput() {
   }
   glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
-
 void init() {
   // Set up the projection and model-view matrices
   GLfloat nearClip = 0.1f;
@@ -122,20 +131,25 @@ void init() {
   input.windowIs(&window);
 
   textureShader = new Shader("shaders/simpletexture");
+  illuminanceFilter = new Shader("shaders/luminancefilter");
 
   if (!textureShader->loaded()) {
     cerr << textureShader->errors() << endl;
     exit(-1);
   }
+
+  if (!illuminanceFilter->loaded()) {
+    cerr << illuminanceFilter->errors() << endl;
+    exit(-1);
+  }
 }
 
+
+
 /**
- * Initialization routine for setting up a texture, mipmapping it and then
- * allocating a FBO and binding the texture to it. This leaves the buffer as
- * it was when entered, just allocating the buffer and texture and wiring it
- * all up.
+ * Initializes a texture to be bound to the color attachment of a framebuffer
  */
-void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture) {
+void initColorTexture(GLuint& texture) {
   GL_CHECK(glGenTextures(1, &texture));
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
 
@@ -147,6 +161,31 @@ void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture) {
 
   GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024,
           1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0));
+}
+
+/**
+ * Binds color and depth textures to buffer which is bound to the frame buffer
+ */
+void bindTexturesToBuffer(GLuint colorTex, GLuint depthTex, GLuint fbo) {
+  GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo));
+
+  GL_CHECK(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTex, 0));
+  GL_CHECK(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTex, 0));
+
+  if (GL_FRAMEBUFFER_COMPLETE
+      != glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)) {
+    cout << "FBO fail" << endl;
+  }
+}
+
+/**
+ * Initialization routine for setting up a texture, mipmapping it and then
+ * allocating a FBO and binding the texture to it. This leaves the buffer as
+ * it was when entered, just allocating the buffer and texture and wiring it
+ * all up.
+ */
+void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture) {
+  initColorTexture(texture);
 
   GL_CHECK(glGenTextures(1, &depthTexture));
   GL_CHECK(glBindTexture(GL_TEXTURE_2D, depthTexture));
@@ -161,20 +200,12 @@ void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture) {
           1024, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0));
 
   GL_CHECK(glGenFramebuffersEXT(1, &fbo));
-  GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo));
 
-  GL_CHECK(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture, 0));
-  GL_CHECK(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0));
-
-  if (GL_FRAMEBUFFER_COMPLETE
-      != glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)) {
-    cout << "FBO fail on shadow" << endl;
-  }
+  bindTexturesToBuffer(texture, depthTexture, fbo);
 
   //reset the buffer
   GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
 }
-
 void writeTextureToImage() {
   GLubyte* data = new GLubyte[1024 * 1024 * 4];
   sf::Image img(1024, 1024, sf::Color::White);
@@ -186,7 +217,7 @@ void writeTextureToImage() {
   delete[] data;
 }
 
-void displayTexture(GLuint texture) {
+void displayTexture(GLuint texture, Shader* shader) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glMatrixMode(GL_MODELVIEW);
@@ -203,18 +234,17 @@ void displayTexture(GLuint texture) {
 
   GLint oldId;
   glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
-  GL_CHECK(glUseProgram(textureShader->programID()));
+  GL_CHECK(glUseProgram(shader->programID()));
 
   glActiveTexture(GL_TEXTURE0);
   GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, texture));
 
-  textureShader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
+  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
       sizeof(aiVector3D), &vertices[0]);
-  textureShader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
+  shader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
       sizeof(aiVector3D), &texCoords[0]);
 
-  GLint textureId = glGetUniformLocation(textureShader->programID(),
-      "textureImg");
+  GLint textureId = glGetUniformLocation(shader->programID(), "textureImg");
   if (textureId == -1) {
     cerr << "Error getting texture handle for instructions." << endl;
   }
@@ -245,8 +275,16 @@ int main() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     handleInput();
-
     camera->posCameraSetupView();
+
+    //This is a little weird, but here is what happens. The light
+    //position needs to get multiplied by the MV matrix, which is set
+    //to identity by the display call below. This is an oops, since the loop
+    //back around, the MV is still identity when lighting is set in handleInput.
+    //We can not just switch these two calls as camera->pos...() depends on
+    //having the most up to date position, so we have a circular dependency.
+    //This pulls out the lighting position (which is temporary anyway),
+    lightingPosition();
 
     glPushMatrix();
     glTranslatef(0, 6, 6);
@@ -276,8 +314,9 @@ int main() {
 
     mainCharacter->render(window.GetFrameTime());
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
-    displayTexture(initialRenderTexture);
-    writeTextureToImage();
+    displayTexture(initialRenderTexture, textureShader);
+    //writeTextureToImage();
+
 
     window.Display();
   }
