@@ -18,6 +18,7 @@
 
 
 #include "Mesh3DS.h"
+#include "Shader.h"
 
 using namespace std;
 
@@ -47,12 +48,15 @@ class ResourceManager {
      * Access methods for the different resources
      */
     Mesh3DS* getMesh(string key);
+    Shader* getShader(string key);
   private:
 
     //map holding handles to their respective objects
     map <string, Mesh3DS*> meshes;
+    map <string, Shader*> shaders;
 
     void populateMeshMap(set<string> meshFolders);
+    void populateShaderMap(set<string> shaderFolders);
 };
 
 #endif /* RESOURCEMANAGER_H_ */

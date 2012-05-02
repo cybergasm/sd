@@ -143,30 +143,11 @@ void init() {
   input.windowIs(&window);
 
 
-  textureShader = new Shader("shaders/simpletexture");
-  illuminanceFilter = new Shader("shaders/luminancefilter");
-  blurFilter = new Shader("shaders/blurfilter");
-  bloomEffect = new Shader("shaders/bloomfilter");
+  textureShader = (ResourceManager::get())->getShader("simpletex");
+  illuminanceFilter = (ResourceManager::get())->getShader("luminance");
+  blurFilter = (ResourceManager::get())->getShader("blur");
+  bloomEffect = (ResourceManager::get())->getShader("bloom");
 
-  if (!textureShader->loaded()) {
-    cerr << textureShader->errors() << endl;
-    exit(-1);
-  }
-
-  if (!illuminanceFilter->loaded()) {
-    cerr << illuminanceFilter->errors() << endl;
-    exit(-1);
-  }
-
-  if (!blurFilter->loaded()) {
-    cerr << blurFilter->errors() << endl;
-    exit(-1);
-  }
-
-  if (!bloomEffect->loaded()) {
-    cerr << bloomEffect->errors() << endl;
-    exit(-1);
-  }
 }
 
 /**

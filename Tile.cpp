@@ -31,12 +31,7 @@ Tile::Tile(string tileTexture) {
   }
 
   //load the parallax shader
-  shader = new Shader("shaders/parallax");
-
-  if (!shader->loaded()) {
-    cerr << shader->errors() << endl;
-    exit(-1);
-  }
+  shader = (ResourceManager::get())->getShader("parallax");
 
   if (!diffuse.LoadFromFile("textures/"+tileTexture+"_tile_diffuse.jpg")) {
     cerr << "Could not load tile diffuse texture." << endl;

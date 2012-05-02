@@ -14,6 +14,7 @@ ResourceManager::ResourceManager() {
   CfgFile rootResourceFile("rsrc.config");
   rootResourceFile.printFile();
   populateMeshMap(rootResourceFile.get("meshes"));
+  populateShaderMap(rootResourceFile.get("shaders"));
 }
 
 ResourceManager::~ResourceManager() {
@@ -30,11 +31,37 @@ void ResourceManager::populateMeshMap(set<string> meshFolders) {
     for (valuesIter = values.begin(); valuesIter != values.end(); ++valuesIter) {
       //get first element in set as we expect only one key value pair of this type
       string meshName = *(valuesIter->second.begin());
-      if (meshFolders.find(meshName) == meshFolders.end()) {
+      if (meshes.find(valuesIter->first) == meshes.end()) {
         cout << "Binding mesh name " << valuesIter->first << " to mesh at "
             << (folder + "/" + meshName) << endl;
         Mesh3DS* mesh = new Mesh3DS(folder + "/" + meshName);
         meshes[valuesIter->first] = mesh;
+      }
+    }
+  }
+}
+
+void ResourceManager::populateShaderMap(set<string> shaderFolders) {
+  set<string>::iterator iter;
+  for (iter = shaderFolders.begin(); iter != shaderFolders.end(); ++iter) {
+    string folder = *iter;
+    CfgFile shaderResource(folder + "/shaders.rsrc");
+    map<string, set<string> > values = shaderResource.getAllPairs();
+    map<string, set<string> >::iterator valuesIter;
+    for (valuesIter = values.begin(); valuesIter != values.end(); ++valuesIter) {
+      //get first element in set as we expect only one key value pair of this type
+      string shaderName = *(valuesIter->second.begin());
+      if (shaders.find(valuesIter->first) == shaders.end()) {
+        cout << "Binding shader name " << valuesIter->first << " to shader at "
+            << (folder + "/" + shaderName) << endl;
+        Shader* shader = new Shader(folder + "/" + shaderName);
+
+        if (!shader->loaded()) {
+          cerr << shader->errors() <<endl;
+          exit(-1);
+        }
+
+        shaders[valuesIter->first] = shader;
       }
     }
   }
@@ -45,6 +72,13 @@ Mesh3DS* ResourceManager::getMesh(string key) {
     return NULL;
   }
   return meshes[key];
+}
+
+Shader* ResourceManager::getShader(string key) {
+  if (shaders.find(key) == shaders.end()) {
+    return NULL;
+  }
+  return shaders[key];
 }
 
 void ResourceManager::init() {

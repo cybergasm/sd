@@ -28,12 +28,7 @@ Character::Character() :
     exit(-1);
   }
   //load the character shader that animates the mesh
-  shader = new Shader("shaders/character");
-
-  if (!shader->loaded()) {
-    cerr << shader->errors() << endl;
-    exit(-1);
-  }
+  shader = (ResourceManager::get())->getShader("character");
 
   //grab our texture
   if (!texture.LoadFromFile("textures/main_char_tex.jpg")) {
