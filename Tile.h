@@ -37,7 +37,7 @@ class Tile {
     /**
      * Tile Mesh
      */
-    Mesh3DS tileMesh;
+    Mesh3DS* tileMesh;
 
     /**
      * Diffuse texture

@@ -10,6 +10,8 @@
 #include <iostream>
 #include <stdio.h>
 
+#include "ResourceManager.h"
+
 using namespace std;
 
 #define GL_CHECK(x) {\
@@ -20,8 +22,14 @@ using namespace std;
   }\
 }
 
-Tile::Tile(string tileTexture) :
-  tileMesh("models/tile.3ds") {
+Tile::Tile(string tileTexture) {
+  tileMesh = (ResourceManager::get())->getMesh("tile");
+
+  if (tileMesh == NULL) {
+    cerr << "Could not load resource tile." <<endl;
+    exit(-1);
+  }
+
   //load the parallax shader
   shader = new Shader("shaders/parallax");
 
@@ -86,7 +94,7 @@ void Tile::render() {
   glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
   GL_CHECK(glUseProgram(shader->programID()));
 
-  nodeRender(tileMesh.getScene()->mRootNode);
+  nodeRender(tileMesh->getScene()->mRootNode);
 
   GL_CHECK(glUseProgram(oldId));
 }
@@ -109,7 +117,7 @@ void Tile::nodeRender(aiNode* node) {
   for (u_int child = 0; child < node->mNumChildren; child++) {
     nodeRender(node->mChildren[child]);
   }
-  const aiScene* scene = tileMesh.getScene();
+  const aiScene* scene = tileMesh->getScene();
 
   for (unsigned int mesh = 0; mesh < node->mNumMeshes; mesh++) {
     //Only render Triangles
@@ -123,11 +131,11 @@ void Tile::nodeRender(aiNode* node) {
       setTextures();
 
       //Get the vector of indices for this mesh
-      vector<unsigned> curIndices = *tileMesh.getMeshIndices().at(
+      vector<unsigned> curIndices = *tileMesh->getMeshIndices().at(
           node->mMeshes[mesh]);
       GL_CHECK(glDrawElements(
               GL_TRIANGLES,
-              3 * tileMesh.getScene()->mMeshes[node->mMeshes[mesh]]->mNumFaces,
+              3 * tileMesh->getScene()->mMeshes[node->mMeshes[mesh]]->mNumFaces,
               GL_UNSIGNED_INT, &curIndices[0]));
 
     }
@@ -137,7 +145,7 @@ void Tile::nodeRender(aiNode* node) {
 }
 
 void Tile::setMeshData(u_int meshIdx) {
-  const aiScene* scene = tileMesh.getScene();
+  const aiScene* scene = tileMesh->getScene();
   aiMesh* mesh = scene->mMeshes[meshIdx];
 
   shader->setVertexAttribArray("normalIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
