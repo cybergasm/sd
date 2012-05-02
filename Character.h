@@ -81,7 +81,7 @@ class Character {
     /**
      * Mesh of character and related attributes
      */
-    Mesh3DS characterMesh;
+    Mesh3DS* characterMesh;
 
     /**
      * Renders a node in the given mesh

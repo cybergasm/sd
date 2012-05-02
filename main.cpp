@@ -12,6 +12,7 @@
 #include "InputResponder.h"
 #include "Camera.h"
 #include "Tile.h"
+#include "ResourceManager.h"
 
 #include "Framework.h"
 
@@ -130,6 +131,8 @@ void init() {
   camera = new Camera(nearClip, farClip, fieldOfView, window.GetHeight(),
       window.GetWidth());
 
+  ResourceManager::init();
+
   mainCharacter = new Character();
 
   window.ShowMouseCursor(false);
@@ -138,6 +141,7 @@ void init() {
   input.characterIs(mainCharacter);
   input.cameraIs(camera);
   input.windowIs(&window);
+
 
   textureShader = new Shader("shaders/simpletexture");
   illuminanceFilter = new Shader("shaders/luminancefilter");

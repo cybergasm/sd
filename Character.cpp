@@ -14,13 +14,19 @@
 }
 
 #include "Character.h"
+
 #include <stdio.h>
+
+#include "ResourceManager.h"
 
 Character::Character() :
   movementRate(.05), cameraRotation(0), cyclicAniTime(0), straightAniTime(0),
-      aniTimeRate(1), xPos(0), yPos(.25), zPos(0),
-      characterMesh("models/main_character.3ds") {
-
+      aniTimeRate(1), xPos(0), yPos(.25), zPos(0) {
+  characterMesh = (ResourceManager::get())->getMesh("spirit");
+  if (characterMesh == NULL) {
+    cerr << "Cannot find resource main_character."<<endl;
+    exit(-1);
+  }
   //load the character shader that animates the mesh
   shader = new Shader("shaders/character");
 
@@ -92,7 +98,7 @@ void Character::render(float framerate) {
   //Rotate it so its back is to the camera
   glRotatef(cameraRotation, 0, 1, 0);
 
-  nodeRender(characterMesh.getScene()->mRootNode);
+  nodeRender(characterMesh->getScene()->mRootNode);
 
   glPopMatrix();
 
@@ -126,7 +132,7 @@ void Character::nodeRender(aiNode* node) {
   for (u_int child = 0; child < node->mNumChildren; child++) {
     nodeRender(node->mChildren[child]);
   }
-  const aiScene* scene = characterMesh.getScene();
+  const aiScene* scene = characterMesh->getScene();
 
   for (unsigned int mesh = 0; mesh < node->mNumMeshes; mesh++) {
     //Only render Triangles
@@ -151,11 +157,11 @@ void Character::nodeRender(aiNode* node) {
       setMeshData(node->mMeshes[mesh]);
 
       //Get the vector of indices for this mesh
-      vector<unsigned> curIndices = *characterMesh.getMeshIndices().at(
+      vector<unsigned> curIndices = *characterMesh->getMeshIndices().at(
           node->mMeshes[mesh]);
       GL_CHECK(glDrawElements(
               GL_TRIANGLES,
-              3 * characterMesh.getScene()->mMeshes[node->mMeshes[mesh]]->mNumFaces,
+              3 * characterMesh->getScene()->mMeshes[node->mMeshes[mesh]]->mNumFaces,
               GL_UNSIGNED_INT, &curIndices[0]));
 
       //reset the animation transformation
@@ -167,7 +173,7 @@ void Character::nodeRender(aiNode* node) {
 
 //This is a slight modification of my 248 assignment 3 code which sets all the vertex data for this mesh
 void Character::setMeshData(u_int meshIdx) {
-  const aiScene* scene = characterMesh.getScene();
+  const aiScene* scene = characterMesh->getScene();
   aiMesh* mesh = scene->mMeshes[meshIdx];
 
   shader->setVertexAttribArray("normalIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
@@ -181,7 +187,7 @@ void Character::setMeshData(u_int meshIdx) {
 
 //This is a slight modification of my 248 assignment 3 code which sets the material information
 void Character::setMeshMaterials(u_int meshIdx) {
-  const aiScene* scene = characterMesh.getScene();
+  const aiScene* scene = characterMesh->getScene();
   aiMaterial* material =
       scene->mMaterials[scene->mMeshes[meshIdx]->mMaterialIndex];
   aiColor3D color;
