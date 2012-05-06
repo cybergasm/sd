@@ -16,12 +16,13 @@ InputProcessor::~InputProcessor() {
 	// TODO Auto-generated destructor stub
 }
 
-void InputProcessor::bind(const InputEvent& evnt, const vector<Inputs>& sequence) {
-	keyBindings[evnt] = sequence;
+void InputProcessor::bind(const InputEvent& evnt, const KeySequence& sequence) {
+	set<KeySequence>& currentBindings = sequenceBinding[sequence.inputAt(0)];
+	currentBindings.insert(sequence);
+	eventBinding.insert(pair<KeySequence, InputEvent>(sequence, evnt));
 }
 
-void InputProcessor::bind(const InputEvent& evnt, const Inputs& input) {
-	vector<Inputs> inputVec;
-	inputVec.push_back(input);
+void InputProcessor::bind(const InputEvent& evnt, const InputEvent::Inputs& input) {
+	KeySequence inputVec(input);
 	bind(evnt, inputVec);
 }

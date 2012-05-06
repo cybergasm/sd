@@ -22,7 +22,7 @@ LIBS = -lsfml-network \
 	-lGLU \
 	-lGLEW 
 	
-OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o InputProcessor.o InputEvent.o
+OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o InputProcessor.o InputEvent.o KeySequence.o
 
 all: engine
 
@@ -33,4 +33,4 @@ engine: $(OBJS)
 	g++ -c $(CXXFLAGS) -fPIC -o $@ $< 
 
 clean: 
-	rm -f *.o
+	rm -f *.o *.so.*

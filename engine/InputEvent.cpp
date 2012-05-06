@@ -27,3 +27,7 @@ bool InputEvent::operator ==(const InputEvent& b) const {
 string InputEvent::getEventName() const{
 	return eventName;
 }
+
+void InputEvent::action(Inputs trigger) {
+
+}

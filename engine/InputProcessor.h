@@ -10,57 +10,15 @@
 
 #include <map>
 #include <string.h>
-#include <vector>
+#include <set>
 
-
+#include "KeySequence.h"
 #include "InputEvent.h"
 
 using namespace std;
 
 class InputProcessor {
 	public:
-
-		/**
-		 * Exported keys the user could input
-		 */
-		enum Inputs {
-			KeyA,
-			KeyB,
-			KeyC,
-			KeyD,
-			KeyE,
-			KeyF,
-			KeyG,
-			KeyH,
-			KeyI,
-			KeyJ,
-			KeyK,
-			KeyL,
-			KeyM,
-			KeyN,
-			KeyO,
-			KeyP,
-			KeyQ,
-			KeyR,
-			KeyS,
-			KeyT,
-			KeyU,
-			KeyV,
-			KeyW,
-			KeyX,
-			KeyY,
-			KeyZ,
-			Key1,
-			Key2,
-			Key3,
-			Key4,
-			Key5,
-			Key6,
-			Key7,
-			Key8,
-			Key9,
-			KeyEnter
-		};
 
 		InputProcessor();
 		virtual ~InputProcessor();
@@ -71,16 +29,16 @@ class InputProcessor {
 		 *
 		 * Overwrites any previous bindings.
 		 */
-		void bind(const InputEvent& evnt, const vector<Inputs>& sequence);
+		void bind(const InputEvent& evnt, const KeySequence& sequence);
 
 
 		/**
 		 * Overload for single key
 		 */
-		void bind(const InputEvent& evnt, const Inputs& input);
+		void bind(const InputEvent& evnt, const InputEvent::Inputs & input);
 	private:
-		map<InputEvent, vector<Inputs> > keyBindings;
-
+		map<KeySequence, InputEvent > eventBinding;
+		map<InputEvent::Inputs, set<KeySequence> > sequenceBinding;
 };
 
 #endif /* INPUTPROCESSOR_H_ */
