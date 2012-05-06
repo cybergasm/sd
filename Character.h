@@ -16,8 +16,8 @@
 
 #include "Framework.h"
 
-#include "Mesh3DS.h"
-#include "Shader.h"
+#include "engine/Mesh3DS.h"
+#include "engine/Shader.h"
 
 class Character {
   public:

@@ -5,7 +5,7 @@
  * Stealing the assignment three shader class for fun and profit.
  */
 
-#include "Framework.h"
+#include <GL/glew.h>
 #include <string>
 #include <vector>
 

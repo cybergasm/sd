@@ -10,9 +10,9 @@
 
 #include "Character.h"
 #include "InputResponder.h"
-#include "Camera.h"
+#include "engine/Camera.h"
 #include "Tile.h"
-#include "ResourceManager.h"
+#include "engine/ResourceManager.h"
 
 #include "Framework.h"
 

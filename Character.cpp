@@ -17,7 +17,7 @@
 
 #include <stdio.h>
 
-#include "ResourceManager.h"
+#include "engine/ResourceManager.h"
 
 Character::Character() :
   movementRate(.05), cameraRotation(0), cyclicAniTime(0), straightAniTime(0),

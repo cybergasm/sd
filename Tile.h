@@ -15,9 +15,9 @@
 
 #include "Framework.h"
 
-#include "Mesh3DS.h"
-#include "Shader.h"
-#include "Camera.h"
+#include "engine/Mesh3DS.h"
+#include "engine/Shader.h"
+#include "engine/Camera.h"
 
 class Tile {
   public:
