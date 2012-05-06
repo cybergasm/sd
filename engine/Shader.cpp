@@ -129,7 +129,7 @@ bool Shader::loaded() const {
 }
 
 void Shader::setVertexAttribArray(std::string idName, GLint size, GLint type,
-    bool normalized, GLsizei stride, GLvoid* data) {
+    bool normalized, GLsizei stride, GLvoid* data) const {
   GLint id = glGetAttribLocation(programID_, idName.c_str());
 
   if (id == -1) {
@@ -139,7 +139,7 @@ void Shader::setVertexAttribArray(std::string idName, GLint size, GLint type,
   GL_CHECK(glVertexAttribPointer(id, size, type, normalized, stride, data));
 }
 
-void Shader::setUniform1f(std::string idName, float value) {
+void Shader::setUniform1f(std::string idName, float value) const {
   GLint id = glGetUniformLocation(programID_, idName.c_str());
 
   if (id == -1) {
@@ -149,7 +149,7 @@ void Shader::setUniform1f(std::string idName, float value) {
   GL_CHECK(glUniform1f(id, value));
 }
 
-void Shader::setUniform3f(std::string idName, float value1, float value2, float value3) {
+void Shader::setUniform3f(std::string idName, float value1, float value2, float value3) const {
   GLint id = glGetUniformLocation(programID_, idName.c_str());
 
   if (id == -1) {

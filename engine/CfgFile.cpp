@@ -45,14 +45,14 @@ CfgFile::~CfgFile() {
   // TODO Auto-generated destructor stub
 }
 
-set<string> CfgFile::get(string key) {
+set<string> CfgFile::get(string key) const {
   if (parsedFile.find(key) == parsedFile.end()) {
     return set<string>();
   }
-  return parsedFile[key];
+  return parsedFile.find(key)->second;
 }
 
-map<string, set<string> >& CfgFile::getAllPairs() {
+const map<string, set<string> >& CfgFile::getAllPairs() {
   return parsedFile;
 }
 

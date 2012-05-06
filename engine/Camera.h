@@ -28,7 +28,7 @@ class Camera {
      * Returns the cross product of up and look-at to get the
      * orthogonal vector to the side.
      */
-    aiVector3D sideDirection();
+    aiVector3D sideDirection() const;
 
     /**
      * Allows us to control the drawing area in case of resize
@@ -73,20 +73,20 @@ class Camera {
     /**
      * Getters for different parameters
      */
-    float anchorX();
-    float anchorY();
-    float anchorZ();
+    float anchorX() const;
+    float anchorY() const;
+    float anchorZ() const;
 
-    float getX();
-    float getY();
-    float getZ();
+    float getX() const;
+    float getY() const;
+    float getZ() const;
 
-    float atX();
-    float atY();
-    float atZ();
+    float atX() const;
+    float atY() const;
+    float atZ() const;
 
-    float totalXAngle();
-    float totalYAngle();
+    float totalXAngle() const;
+    float totalYAngle() const;
   private:
     //Camera positioning
     aiVector3D position, anchor, lookAt, upVec;

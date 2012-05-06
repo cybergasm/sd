@@ -22,7 +22,7 @@ LIBS = -lsfml-network \
 	-lGLU \
 	-lGLEW 
 	
-OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o
+OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o InputProcessor.o InputEvent.o
 
 all: engine
 

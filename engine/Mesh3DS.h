@@ -37,12 +37,12 @@ class Mesh3DS {
     /**
      * Returns the scene
      */
-    const aiScene* getScene();
+    const aiScene* getScene() const;
 
     /**
      * Returns the indices for each mesh
      */
-    vector<vector<unsigned>* > getMeshIndices();
+    vector<vector<unsigned>* > getMeshIndices() const;
 
   private:
     //path to object

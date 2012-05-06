@@ -30,13 +30,13 @@ class CfgFile {
     /**
      * Returns value associated with key
      */
-    set<string> get(string key);
+    set<string> get(string key) const;
 
     /**
      * Returns all key value pairs. Note that this is returned
      * as a reference in case there are many such pairs.
      */
-    map<string, set<string> >& getAllPairs();
+    const map<string, set<string> >& getAllPairs();
 
   private:
     string cfgFileName;

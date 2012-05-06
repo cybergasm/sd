@@ -65,7 +65,7 @@ class Shader {
      * retrieving value.
      */
     void setVertexAttribArray(std::string idName, GLint size, GLint type,
-        bool normalized, GLsizei stride, GLvoid* data);
+        bool normalized, GLsizei stride, GLvoid* data) const;
 
     /**
      * Sets 1-float worth uniform information to id specified by param 'idName'
@@ -73,7 +73,7 @@ class Shader {
      * Does appropriate sanity checks on id and writes out error if problem
      * retrieving value.
      */
-    void setUniform1f(std::string idName, float value);
+    void setUniform1f(std::string idName, float value) const;
 
     /**
      * Sets 3-float worth uniform information to id specified by param 'idName'
@@ -81,7 +81,7 @@ class Shader {
      * Does appropriate sanity checks on id and writes out error if problem
      * retrieving value.
      */
-    void setUniform3f(std::string idName, float value1, float value2, float value3);
+    void setUniform3f(std::string idName, float value1, float value2, float value3) const;
   private:
     std::vector<char> readSource(const std::string& path);
 

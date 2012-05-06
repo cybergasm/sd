@@ -28,7 +28,7 @@ OBJS = main.o Character.o InputResponder.o Tile.o
 
 all: sd
 
-sd: $(OBJS)
+sd: $(OBJS) ../engine/libengine.so.1.0.1
 	g++ -g -Wall -o $@ $^ $(LIBS)
 
 %.o:%.cpp

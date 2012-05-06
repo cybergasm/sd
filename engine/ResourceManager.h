@@ -47,8 +47,8 @@ class ResourceManager {
     /**
      * Access methods for the different resources
      */
-    Mesh3DS* getMesh(string key);
-    Shader* getShader(string key);
+    Mesh3DS* getMesh(string key) const;
+    Shader* getShader(string key) const;
   private:
 
     //map holding handles to their respective objects

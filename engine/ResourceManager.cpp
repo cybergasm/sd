@@ -67,18 +67,18 @@ void ResourceManager::populateShaderMap(set<string> shaderFolders) {
   }
 }
 
-Mesh3DS* ResourceManager::getMesh(string key) {
+Mesh3DS* ResourceManager::getMesh(string key) const {
   if (meshes.find(key) == meshes.end()) {
     return NULL;
   }
-  return meshes[key];
+  return meshes.find(key)->second;
 }
 
-Shader* ResourceManager::getShader(string key) {
+Shader* ResourceManager::getShader(string key) const {
   if (shaders.find(key) == shaders.end()) {
     return NULL;
   }
-  return shaders[key];
+  return shaders.find(key)->second;
 }
 
 void ResourceManager::init() {
