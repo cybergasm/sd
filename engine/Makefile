@@ -2,7 +2,7 @@
 #including all possible window events in switch statement.
 #
 #Last includes are so OGLFT can be configured property
-CXXFLAGS = -g -Wall -Wno-switch -I/usr/include/freetype2 -I/usr/include/qt4/Qt -I/usr/include/qt4
+CXXFLAGS = -g -Wall -Wno-switch -I/usr/include/freetype2 -I/usr/include/qt4/Qt -I/usr/include/qt4 -I../
 
 #Note that this expects your SFML libraries and headers to be
 #installed as necessary
@@ -22,12 +22,15 @@ LIBS = -lsfml-network \
 	-lGLU \
 	-lGLEW 
 	
-OBJS = main.o engine/Mesh3DS.o engine/Shader.o Character.o InputResponder.o engine/Camera.o Tile.o engine/ResourceManager.o engine/CfgFile.o
+OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o
 
-all: sd
+all: engine
 
-sd: $(OBJS)
-	g++ -g -Wall -o $@ $^ $(LIBS)
-	
+engine: $(OBJS)
+	g++ -shared -g -Wall -o libengine.so.1.0.1 $^ $(LIBS)
+
+%.o:%.cpp
+	g++ -c $(CXXFLAGS) -fPIC -o $@ $< 
+
 clean: 
 	rm -f *.o
