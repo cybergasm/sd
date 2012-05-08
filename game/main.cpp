@@ -13,6 +13,7 @@
 #include "engine/Camera.h"
 #include "Tile.h"
 #include "engine/ResourceManager.h"
+#include "engine/InputProcessor.h"
 
 #include "Framework.h"
 
@@ -32,6 +33,7 @@ Character* mainCharacter;
 
 //Input handling
 InputResponder input;
+InputProcessor inputProc(&window);
 
 //Camera controls
 Camera* camera;
@@ -85,6 +87,10 @@ void glInit() {
 }
 
 void handleInput() {
+	/*set<InputEvent> events = inputProc.getEvents();
+	for (set<InputEvent>::iterator iter = events.begin(); iter != events.end(); ++iter) {
+		cout<<iter->getEventName()<<endl;
+	}*/
   sf::Event evt;
   while (window.GetEvent(evt)) {
     input.inputIs(evt);
@@ -147,6 +153,12 @@ void init() {
   illuminanceFilter = (ResourceManager::get())->getShader("luminance");
   blurFilter = (ResourceManager::get())->getShader("blur");
   bloomEffect = (ResourceManager::get())->getShader("bloom");
+
+	inputProc.bind(KeySequence(InputEvent::KeyW), InputEvent("MoveForward"));
+	KeySequence advanced;
+	advanced.add(InputEvent::KeyQ);
+	advanced.add(InputEvent::KeyE);
+	inputProc.bind(advanced, InputEvent("Ultra"));
 
 }
 

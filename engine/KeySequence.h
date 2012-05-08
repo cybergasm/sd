@@ -37,6 +37,11 @@ class KeySequence {
 		 * Returns the input at specified sequence
 		 */
 		InputEvent::Inputs inputAt(int index) const;
+
+		/**
+		 * Returns the number of inputs in the sequence
+		 */
+		int length() const;
 	private:
 		vector<InputEvent::Inputs> sequence;
 };

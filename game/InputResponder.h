@@ -10,8 +10,8 @@
 
 #include "Framework.h"
 #include "Character.h"
-#include "engine/Camera.h"
 
+#include "engine/Camera.h"
 class InputResponder {
   public:
     InputResponder();

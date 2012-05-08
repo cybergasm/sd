@@ -3,7 +3,7 @@ uniform sampler lightImg;
 
 varying vec2 texcoord;
 
-uniform float bloomFactor = .5;
+uniform float bloomFactor = .8;
 
 void main() {
   vec4 origColor = texture2D(textureImg, texcoord);

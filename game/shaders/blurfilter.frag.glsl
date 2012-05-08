@@ -9,8 +9,8 @@ void main() {
   vec4 sum = vec4(0.0, 0.0, 0.0, 0.0);
   vec4 coef = vec4(0.0, 0.0, 0.0, 0.0);
   //Applying gaussian filter. 
-  for (y=0.0; y<3.0; y+=1.0){
-    for (x=0.0; x<3.0; x+=1.0){
+  for (y=0.0; y<4.0; y+=.5){
+    for (x=0.0; x<4.0; x+=.5){
       vec2 offset = vec2((-1.0+x)*.005, (-1.0+y)*.005);
       vec2 newTex = texcoord.xy + offset; 
       vec4 neighbor = texture2D(textureImg, newTex);
