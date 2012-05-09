@@ -36,7 +36,7 @@ InputEvent::Inputs KeySequence::inputAt(int index) const {
 	return sequence.at(index);
 }
 
-vector<InputEvent::Inputs> KeySequence::getSequence() const{
+const vector<InputEvent::Inputs>& KeySequence::getSequence() const{
 	return sequence;
 }
 

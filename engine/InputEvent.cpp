@@ -6,6 +6,7 @@
  */
 
 #include "InputEvent.h"
+#include <iostream>
 
 InputEvent::InputEvent(string eventName_) : eventName(eventName_){
 	// TODO Auto-generated constructor stub
@@ -28,6 +29,7 @@ string InputEvent::getEventName() const{
 	return eventName;
 }
 
-void InputEvent::action(Inputs trigger) {
-
+bool InputEvent::action(Inputs trigger) {
+	std::cout<<"Default nop action."<<std::endl;
+	return true;
 }

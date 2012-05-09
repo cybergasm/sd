@@ -24,7 +24,7 @@ LIBS = -L../engine  \
 	-lGLEW \
 	-lengine
 	
-OBJS = main.o Character.o InputResponder.o Tile.o 
+OBJS = main.o Character.o InputResponder.o Tile.o CloseWindowEvent.o
 
 all: sd
 

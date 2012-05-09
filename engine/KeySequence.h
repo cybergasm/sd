@@ -31,7 +31,7 @@ class KeySequence {
 		/**
 		 * Returns the sequence
 		 */
-		vector<InputEvent::Inputs> getSequence() const;
+		const vector<InputEvent::Inputs>& getSequence() const;
 
 		/**
 		 * Returns the input at specified sequence

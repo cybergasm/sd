@@ -6,13 +6,22 @@
  */
 
 #include "InputResponder.h"
+#include "CloseWindowEvent.h"
 
-InputResponder::InputResponder() :
-	mouseReady(false) {
+InputResponder::InputResponder(RenderingWindow* window_) : window(window_), inputProc(window) {
+	CloseWindowEvent* cWindow = new CloseWindowEvent(window);
+	inputProc.bind(KeySequence(InputEvent::WinClosed), cWindow);
 }
 
 InputResponder::~InputResponder() {
 	// TODO Auto-generated destructor stub
+}
+
+void InputResponder::processEvents() {
+	set<InputEvent*> events = inputProc.getEvents();
+	for (set<InputEvent*>::iterator iter = events.begin(); iter != events.end(); ++iter) {
+		cout<<(*iter)->getEventName()<<endl;
+	}
 }
 
 void InputResponder::characterIs(Character* character_) {
@@ -23,16 +32,16 @@ void InputResponder::cameraIs(Camera* camera_) {
 	camera = camera_;
 }
 
-void InputResponder::windowIs(sf::Window* window_) {
+void InputResponder::windowIs(RenderingWindow* window_) {
 	window = window_;
 }
 
 void InputResponder::mouseMoved(int mouseX, int mouseY) {
-	float deltaX = mouseX - 0.5f * window->GetWidth();
-	float deltaY = mouseY - 0.5f * window->GetHeight();
+	float deltaX = mouseX - 0.5f * window->getWidth();
+	float deltaY = mouseY - 0.5f * window->getHeight();
 	camera->rotateIncrementally(deltaX, deltaY);
-	window->SetCursorPosition(0.5f * window->GetWidth(),
-	    0.5f * window->GetHeight());
+	window->setCursorPosition(0.5f * window->getWidth(),
+	    0.5f * window->getHeight());
 }
 
 void InputResponder::inputIs(sf::Event event) {
@@ -40,7 +49,7 @@ void InputResponder::inputIs(sf::Event event) {
 	switch (event.Type) {
 		case sf::Event::Closed:
 			// Close the window we are rendering to.
-			window->Close();
+			window->close();
 			break;
 		case sf::Event::KeyPressed:
 			/**
@@ -73,10 +82,10 @@ void InputResponder::inputIs(sf::Event event) {
 			 * tells the character of the new x-rotation so we can rotate it
 			 * so its back is to the camera
 			 */
-			if (window->GetInput().IsMouseButtonDown(sf::Mouse::Left)) {
+			if (window->isMouseDown(InputEvent::LMouse)) {
 				if (!mouseReady) {
-					window->SetCursorPosition(0.5f * window->GetWidth(),
-					    0.5f * window->GetHeight());
+					window->setCursorPosition(0.5f * window->getWidth(),
+					    0.5f * window->getHeight());
 					mouseReady = true;
 				} else {
 					mouseMoved(event.MouseMove.X, event.MouseMove.Y);

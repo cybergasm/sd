@@ -11,10 +11,6 @@
 #include <string>
 
 using namespace std;
-
-
-
-
 class InputEvent {
 	public:
 		/**
@@ -56,7 +52,10 @@ class InputEvent {
 			Key7,
 			Key8,
 			Key9,
-			KeyEnter
+			KeyEnter,
+			WinClosed,
+			LMouse,
+			RMouse
 		};
 
 		InputEvent(string eventName_);
@@ -76,8 +75,10 @@ class InputEvent {
 		 * it is an empty method.
 		 *
 		 * The method is given the input that triggered it.
+		 *
+		 * The return value is whether or not the event has occurred.
 		 */
-		virtual void action(Inputs trigger);
+		virtual bool action(Inputs trigger);
 
 
 

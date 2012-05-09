@@ -12,9 +12,13 @@
 #include "Character.h"
 
 #include "engine/Camera.h"
+#include "engine/RenderingWindow.h"
+#include "engine/InputProcessor.h"
+#include "engine/InputEvent.h"
+
 class InputResponder {
   public:
-    InputResponder();
+    InputResponder(RenderingWindow* window);
     virtual ~InputResponder();
 
     /**
@@ -37,7 +41,12 @@ class InputResponder {
      * Register a window respond to window
      * events
      */
-    void windowIs(sf::Window* window);
+    void windowIs(RenderingWindow* window);
+
+    /**
+     * Processes current events
+     */
+    void processEvents();
   private:
     /**
      * User character
@@ -53,7 +62,12 @@ class InputResponder {
      * Window to respond to windowing events like
      * close
      */
-    sf::Window* window;
+    RenderingWindow* window;
+
+    /**
+     * The input processor
+     */
+    InputProcessor inputProc;
 
     /**
      * State variable to tell us if we are ready to move mouse,

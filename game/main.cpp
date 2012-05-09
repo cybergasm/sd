@@ -14,6 +14,7 @@
 #include "Tile.h"
 #include "engine/ResourceManager.h"
 #include "engine/InputProcessor.h"
+#include "engine/RenderingWindow.h"
 
 #include "Framework.h"
 
@@ -25,15 +26,13 @@
   }\
 }
 //sfml window settings
-sf::WindowSettings settings(24, 8, 2);
-sf::Window window(sf::VideoMode(1024, 1024), "SD", sf::Style::Close, settings);
+RenderingWindow window("SD", 1024, 1024);
 
 //The user's avatar
 Character* mainCharacter;
 
 //Input handling
-InputResponder input;
-InputProcessor inputProc(&window);
+InputResponder input(&window);
 
 //Camera controls
 Camera* camera;
@@ -62,7 +61,7 @@ void glInit() {
     exit(-1);
   }
 #endif
-  glViewport(0, 0, window.GetWidth(), window.GetHeight());
+  glViewport(0, 0, window.getWidth(), window.getHeight());
 
   glClearDepth(1.f);
   glClearColor(0.0f, 0.0f, 0.0f, 0.f);
@@ -87,25 +86,21 @@ void glInit() {
 }
 
 void handleInput() {
-	/*set<InputEvent> events = inputProc.getEvents();
-	for (set<InputEvent>::iterator iter = events.begin(); iter != events.end(); ++iter) {
-		cout<<iter->getEventName()<<endl;
-	}*/
-  sf::Event evt;
+	input.processEvents();
+ /* sf::Event evt;
   while (window.GetEvent(evt)) {
     input.inputIs(evt);
     if (evt.Key.Code == sf::Key::B) {
       bloomEnabled = !bloomEnabled;
     }
-  }
+  }*/
 }
 
 //This function is just a quick hack to let me set
 //lighting
 void lightingPosition() {
-  sf::Event evt;
   static GLfloat lightPosition[] = { 13.4, 5, -15.6 };
-  while (window.GetEvent(evt)) {
+  /*while (window.GetEvent(evt)) {
     input.inputIs(evt);
     //hack to let me test lighting quickly
     if (evt.Key.Code == sf::Key::J) {
@@ -125,7 +120,7 @@ void lightingPosition() {
       cout << lightPosition[0] << " " << lightPosition[1] << " "
           << lightPosition[2] << endl;
     }
-  }
+  }*/
   glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 void init() {
@@ -134,14 +129,14 @@ void init() {
   GLfloat farClip = 500.0f;
   GLfloat fieldOfView = 45.0f; // Degrees
 
-  camera = new Camera(nearClip, farClip, fieldOfView, window.GetHeight(),
-      window.GetWidth());
+  camera = new Camera(nearClip, farClip, fieldOfView, window.getHeight(),
+      window.getWidth());
 
   ResourceManager::init();
 
   mainCharacter = new Character();
 
-  window.ShowMouseCursor(false);
+  window.showMouseCursor(false);
 
   camera->setAnchor(mainCharacter->getPos());
   input.characterIs(mainCharacter);
@@ -153,12 +148,6 @@ void init() {
   illuminanceFilter = (ResourceManager::get())->getShader("luminance");
   blurFilter = (ResourceManager::get())->getShader("blur");
   bloomEffect = (ResourceManager::get())->getShader("bloom");
-
-	inputProc.bind(KeySequence(InputEvent::KeyW), InputEvent("MoveForward"));
-	KeySequence advanced;
-	advanced.add(InputEvent::KeyQ);
-	advanced.add(InputEvent::KeyE);
-	inputProc.bind(advanced, InputEvent("Ultra"));
 
 }
 
@@ -328,7 +317,7 @@ int main() {
   initFBOAndTexture(renderFbo, initialRenderTexture, renderDepthTexture);
   initColorTexture(luminanceTexture);
   initColorTexture(bluredTexture);
-  while (window.IsOpened()) {
+  while (window.isOpened()) {
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, renderFbo));
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -370,7 +359,7 @@ int main() {
     }
     glPopMatrix();
 
-    mainCharacter->render(window.GetFrameTime());
+    mainCharacter->render(window.getFramerate());
     //bind the luminance texture so that we render to it
     bindTexturesToBuffer(luminanceTexture, renderDepthTexture, renderFbo);
     //render to texture
@@ -386,7 +375,7 @@ int main() {
     } else {
       displayTexture(initialRenderTexture, textureShader);
     }
-    window.Display();
+    window.display();
 
     bindTexturesToBuffer(initialRenderTexture, renderDepthTexture, renderFbo);
   }
