@@ -18,30 +18,13 @@
 
 class InputResponder {
   public:
-    InputResponder(RenderingWindow* window);
+    InputResponder(RenderingWindow* window, Character* character, Camera* camera);
     virtual ~InputResponder();
 
     /**
      * Takes action given event
      */
     void inputIs(sf::Event event);
-
-    /**
-     * Register a character to modify as
-     * response to actions
-     */
-    void characterIs(Character* character);
-
-    /**
-     * Register a camera for camera movement
-     */
-    void cameraIs(Camera* camera);
-
-    /**
-     * Register a window respond to window
-     * events
-     */
-    void windowIs(RenderingWindow* window);
 
     /**
      * Processes current events

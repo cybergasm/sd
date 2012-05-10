@@ -7,10 +7,20 @@
 
 #include "InputResponder.h"
 #include "CloseWindowEvent.h"
+#include "KeyMovement.h"
 
-InputResponder::InputResponder(RenderingWindow* window_) : window(window_), inputProc(window) {
+InputResponder::InputResponder(RenderingWindow* window_, Character* character_,
+    Camera* camera_) :
+	character(character_), camera(camera_), window(window_), inputProc(window) {
 	CloseWindowEvent* cWindow = new CloseWindowEvent(window);
 	inputProc.bind(KeySequence(InputEvent::WinClosed), cWindow);
+	KeyMovement* movement = new KeyMovement(character, camera);
+	KeySequence movementKeys;
+	movementKeys.add(InputEvent::KeyW);
+	movementKeys.add(InputEvent::KeyA);
+	movementKeys.add(InputEvent::KeyS);
+	movementKeys.add(InputEvent::KeyD);
+	inputProc.bind(movementKeys, movement);
 }
 
 InputResponder::~InputResponder() {
@@ -20,20 +30,8 @@ InputResponder::~InputResponder() {
 void InputResponder::processEvents() {
 	set<InputEvent*> events = inputProc.getEvents();
 	for (set<InputEvent*>::iterator iter = events.begin(); iter != events.end(); ++iter) {
-		cout<<(*iter)->getEventName()<<endl;
+		cout << (*iter)->getEventName() << endl;
 	}
-}
-
-void InputResponder::characterIs(Character* character_) {
-	character = character_;
-}
-
-void InputResponder::cameraIs(Camera* camera_) {
-	camera = camera_;
-}
-
-void InputResponder::windowIs(RenderingWindow* window_) {
-	window = window_;
 }
 
 void InputResponder::mouseMoved(int mouseX, int mouseY) {

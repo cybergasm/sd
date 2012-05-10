@@ -32,7 +32,7 @@ RenderingWindow window("SD", 1024, 1024);
 Character* mainCharacter;
 
 //Input handling
-InputResponder input(&window);
+InputResponder* input;
 
 //Camera controls
 Camera* camera;
@@ -86,7 +86,7 @@ void glInit() {
 }
 
 void handleInput() {
-	input.processEvents();
+	input->processEvents();
  /* sf::Event evt;
   while (window.GetEvent(evt)) {
     input.inputIs(evt);
@@ -136,13 +136,11 @@ void init() {
 
   mainCharacter = new Character();
 
+  input = new InputResponder(&window, mainCharacter, camera);
+
   window.showMouseCursor(false);
 
   camera->setAnchor(mainCharacter->getPos());
-  input.characterIs(mainCharacter);
-  input.cameraIs(camera);
-  input.windowIs(&window);
-
 
   textureShader = (ResourceManager::get())->getShader("simpletex");
   illuminanceFilter = (ResourceManager::get())->getShader("luminance");
