@@ -18,7 +18,7 @@ class KeyMovement: public InputEvent {
 		KeyMovement(Character* character, Camera* camera);
 		virtual ~KeyMovement();
 
-		bool action(InputEvent::Inputs input);
+		bool action(InputEvent::Inputs input, int mouseX, int mouseY);
 	private:
 		Character* character;
 		Camera* camera;

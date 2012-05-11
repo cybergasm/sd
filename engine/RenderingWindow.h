@@ -31,9 +31,11 @@ class RenderingWindow {
 		void close();
 
 		/**
-		 * Returns a vector of all inputs that have occured.
+		 * Returns a vector of all inputs that have occured. Sets the passed
+		 * in values to be the mouse coordinates at the time of the query if a
+		 * mouse event is detected.
 		 */
-		vector<InputEvent::Inputs> getEvents();
+		vector<InputEvent::Inputs> getEvents(int& mouseX, int& mouseY);
 
 		/**
 		 * Toggles mouse

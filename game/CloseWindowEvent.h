@@ -17,7 +17,7 @@ class CloseWindowEvent: public InputEvent {
 		virtual ~CloseWindowEvent();
 
 		//Closes window
-		bool action(Inputs input);
+		bool action(Inputs input, int mouseX, int mouseY);
 
 	private:
 		RenderingWindow* window;

@@ -29,7 +29,7 @@ all: engine
 engine: $(OBJS)
 	g++ -shared -g -Wall -o libengine.so.1.0.1 $^ $(LIBS)
 
-%.o:%.cpp
+%.o:%.cpp 
 	g++ -c $(CXXFLAGS) -fPIC -o $@ $< 
 
 clean: 

@@ -8,7 +8,8 @@
 #include "RenderingWindow.h"
 
 RenderingWindow::RenderingWindow(string winName, unsigned int width_,
-    unsigned int height_) : width(width_), height(height_){
+    unsigned int height_) :
+	width(width_), height(height_) {
 	sf::WindowSettings settings(24, 8, 2);
 	window = new sf::Window(sf::VideoMode(width, height), winName.c_str(),
 	    sf::Style::Close, settings);
@@ -22,7 +23,7 @@ void RenderingWindow::close() {
 	window->Close();
 }
 
-vector<InputEvent::Inputs> RenderingWindow::getEvents() {
+vector<InputEvent::Inputs> RenderingWindow::getEvents(int& mouseX, int& mouseY) {
 	sf::Event evt;
 	vector<InputEvent::Inputs> toReturn;
 	while (window->GetEvent(evt)) {
@@ -108,8 +109,24 @@ vector<InputEvent::Inputs> RenderingWindow::getEvents() {
 					toReturn.push_back(InputEvent::KeyEnter);
 				}
 				break;
+			case sf::Event::MouseMoved:
+				toReturn.push_back(InputEvent::MouseMove);
+				mouseX = evt.MouseMove.X;
+				mouseY = evt.MouseMove.Y;
+				break;
+			case sf::Event::MouseButtonPressed:
+				toReturn.push_back(InputEvent::MouseDown);
+				mouseX = evt.MouseButton.X;
+				mouseY = evt.MouseButton.Y;
+				break;
+			case sf::Event::MouseButtonReleased:
+				toReturn.push_back(InputEvent::MouseUp);
+				mouseX = evt.MouseButton.X;
+				mouseY = evt.MouseButton.Y;
+				break;
 		}
 	}
+
 	return toReturn;
 }
 
@@ -129,7 +146,7 @@ void RenderingWindow::display() {
 	window->Display();
 }
 
-void RenderingWindow::setCursorPosition(unsigned int x, unsigned int y){
+void RenderingWindow::setCursorPosition(unsigned int x, unsigned int y) {
 	window->SetCursorPosition(x, y);
 }
 
@@ -147,4 +164,5 @@ bool RenderingWindow::isMouseDown(InputEvent::Inputs input) {
 	} else if (input == InputEvent::RMouse) {
 		return window->GetInput().IsMouseButtonDown(sf::Mouse::Right);
 	}
+	return false;
 }

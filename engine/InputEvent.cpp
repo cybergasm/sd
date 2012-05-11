@@ -29,7 +29,7 @@ string InputEvent::getEventName() const{
 	return eventName;
 }
 
-bool InputEvent::action(Inputs trigger) {
+bool InputEvent::action(Inputs trigger, int mouseX, int mouseY) {
 	std::cout<<"Default nop action."<<std::endl;
 	return true;
 }

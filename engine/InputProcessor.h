@@ -60,15 +60,24 @@ class InputProcessor {
 		//Performs changes necessary for detecting a new input. Takes the set into which to
 		//place the input. This saves us time later reiterating a returned set to add it
 		//to the master list.
-		void newInput(InputEvent::Inputs input, set<InputEvent*>& inputEvents);
+		//
+		//MouseX and MouseY specify the mouse position if a mouse event was found.
+		void newInput(InputEvent::Inputs input, set<InputEvent*>& inputEvents,
+		    int mouseX, int mouseY);
 
 		//Notifies events which have input as part of their sequence, and adds them to the set
 		//if they say they have fired.
-		void notifyRegistered(InputEvent::Inputs input, set<InputEvent*>& inputEvents);
+		//
+		//MouseX and MouseY specify the mouse position if a mouse event was found.
+		void notifyRegistered(InputEvent::Inputs input,
+		    set<InputEvent*>& inputEvents, int mouseX, int mouseY);
 
 		//Notifies all the nondiscriminatory events and adds them to the set if they note that
 		//they have fired.
-		void notifyNondiscriminatory(InputEvent::Inputs input, set<InputEvent*>& inputEvents);
+		//
+		//MouseX and MouseY specify the mouse position if a mouse event was found.
+		void notifyNondiscriminatory(InputEvent::Inputs input,
+		    set<InputEvent*>& inputEvents, int mouseX, int mouseY);
 };
 
 #endif /* INPUTPROCESSOR_H_ */

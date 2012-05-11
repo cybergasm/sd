@@ -55,7 +55,10 @@ class InputEvent {
 			KeyEnter,
 			WinClosed,
 			LMouse,
-			RMouse
+			RMouse,
+			MouseMove,
+			MouseDown,
+			MouseUp
 		};
 
 		InputEvent(string eventName_);
@@ -78,7 +81,7 @@ class InputEvent {
 		 *
 		 * The return value is whether or not the event has occurred.
 		 */
-		virtual bool action(Inputs trigger);
+		virtual bool action(Inputs trigger, int mouseX, int mouseY);
 
 
 

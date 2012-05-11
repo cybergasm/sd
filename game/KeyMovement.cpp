@@ -17,7 +17,7 @@ KeyMovement::~KeyMovement() {
 	// TODO Auto-generated destructor stub
 }
 
-bool KeyMovement::action(InputEvent::Inputs input) {
+bool KeyMovement::action(InputEvent::Inputs input, int mouseX, int mouseY) {
 	bool moved = false;
 	if (input == InputEvent::KeyW) {
 		character->move(aiVector3D(camera->atX(), 0, camera->atZ()));

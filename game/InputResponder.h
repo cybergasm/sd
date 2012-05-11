@@ -22,11 +22,6 @@ class InputResponder {
     virtual ~InputResponder();
 
     /**
-     * Takes action given event
-     */
-    void inputIs(sf::Event event);
-
-    /**
      * Processes current events
      */
     void processEvents();
@@ -51,19 +46,6 @@ class InputResponder {
      * The input processor
      */
     InputProcessor inputProc;
-
-    /**
-     * State variable to tell us if we are ready to move mouse,
-     * namely ensures we center it between moves so we get
-     * a constant measure of how much it has moved
-     */
-    bool mouseReady;
-
-    /**
-     * Handles mouse movement by changing current angle
-     * and updating where we are looking at.
-     */
-    void mouseMoved(int mouseX, int mouseY);
 };
 
 #endif /* INPUTRESPONDER_H_ */

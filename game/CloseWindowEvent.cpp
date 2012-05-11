@@ -17,7 +17,7 @@ CloseWindowEvent::~CloseWindowEvent() {
 	// TODO Auto-generated destructor stub
 }
 
-bool CloseWindowEvent::action(Inputs input) {
+bool CloseWindowEvent::action(Inputs input, int mouseX, int mouseY) {
 	window->close();
 	return true;
 }
