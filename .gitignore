@@ -4,3 +4,5 @@ sd
 Frame.jpg
 *.so*
 .metadata
+.cproject
+.project
