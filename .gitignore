@@ -1,6 +1,6 @@
 *.o
 sd
-shader_processor
+shader_parser
 *.swp
 Frame.jpg
 *.so*

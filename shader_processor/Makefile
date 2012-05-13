@@ -2,9 +2,9 @@ CXXFLAGS = -g -Wall
 
 OBJS = main.o ShaderParser.o ShaderVariable.o
 
-all: shader_processor
+all: shader_parser
 
-shader_processor: $(OBJS)
+shader_parser: $(OBJS)
 	g++ -g -Wall -o $@ $^ 
 
 %.o:%.cpp
