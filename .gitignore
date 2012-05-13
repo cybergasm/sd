@@ -1,8 +1,10 @@
 *.o
 sd
+shader_processor
 *.swp
 Frame.jpg
 *.so*
 .metadata
 .cproject
 .project
+.settings
