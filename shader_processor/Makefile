@@ -1,6 +1,6 @@
 CXXFLAGS = -g -Wall
 
-OBJS = main.o
+OBJS = main.o ShaderParser.o ShaderVariable.o
 
 all: shader_processor
 
