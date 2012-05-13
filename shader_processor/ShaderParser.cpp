@@ -22,7 +22,7 @@ ShaderParser::~ShaderParser() {
 }
 
 void ShaderParser::parseFile(string fileName) {
-  cout<<"Parsing: "<<fileName<<endl;
+  cout << "Parsing: " << fileName << endl;
   ifstream shaderFile(fileName.c_str(), ios::in);
   string sourceLine;
 
@@ -48,12 +48,16 @@ void ShaderParser::parseLine(string line) {
     if (typeFound == ShaderVariable::Uniform) {
       //this time around the type is the substring if this is a valid declaration, so
       //instead of undoing the stream we pass in this token (substring) as the type
-      ShaderVariable var = parseDeclaration(parser, substring, ShaderVariable::Uniform);
+      ShaderVariable var = parseDeclaration(parser, substring,
+          ShaderVariable::Uniform);
       cout << var.toString() << endl;
+      uniformVars.push_back(var);
       return;
     } else if (typeFound == ShaderVariable::Attribute) {
-      ShaderVariable var = parseDeclaration(parser, substring, ShaderVariable::Attribute);
+      ShaderVariable var = parseDeclaration(parser, substring,
+          ShaderVariable::Attribute);
       cout << var.toString() << endl;
+      attrVars.push_back(var);
       return;
     } else {
       //if this is a variable declaration than the first
@@ -70,7 +74,8 @@ void ShaderParser::parseLine(string line) {
   }
 }
 
-ShaderVariable ShaderParser::parseDeclaration(istringstream& parser, string type, ShaderVariable::ScopeTypes scope) {
+ShaderVariable ShaderParser::parseDeclaration(istringstream& parser,
+    string type, ShaderVariable::ScopeTypes scope) {
   //we have found out whether or not is uniform or attribute
   //so now we need the variable type (e.g. int, vector, etc...)
   string name;
@@ -107,4 +112,12 @@ ShaderVariable::VarTypes ShaderParser::getType(string type) {
   } else {
     return ShaderVariable::Unknown;
   }
+}
+
+const vector<ShaderVariable>& ShaderParser::getUniformVars() const {
+  return uniformVars;
+}
+
+const vector<ShaderVariable>& ShaderParser::getAttrVars() const {
+  return attrVars;
 }

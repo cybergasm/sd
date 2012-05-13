@@ -10,6 +10,7 @@
 
 #include <string>
 #include <sstream>
+#include <vector>
 
 #include "ShaderVariable.h"
 
@@ -20,6 +21,9 @@ class ShaderParser {
     ShaderParser(string location);
     virtual ~ShaderParser();
 
+    //getters for found variables
+    const vector<ShaderVariable>& getUniformVars() const;
+    const vector<ShaderVariable>& getAttrVars() const;
   private:
     //Given a fragment or vertex shader, this parses it looking
     //for uniform or attribute files
@@ -29,13 +33,18 @@ class ShaderParser {
     void parseLine(string line);
 
     //Once a variable declaration has been found, parse it into an object
-    ShaderVariable parseDeclaration(istringstream& parseStream, string type, ShaderVariable::ScopeTypes scope);
+    ShaderVariable parseDeclaration(istringstream& parseStream, string type,
+        ShaderVariable::ScopeTypes scope);
 
     //Removes trailing ';' from name if it exists
     string sanitizeName(string name);
 
     //Returns the type given parsed type
     ShaderVariable::VarTypes getType(string type);
+
+    //Stores the found variables
+    vector<ShaderVariable> uniformVars;
+    vector<ShaderVariable> attrVars;
 };
 
 #endif /* SHADERPARSER_H_ */

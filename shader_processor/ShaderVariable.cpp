@@ -13,7 +13,8 @@ ShaderVariable::ShaderVariable(string name_, ScopeTypes scope_, VarTypes type_) 
 
 }
 
-ShaderVariable::ShaderVariable() : type (Unknown){
+ShaderVariable::ShaderVariable() :
+  type(Unknown) {
 
 }
 
@@ -21,11 +22,23 @@ ShaderVariable::~ShaderVariable() {
   // TODO Auto-generated destructor stub
 }
 
-string ShaderVariable::toString() {
+string ShaderVariable::toString() const {
   return getScopeAsString() + " " + getTypeAsString() + " " + name;
 }
 
-string ShaderVariable::getScopeAsString() {
+string ShaderVariable::getName() const {
+  return name;
+}
+
+ShaderVariable::ScopeTypes ShaderVariable::getScope() const {
+  return scope;
+}
+
+ShaderVariable::VarTypes ShaderVariable::getType() const {
+  return type;
+}
+
+string ShaderVariable::getScopeAsString() const{
   if (scope == Uniform) {
     return "uniform";
   } else if (scope == Attribute) {
@@ -35,7 +48,7 @@ string ShaderVariable::getScopeAsString() {
   }
 }
 
-string ShaderVariable::getTypeAsString() {
+string ShaderVariable::getTypeAsString() const{
   if (type == Vec2) {
     return "vec2";
   } else if (type == Vec3) {

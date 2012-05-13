@@ -15,18 +15,11 @@ using namespace std;
 class ShaderVariable {
   public:
     enum ScopeTypes {
-      Uniform,
-      Attribute,
-      None
+      Uniform, Attribute, None
     };
 
     enum VarTypes {
-      Vec2,
-      Vec3,
-      Sampler,
-      Float,
-      Int,
-      Unknown
+      Vec2, Vec3, Sampler, Float, Int, Unknown
     };
 
     ShaderVariable(string name, ScopeTypes scope, VarTypes type);
@@ -34,16 +27,20 @@ class ShaderVariable {
     virtual ~ShaderVariable();
 
     //Returns a string representation of this variable
-    string toString();
+    string toString() const;
 
+    //getters
+    string getName() const;
+    ScopeTypes getScope() const;
+    VarTypes getType() const;
   private:
     string name;
     ScopeTypes scope;
     VarTypes type;
 
     //String conversions
-    string getTypeAsString();
-    string getScopeAsString();
+    string getTypeAsString() const;
+    string getScopeAsString() const;
 };
 
 #endif /* SHADERVARIABLE_H_ */
