@@ -80,8 +80,18 @@ class ShaderClassGenerator {
         const ShaderVariable& var) const;
 
     //Generates method body by making a call to one of the appropriate
-    //setter methods
-    void genAttributeBody(ofstream& classWriter, const ShaderVariable& var) const;
+    //setter methods. Note that this does assume use of the vertexAttribPointer
+    //to set attribute values
+    void
+    genAttributeBody(ofstream& classWriter, const ShaderVariable& var) const;
+
+    //Generates uniform definition
+    void genUniformDef(ofstream& classWriter, const string& fileName,
+        const ShaderVariable& var) const;
+
+    //Generates method body by making call to one of the setUniform
+    //functions
+    void genUniformBody(ofstream& classWriter, const ShaderVariable& var) const;
 
     /**
      * Utilities shared by both class and headers

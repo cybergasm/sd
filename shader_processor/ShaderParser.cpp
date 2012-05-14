@@ -103,6 +103,8 @@ ShaderVariable::VarTypes ShaderParser::getType(string type) {
     return ShaderVariable::Vec2;
   } else if (type == "vec3") {
     return ShaderVariable::Vec3;
+  } else if (type == "vec4") {
+    return ShaderVariable::Vec4;
   } else if (type == "sampler") {
     return ShaderVariable::Sampler;
   } else if (type == "float") {

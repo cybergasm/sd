@@ -11,21 +11,16 @@ class ParallaxShader : Shader {
     void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data);
 
 
-
     void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data);
-
 
 
     void setAttributeNormalIn(bool normalized, GLsizei stride, GLvoid* data);
 
 
-
     void setAttributeTangentIn(bool normalized, GLsizei stride, GLvoid* data);
 
 
-
     void setAttributeBitangentIn(bool normalized, GLsizei stride, GLvoid* data);
-
 
 
     void setUniformDiffuseTex(int n1);

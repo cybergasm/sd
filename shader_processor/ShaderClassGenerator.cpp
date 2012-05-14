@@ -62,7 +62,7 @@ void ShaderClassGenerator::genUniformDeclaration(ofstream& headerFile,
 void ShaderClassGenerator::genAttributeDeclaration(ofstream& headerFile,
     const ShaderVariable& var) const {
   headerFile << "    void setAttribute" << getCamelCase(var.getName())
-      << "(bool normalized, GLsizei stride, GLvoid* data);" << endl;
+      << "(bool normalized, GLsizei stride, GLvoid* data);";
   headerFile << endl << endl << endl;
 }
 
@@ -119,7 +119,18 @@ void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
 
   for (vector<ShaderVariable>::iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
+    genUniformDef(classWriter, fileName, *iter);
   }
+}
+
+void ShaderClassGenerator::genUniformDef(ofstream& classWriter,
+    const string& fileName, const ShaderVariable & var) const {
+  classWriter << "void " << fileName << "::setUniform" << getCamelCase(
+      var.getName()) << "(";
+  genInputVars(classWriter, var);
+  classWriter << "){" << endl;
+  genUniformBody(classWriter, var);
+  classWriter << "}" << endl;
 }
 
 void ShaderClassGenerator::genAttributeDef(ofstream& classWriter,
@@ -131,9 +142,42 @@ void ShaderClassGenerator::genAttributeDef(ofstream& classWriter,
   classWriter << "}" << endl;
 }
 
+void ShaderClassGenerator::genUniformBody(ofstream& classWriter,
+    const ShaderVariable& var) const {
+  switch (var.getType()) {
+    case ShaderVariable::Vec4:
+      classWriter << "  setUniform4f(" << var.getName() << ", n1, n2, n3, n4);"
+          << endl;
+      break;
+    case ShaderVariable::Vec3:
+      classWriter << "  setUniform3f(" << var.getName() << ", n1, n2, n3);"
+          << endl;
+      break;
+    case ShaderVariable::Vec2:
+      classWriter << "  setUniform2f(" << var.getName() << ", n1, n2);" << endl;
+      break;
+    case ShaderVariable::Float:
+      classWriter << "  setUniform1f(" << var.getName() << ", n1);" << endl;
+      break;
+    case ShaderVariable::Int:
+      classWriter << "  setUniform1i(" << var.getName() << ", n1);" << endl;
+      break;
+    case ShaderVariable::Sampler:
+      classWriter << "  setUniform1i(" << var.getName() << ", n1);" << endl;
+      break;
+    default:
+      classWriter << "UNKNOWN" << endl;
+      break;
+  }
+}
+
 void ShaderClassGenerator::genAttributeBody(ofstream& classWriter,
     const ShaderVariable& var) const {
   switch (var.getType()) {
+    case ShaderVariable::Vec4:
+      classWriter << "  setVertexAttribArray(\"" << var.getName()
+          << "\", 4, GL_FLOAT, normalized, stride, data);" << endl;
+      break;
     case ShaderVariable::Vec3:
       classWriter << "  setVertexAttribArray(\"" << var.getName()
           << "\", 3, GL_FLOAT, normalized, stride, data);" << endl;
@@ -164,6 +208,9 @@ string ShaderClassGenerator::getCamelCase(string name) const {
 void ShaderClassGenerator::genInputVars(ofstream& file,
     const ShaderVariable& var) const {
   switch (var.getType()) {
+    case ShaderVariable::Vec4:
+      file << "float in1, float in2, float in3, float in4";
+      break;
     case ShaderVariable::Vec3:
       file << "float in1, float in2, float in3";
       break;

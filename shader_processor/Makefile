@@ -1,6 +1,6 @@
 CXXFLAGS = -g -Wall
 
-OBJS = main.o ShaderParser.o ShaderVariable.o ShaderClassGenerator.o 
+OBJS = main.o ShaderParser.o ShaderVariable.o ShaderClassGenerator.o Shader.o
 
 #need the glu inclusion to compile the headers
 LIBS = 	-lGLU \

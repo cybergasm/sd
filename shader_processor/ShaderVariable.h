@@ -19,7 +19,7 @@ class ShaderVariable {
     };
 
     enum VarTypes {
-      Vec2, Vec3, Sampler, Float, Int, Unknown
+      Vec4, Vec2, Vec3, Sampler, Float, Int, Unknown
     };
 
     ShaderVariable(string name, ScopeTypes scope, VarTypes type);

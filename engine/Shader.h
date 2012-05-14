@@ -76,12 +76,39 @@ class Shader {
     void setUniform1f(std::string idName, float value) const;
 
     /**
+     * Sets 2-float worth uniform information to id specified by param 'idName'
+     *
+     * Does appropriate sanity checks on id and writes out error if problem
+     * retrieving value.
+     */
+    void setUniform2f(std::string idName, float value, float value2) const;
+
+    /**
      * Sets 3-float worth uniform information to id specified by param 'idName'
      *
      * Does appropriate sanity checks on id and writes out error if problem
      * retrieving value.
      */
-    void setUniform3f(std::string idName, float value1, float value2, float value3) const;
+    void setUniform3f(std::string idName, float value1, float value2,
+        float value3) const;
+
+    /**
+     * Sets 4-float worth uniform information to id specified by param 'idName'
+     *
+     * Does appropriate sanity checks on id and writes out error if problem
+     * retrieving value.
+     */
+    void setUniform4f(std::string idName, float value1, float value2,
+        float value3, float value4) const;
+
+    /**
+     * Sets 1-int worth uniform information to id specified by param 'idName'
+     *
+     * Does appropriate sanity checks on id and writes out error if problem
+     * retrieving value.
+     */
+    void setUniform1i(std::string idName, int value) const;
+
   private:
     std::vector<char> readSource(const std::string& path);
 
