@@ -23,13 +23,13 @@ class ParallaxShader : Shader {
     void setAttributeBitangentIn(bool normalized, GLsizei stride, GLvoid* data);
 
 
-    void setUniformDiffuseTex(int n1);
+    void setUniformDiffuseTex(int in1);
 
 
-    void setUniformHeightMap(int n1);
+    void setUniformHeightMap(int in1);
 
 
-    void setUniformNormalMap(int n1);
+    void setUniformNormalMap(int in1);
 
 
     void setUniformKs(float in1, float in2, float in3);
@@ -41,7 +41,7 @@ class ParallaxShader : Shader {
     void setUniformKd(float in1, float in2, float in3);
 
 
-    void setUniformAlpha(float n1);
+    void setUniformAlpha(float in1);
 
 
 };

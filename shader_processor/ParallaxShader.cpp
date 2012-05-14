@@ -18,24 +18,24 @@ void ParallaxShader::setAttributeTangentIn(bool normalized, GLsizei stride, GLvo
 void ParallaxShader::setAttributeBitangentIn(bool normalized, GLsizei stride, GLvoid* data) {
   setVertexAttribArray("bitangentIn", 3, GL_FLOAT, normalized, stride, data);
 }
-void ParallaxShader::setUniformDiffuseTex(int n1){
-  setUniform1i(diffuseTex, n1);
+void ParallaxShader::setUniformDiffuseTex(int in1){
+  setUniform1i("diffuseTex", in1);
 }
-void ParallaxShader::setUniformHeightMap(int n1){
-  setUniform1i(heightMap, n1);
+void ParallaxShader::setUniformHeightMap(int in1){
+  setUniform1i("heightMap", in1);
 }
-void ParallaxShader::setUniformNormalMap(int n1){
-  setUniform1i(normalMap, n1);
+void ParallaxShader::setUniformNormalMap(int in1){
+  setUniform1i("normalMap", in1);
 }
 void ParallaxShader::setUniformKs(float in1, float in2, float in3){
-  setUniform3f(Ks, n1, n2, n3);
+  setUniform3f("Ks", in1, in2, in3);
 }
 void ParallaxShader::setUniformKa(float in1, float in2, float in3){
-  setUniform3f(Ka, n1, n2, n3);
+  setUniform3f("Ka", in1, in2, in3);
 }
 void ParallaxShader::setUniformKd(float in1, float in2, float in3){
-  setUniform3f(Kd, n1, n2, n3);
+  setUniform3f("Kd", in1, in2, in3);
 }
-void ParallaxShader::setUniformAlpha(float n1){
-  setUniform1f(alpha, n1);
+void ParallaxShader::setUniformAlpha(float in1){
+  setUniform1f("alpha", in1);
 }

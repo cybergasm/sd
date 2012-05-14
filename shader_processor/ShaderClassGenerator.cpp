@@ -146,24 +146,24 @@ void ShaderClassGenerator::genUniformBody(ofstream& classWriter,
     const ShaderVariable& var) const {
   switch (var.getType()) {
     case ShaderVariable::Vec4:
-      classWriter << "  setUniform4f(" << var.getName() << ", n1, n2, n3, n4);"
+      classWriter << "  setUniform4f(\"" << var.getName() << "\", in1, in2, in3, in4);"
           << endl;
       break;
     case ShaderVariable::Vec3:
-      classWriter << "  setUniform3f(" << var.getName() << ", n1, n2, n3);"
+      classWriter << "  setUniform3f(\"" << var.getName() << "\", in1, in2, in3);"
           << endl;
       break;
     case ShaderVariable::Vec2:
-      classWriter << "  setUniform2f(" << var.getName() << ", n1, n2);" << endl;
+      classWriter << "  setUniform2f(\"" << var.getName() << "\", in1, in2);" << endl;
       break;
     case ShaderVariable::Float:
-      classWriter << "  setUniform1f(" << var.getName() << ", n1);" << endl;
+      classWriter << "  setUniform1f(\"" << var.getName() << "\", in1);" << endl;
       break;
     case ShaderVariable::Int:
-      classWriter << "  setUniform1i(" << var.getName() << ", n1);" << endl;
+      classWriter << "  setUniform1i(\"" << var.getName() << "\", in1);" << endl;
       break;
     case ShaderVariable::Sampler:
-      classWriter << "  setUniform1i(" << var.getName() << ", n1);" << endl;
+      classWriter << "  setUniform1i(\"" << var.getName() << "\", in1);" << endl;
       break;
     default:
       classWriter << "UNKNOWN" << endl;
@@ -218,13 +218,13 @@ void ShaderClassGenerator::genInputVars(ofstream& file,
       file << "float in1, float in2";
       break;
     case ShaderVariable::Float:
-      file << "float n1";
+      file << "float in1";
       break;
     case ShaderVariable::Int:
-      file << "int n1";
+      file << "int in1";
       break;
     case ShaderVariable::Sampler:
-      file << "int n1";
+      file << "int in1";
       break;
     default:
       file << "UNKNOWN TYPE" << endl;
