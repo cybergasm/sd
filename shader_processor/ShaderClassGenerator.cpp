@@ -72,7 +72,7 @@ void ShaderClassGenerator::genHeaderPreamble(ofstream& headerFile,
   headerFile << "#define " << genHeaderDefName(fileName) << endl;
   headerFile << "#include \"Shader.h\"" << endl;
   headerFile << endl;
-  headerFile << "class " << fileName << " : Shader {" << endl;
+  headerFile << "class " << fileName << " : public Shader {" << endl;
   headerFile << "  public: " << endl;
   headerFile << "    " << fileName << "(const std::string& location);" << endl;
   headerFile << "    ~" << fileName << "();" << endl;

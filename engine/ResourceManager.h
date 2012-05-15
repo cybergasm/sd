@@ -19,6 +19,7 @@
 
 #include "Mesh3DS.h"
 #include "Shader.h"
+#include "ParallaxShader.h"
 
 using namespace std;
 
@@ -49,6 +50,12 @@ class ResourceManager {
      */
     Mesh3DS* getMesh(string key) const;
     Shader* getShader(string key) const;
+
+    /**
+     * Accessor method for different shaders exposed by the
+     * engine
+     */
+    ParallaxShader* getParallaxShader() const;
   private:
 
     //map holding handles to their respective objects
@@ -57,6 +64,9 @@ class ResourceManager {
 
     void populateMeshMap(set<string> meshFolders);
     void populateShaderMap(set<string> shaderFolders);
+
+    //Specific shaders exposed by the game engine
+    ParallaxShader* plaxShader;
 };
 
 #endif /* RESOURCEMANAGER_H_ */

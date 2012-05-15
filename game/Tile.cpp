@@ -31,7 +31,7 @@ Tile::Tile(string tileTexture) {
   }
 
   //load the parallax shader
-  shader = (ResourceManager::get())->getShader("parallax");
+  shader = (ResourceManager::get())->getParallaxShader();
 
   if (!diffuse.LoadFromFile("textures/"+tileTexture+"_tile_diffuse.jpg")) {
     cerr << "Could not load tile diffuse texture." << endl;
@@ -143,44 +143,24 @@ void Tile::setMeshData(u_int meshIdx) {
   const aiScene* scene = tileMesh->getScene();
   aiMesh* mesh = scene->mMeshes[meshIdx];
 
-  shader->setVertexAttribArray("normalIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
-      mesh->mNormals);
-  shader->setVertexAttribArray("texCoordIn", 2, GL_FLOAT, 0,
-      sizeof(aiVector3D), mesh->mTextureCoords[0]);
-  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), mesh->mVertices);
-  shader->setVertexAttribArray("tangentIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
-      mesh->mTangents);
-  shader->setVertexAttribArray("bitangentIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), mesh->mBitangents);
+  int stride = sizeof(aiVector3D);
+  shader->setAttributeNormalIn(false, stride, mesh->mNormals);
+  shader->setAttributeTexCoordIn(false, stride, mesh->mTextureCoords[0]);
+  shader->setAttributePositionIn(false, stride, mesh->mVertices);
+  shader->setAttributeTangentIn(false, stride, mesh->mTangents);
+  shader->setAttributeBitangentIn(false, stride, mesh->mBitangents);
 }
 
 void Tile::setTextures() {
-  GLint diffuseHandle = glGetUniformLocation(shader->programID(), "diffuseTex");
-  GLint heightHandle = glGetUniformLocation(shader->programID(), "heightMap");
-  GLint normHandle = glGetUniformLocation(shader->programID(), "normalMap");
-
-  if (diffuseHandle == -1) {
-    cerr << "Error getting id for tile diffuse texture." << endl;
-  }
-
-  if (heightHandle == -1) {
-    cerr << "Error getting id for tile height map." << endl;
-  }
-
-  if (normHandle == -1) {
-    cerr << "Error getting id for normal map." << endl;
-  }
-
-  glUniform1i(diffuseHandle, 0);
+  shader->setUniformDiffuseTex(0);
   glActiveTexture(GL_TEXTURE0);
   diffuse.Bind();
 
-  glUniform1i(heightHandle, 1);
+  shader->setUniformHeightMap(1);
   glActiveTexture(GL_TEXTURE1);
   height.Bind();
 
-  glUniform1i(heightHandle, 2);
+  shader->setUniformNormalMap(2);
   glActiveTexture(GL_TEXTURE2);
   normal.Bind();
 }

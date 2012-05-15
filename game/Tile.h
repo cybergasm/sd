@@ -16,7 +16,7 @@
 #include "Framework.h"
 
 #include "engine/Mesh3DS.h"
-#include "engine/Shader.h"
+#include "engine/ParallaxShader.h"
 #include "engine/Camera.h"
 
 class Tile {
@@ -32,7 +32,7 @@ class Tile {
     /**
      * Shader that does parallax
      */
-    Shader* shader;
+    ParallaxShader* shader;
 
     /**
      * Tile Mesh

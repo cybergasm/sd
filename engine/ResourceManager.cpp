@@ -15,6 +15,9 @@ ResourceManager::ResourceManager() {
   rootResourceFile.printFile();
   populateMeshMap(rootResourceFile.get("meshes"));
   populateShaderMap(rootResourceFile.get("shaders"));
+
+  //initializing known shaders
+  plaxShader = new ParallaxShader("shaders/parallax");
 }
 
 ResourceManager::~ResourceManager() {
@@ -89,4 +92,8 @@ void ResourceManager::init() {
 
 ResourceManager* ResourceManager::get() {
   return resourceManager;
+}
+
+ParallaxShader* ResourceManager::getParallaxShader() const {
+  return plaxShader;
 }
