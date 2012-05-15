@@ -17,7 +17,9 @@ ResourceManager::ResourceManager() {
   populateShaderMap(rootResourceFile.get("shaders"));
 
   //initializing known shaders
-  plaxShader = new ParallaxShader("shaders/parallax");
+  //TODO FIX THIS HACK WHERE WE ASSUME WE KNOW WHERE THE ENGINE SHADERS
+  //ARE
+  plaxShader = new ParallaxShader("../engine/shaders/parallax");
 }
 
 ResourceManager::~ResourceManager() {

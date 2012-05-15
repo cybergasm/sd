@@ -86,7 +86,7 @@ void handleInput() {
 }
 
 void lightingPosition() {
-	static GLfloat lightPosition[] = { 13.4, 5, -15.6 };
+	static GLfloat lightPosition[] = { 0, 0, 0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 void init() {
@@ -298,8 +298,8 @@ int main() {
 		lightingPosition();
 
 		glPushMatrix();
-		glTranslatef(0, 6, 6);
-		glRotatef(90, 1, 0, 0);
+		glTranslatef(0, 0, 6);
+		glRotatef(-90, 1, 0, 0);
 		for (int j = 0; j < 5; j++) {
 			glPushMatrix();
 			glTranslatef(-1.6 * j, 0, 0);

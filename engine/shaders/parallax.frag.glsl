@@ -22,8 +22,8 @@ void main() {
 	
 	//scale and bias to try and represent physical property of
 	//surface better.
-	float scale = .8;
-	float bias = .4;
+	float scale = .05;
+	float bias = .04;
 	
 	float newHeight = scale*height - bias;
 	
@@ -50,7 +50,7 @@ void main() {
 	vec4 finalColor;
 	
 	for (int lightIndex = 0; lightIndex < 1; lightIndex++) {
-    	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz);
+    	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz - eye);
 	
 		// Calculate the diffuse color coefficient, and sample the diffuse texture
 		float Rd = max(0.0, dot(L, N));
