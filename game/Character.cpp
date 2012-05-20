@@ -28,7 +28,7 @@ Character::Character() :
     exit(-1);
   }
   //load the character shader that animates the mesh
-  shader = (ResourceManager::get())->getShader("character");
+  shader = (ResourceManager::get())->getCharacterShader();
 
   //grab our texture
   if (!texture.LoadFromFile("textures/main_char_tex.jpg")) {
@@ -171,13 +171,11 @@ void Character::setMeshData(u_int meshIdx) {
   const aiScene* scene = characterMesh->getScene();
   aiMesh* mesh = scene->mMeshes[meshIdx];
 
-  shader->setVertexAttribArray("normalIn", 3, GL_FLOAT, 0, sizeof(aiVector3D),
-      mesh->mNormals);
-  shader->setVertexAttribArray("texCoordIn", 2, GL_FLOAT, 0,
-      sizeof(aiVector3D), mesh->mTextureCoords[0]);
-  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), mesh->mVertices);
-  shader->setUniform1f("t", straightAniTime);
+  int stride = sizeof(aiVector3D);
+  shader->setAttributeNormalIn(false, stride, mesh->mNormals);
+  shader->setAttributeTexCoordIn(false, stride, mesh->mTextureCoords[0]);
+  shader->setAttributePositionIn(false, stride, mesh->mVertices);
+  shader->setUniformT(straightAniTime);
 }
 
 //This is a slight modification of my 248 assignment 3 code which sets the material information
@@ -187,29 +185,24 @@ void Character::setMeshMaterials(u_int meshIdx) {
       scene->mMaterials[scene->mMeshes[meshIdx]->mMaterialIndex];
   aiColor3D color;
   material->Get(AI_MATKEY_COLOR_DIFFUSE,color) ;
-  shader->setUniform3f("Kd", color.r, color.g, color.b);
 
-  shader->setUniform3f("Ks", color.r, color.g, color.b);
+  shader->setUniformKd(color.r, color.g, color.b);
 
-  shader->setUniform3f("Ka", color.r, color.g, color.b);
+  shader->setUniformKs(color.r, color.g, color.b);
+
+  shader->setUniformKa(color.r, color.g, color.b);
 
   // Specular power
   float value;
   if (AI_SUCCESS == material->Get(AI_MATKEY_SHININESS,value) ) {
-    shader->setUniform1f("alpha", value);
+    shader->setUniformAlpha(value);
   } else {
-    shader->setUniform1f("alpha", 1);
+    shader->setUniformAlpha(1);
   }
 }
 
 void Character::setTexture() {
-  GLint textureHandle = glGetUniformLocation(shader->programID(), "textureImg");
-
-  if (textureHandle == -1) {
-    cerr << "Error retrieving id for character texture."<<endl;
-  }
-
-  glUniform1i(textureHandle, 0);
+  shader->setUniformTextureImg(0);
   glActiveTexture(GL_TEXTURE0);
   texture.Bind();
 }

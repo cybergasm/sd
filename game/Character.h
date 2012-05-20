@@ -17,7 +17,7 @@
 #include "Framework.h"
 
 #include "engine/Mesh3DS.h"
-#include "engine/Shader.h"
+#include "engine/CharacterShader.h"
 
 class Character {
   public:
@@ -91,7 +91,7 @@ class Character {
     /**
      * Character shader.
      */
-    Shader* shader;
+    CharacterShader* shader;
 
     /**
      * Texture to shade with

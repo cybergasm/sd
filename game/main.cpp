@@ -86,7 +86,7 @@ void handleInput() {
 }
 
 void lightingPosition() {
-	static GLfloat lightPosition[] = { 0, 0, 0 };
+	static GLfloat lightPosition[] = { 13.4, 5, -15.6};
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 void init() {
