@@ -50,7 +50,7 @@ void main() {
 	vec4 finalColor;
 	
 	for (int lightIndex = 0; lightIndex < 1; lightIndex++) {
-    	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz - eye);
+    	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz);
 	
 		// Calculate the diffuse color coefficient, and sample the diffuse texture
 		float Rd = max(0.0, dot(L, N));

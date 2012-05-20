@@ -20,6 +20,7 @@ ResourceManager::ResourceManager() {
   //TODO FIX THIS HACK WHERE WE ASSUME WE KNOW WHERE THE ENGINE SHADERS
   //ARE
   plaxShader = new ParallaxShader("../engine/shaders/parallax");
+  characterShader = new CharacterShader("../engine/shaders/character");
 }
 
 ResourceManager::~ResourceManager() {
@@ -98,4 +99,8 @@ ResourceManager* ResourceManager::get() {
 
 ParallaxShader* ResourceManager::getParallaxShader() const {
   return plaxShader;
+}
+
+CharacterShader* ResourceManager::getCharacterShader() const {
+  return characterShader;
 }

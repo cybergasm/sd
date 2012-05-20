@@ -26,7 +26,8 @@ LIBS = -lsfml-network \
 	-lGLEW 
 	
 OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o InputProcessor.o \
-InputEvent.o KeySequence.o TrackedSequence.o RenderingWindow.o ParallaxShader.o
+InputEvent.o KeySequence.o TrackedSequence.o RenderingWindow.o ParallaxShader.o \
+CharacterShader.o
 
 all: engine
 
@@ -43,3 +44,6 @@ clean:
 #Rules for making the shaders
 ParallaxShader.o: $(SHADER_LOCATION)/parallax.vert.glsl $(SHADER_LOCATION)/parallax.frag.glsl
 	./shader_parser $(SHADER_LOCATION)/parallax ParallaxShader; g++ -c $(CXXFLAGS) -fPIC ParallaxShader.cpp -o $@ 
+	
+CharacterShader.o: $(SHADER_LOCATION)/character.vert.glsl $(SHADER_LOCATION)/character.frag.glsl
+	./shader_parser $(SHADER_LOCATION)/character CharacterShader; g++ -c $(CXXFLAGS) -fPIC CharacterShader.cpp -o $@

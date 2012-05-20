@@ -20,6 +20,7 @@
 #include "Mesh3DS.h"
 #include "Shader.h"
 #include "ParallaxShader.h"
+#include "CharacterShader.h"
 
 using namespace std;
 
@@ -56,6 +57,7 @@ class ResourceManager {
      * engine
      */
     ParallaxShader* getParallaxShader() const;
+    CharacterShader* getCharacterShader() const;
   private:
 
     //map holding handles to their respective objects
@@ -67,6 +69,7 @@ class ResourceManager {
 
     //Specific shaders exposed by the game engine
     ParallaxShader* plaxShader;
+    CharacterShader* characterShader;
 };
 
 #endif /* RESOURCEMANAGER_H_ */
