@@ -8,6 +8,7 @@ attribute vec2 texCoordIn;
 attribute vec3 normalIn;
 
 //tangent bitangent vector
+//@Tangent
 attribute vec3 tangentIn;
 attribute vec3 bitangentIn;
 

@@ -29,12 +29,20 @@ class ShaderParser {
     //for uniform or attribute files
     void parseFile(string fileName);
 
-    //Given a specific line this sees if it is a variable declaration
-    void parseLine(string line);
+    //Given a specific line this sees if it is a variable declaration or
+    //possibly an annotation. If it is an annotation it stores it into the
+    //lastType seen. The lastType is expected to be passed in as the annotation
+    //defined by the line before the one being parsed (if no attribute then
+    //NoInfo should be passed). If line is not attribute, NoInfo is set. If
+    //a variable is found it is given the semantic type of the type passed in.
+    void parseLine(string line, ShaderVariable::SemanticType& lastType);
 
     //Once a variable declaration has been found, parse it into an object
     ShaderVariable parseDeclaration(istringstream& parseStream, string type,
-        ShaderVariable::ScopeTypes scope);
+        ShaderVariable::ScopeTypes scope, ShaderVariable::SemanticType semType);
+
+    //Tries to parse line as an annotation
+    ShaderVariable::SemanticType parseAnnotation(string line);
 
     //Removes trailing ';' from name if it exists
     string sanitizeName(string name);

@@ -2,7 +2,7 @@
 #define __ParallaxShader__h__
 #include "Shader.h"
 
-class ParallaxShader : Shader {
+class ParallaxShader : public Shader {
   public: 
     ParallaxShader(const std::string& location);
     ~ParallaxShader();

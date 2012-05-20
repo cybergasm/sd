@@ -7,8 +7,9 @@
 
 #include "ShaderVariable.h"
 
-ShaderVariable::ShaderVariable(string name_, ScopeTypes scope_, VarTypes type_) :
-  name(name_), scope(scope_), type(type_) {
+ShaderVariable::ShaderVariable(string name_, ScopeTypes scope_, VarTypes type_,
+    SemanticType semType_) :
+  name(name_), scope(scope_), type(type_), semType(semType_) {
   // TODO Auto-generated constructor stub
 
 }
@@ -23,7 +24,8 @@ ShaderVariable::~ShaderVariable() {
 }
 
 string ShaderVariable::toString() const {
-  return getScopeAsString() + " " + getTypeAsString() + " " + name;
+  return getScopeAsString() + " " + getTypeAsString() + " "
+      + getSemanticAsString() + " " + name;
 }
 
 string ShaderVariable::getName() const {
@@ -38,7 +40,7 @@ ShaderVariable::VarTypes ShaderVariable::getType() const {
   return type;
 }
 
-string ShaderVariable::getScopeAsString() const{
+string ShaderVariable::getScopeAsString() const {
   if (scope == Uniform) {
     return "uniform";
   } else if (scope == Attribute) {
@@ -48,7 +50,7 @@ string ShaderVariable::getScopeAsString() const{
   }
 }
 
-string ShaderVariable::getTypeAsString() const{
+string ShaderVariable::getTypeAsString() const {
   if (type == Vec2) {
     return "vec2";
   } else if (type == Vec3) {
@@ -61,5 +63,37 @@ string ShaderVariable::getTypeAsString() const{
     return "int";
   } else {
     return "unknown";
+  }
+}
+
+string ShaderVariable::getSemanticAsString() const {
+  if (semType == Tangent) {
+    return "Tangent";
+  } else if (semType == Bitangent) {
+    return "Bitangent";
+  } else if (semType == Normal) {
+    return "Normal";
+  } else if (semType == Position) {
+    return "Normal";
+  } else if (semType == TextureCoord) {
+    return "TextureCoords";
+  } else if (semType == Time) {
+    return "Time";
+  } else if (semType == Ka) {
+    return "Ka";
+  } else if (semType == Ks) {
+    return "Ks";
+  } else if (semType == Kd) {
+    return "Kd";
+  } else if (semType == NormalMap) {
+    return "NormalMap";
+  } else if (semType == HeightMap) {
+    return "HeightMap";
+  } else if (semType == DiffuseMap) {
+    return "DiffuseMap";
+  } else if (semType == SpecularMap) {
+    return "SpecularMap";
+  } else {
+    return "No semantic info.";
   }
 }

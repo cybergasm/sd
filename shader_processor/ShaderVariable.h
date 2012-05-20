@@ -22,7 +22,24 @@ class ShaderVariable {
       Vec4, Vec2, Vec3, Sampler, Float, Int, Unknown
     };
 
-    ShaderVariable(string name, ScopeTypes scope, VarTypes type);
+    enum SemanticType {
+      Tangent,
+      Bitangent,
+      Normal,
+      Position,
+      TextureCoord,
+      Time,
+      Ka,
+      Ks,
+      Kd,
+      NormalMap,
+      HeightMap,
+      DiffuseMap,
+      SpecularMap,
+      NoInfo
+    };
+
+    ShaderVariable(string name, ScopeTypes scope, VarTypes type, SemanticType semType);
     ShaderVariable();
     virtual ~ShaderVariable();
 
@@ -37,10 +54,12 @@ class ShaderVariable {
     string name;
     ScopeTypes scope;
     VarTypes type;
+    SemanticType semType;
 
     //String conversions
     string getTypeAsString() const;
     string getScopeAsString() const;
+    string getSemanticAsString() const;
 };
 
 #endif /* SHADERVARIABLE_H_ */

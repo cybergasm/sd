@@ -9,6 +9,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <boost/algorithm/string.hpp>
+
+using namespace boost;
 
 ShaderParser::ShaderParser(string location) {
   string vertShader = location + ".vert.glsl";
@@ -29,14 +32,20 @@ void ShaderParser::parseFile(string fileName) {
   if (shaderFile.is_open()) {
     while (shaderFile.good()) {
       getline(shaderFile, sourceLine);
-      parseLine(sourceLine);
+      ShaderVariable::SemanticType lastSemanticType;
+      parseLine(sourceLine, lastSemanticType);
     }
   } else {
     cout << "Error opening shader location: " << fileName << endl;
   }
 }
 
-void ShaderParser::parseLine(string line) {
+void ShaderParser::parseLine(string line,
+    ShaderVariable::SemanticType& lastSemanticType) {
+  //Gets rid of whitespace around the line to account for strange
+  //formatting
+  trim(line);
+
   //Take the line and split on white spaces, looking
   //for a declaration keyword
   istringstream parser(line);
@@ -49,15 +58,19 @@ void ShaderParser::parseLine(string line) {
       //this time around the type is the substring if this is a valid declaration, so
       //instead of undoing the stream we pass in this token (substring) as the type
       ShaderVariable var = parseDeclaration(parser, substring,
-          ShaderVariable::Uniform);
+          ShaderVariable::Uniform, lastSemanticType);
       cout << var.toString() << endl;
       uniformVars.push_back(var);
+      //reset the annotation
+      lastSemanticType = ShaderVariable::NoInfo;
       return;
     } else if (typeFound == ShaderVariable::Attribute) {
       ShaderVariable var = parseDeclaration(parser, substring,
-          ShaderVariable::Attribute);
+          ShaderVariable::Attribute, lastSemanticType);
       cout << var.toString() << endl;
       attrVars.push_back(var);
+      //reset the annotation
+      lastSemanticType = ShaderVariable::NoInfo;
       return;
     } else {
       //if this is a variable declaration than the first
@@ -67,15 +80,45 @@ void ShaderParser::parseLine(string line) {
       } else if (substring == "uniform") {
         typeFound = ShaderVariable::Uniform;
       } else {
-        //if it is neither then this is not a declaration
+        //if it is neither then this is not a declaration, so we
+        //check if it is an annotation. Note that actually this whole
+        //loop is fairly order dependent. Since we assume that annotations
+        //occur the line right before the variable they relate to, this
+        //sets the loop-global semantic type variable which then holds for
+        //the next line which could be a variable. If the next line is not
+        //a variable then it will also execute this code resetting the
+        //type to none.
+        lastSemanticType = parseAnnotation(line);
         return;
       }
     }
   }
 }
 
+ShaderVariable::SemanticType ShaderParser::parseAnnotation(string line) {
+  if (line.length() < 4) {
+    return ShaderVariable::NoInfo;
+  }
+
+  string begin = line.substr(0, 3);
+
+  if (begin != "//@") {
+    return ShaderVariable::NoInfo;
+  }
+
+  string attribute = line.substr(3);
+
+  if (attribute == "Tangent") {
+    return ShaderVariable::Tangent;
+  } else {
+    cerr << "Semantic Type: "<<attribute<<" of "<<line<<" unknown."<<endl;
+    return ShaderVariable::NoInfo;
+  }
+}
+
 ShaderVariable ShaderParser::parseDeclaration(istringstream& parser,
-    string type, ShaderVariable::ScopeTypes scope) {
+    string type, ShaderVariable::ScopeTypes scope,
+    ShaderVariable::SemanticType semType) {
   //we have found out whether or not is uniform or attribute
   //so now we need the variable type (e.g. int, vector, etc...)
   string name;
@@ -88,7 +131,7 @@ ShaderVariable ShaderParser::parseDeclaration(istringstream& parser,
 
   ShaderVariable::VarTypes varType = getType(type);
 
-  return ShaderVariable(name, scope, varType);
+  return ShaderVariable(name, scope, varType, semType);
 }
 
 string ShaderParser::sanitizeName(string name) {
