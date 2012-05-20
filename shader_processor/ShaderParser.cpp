@@ -110,8 +110,35 @@ ShaderVariable::SemanticType ShaderParser::parseAnnotation(string line) {
 
   if (attribute == "Tangent") {
     return ShaderVariable::Tangent;
+  } else if (attribute == "Bitangent") {
+    return ShaderVariable::Bitangent;
+  } else if (attribute == "Normal") {
+    return ShaderVariable::Normal;
+  } else if (attribute == "Position") {
+    return ShaderVariable::Position;
+  } else if (attribute == "TextureCoordinates") {
+    return ShaderVariable::TextureCoord;
+  } else if (attribute == "Time") {
+    return ShaderVariable::Time;
+  } else if (attribute == "Ka") {
+    return ShaderVariable::Ka;
+  } else if (attribute == "Ks") {
+    return ShaderVariable::Ks;
+  } else if (attribute == "Kd") {
+    return ShaderVariable::Kd;
+  } else if (attribute == "Shininess") {
+    return ShaderVariable::Shininess;
+  } else if (attribute == "NormalMap") {
+    return ShaderVariable::NormalMap;
+  } else if (attribute == "HeightMap") {
+    return ShaderVariable::HeightMap;
+  } else if (attribute == "DiffuseMap") {
+    return ShaderVariable::DiffuseMap;
+  } else if (attribute == "SpecularMap") {
+    return ShaderVariable::SpecularMap;
   } else {
-    cerr << "Semantic Type: "<<attribute<<" of "<<line<<" unknown."<<endl;
+    cerr << "Semantic Type: " << attribute << " of " << line << " unknown."
+        << endl;
     return ShaderVariable::NoInfo;
   }
 }

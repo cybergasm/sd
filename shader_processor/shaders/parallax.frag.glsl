@@ -1,6 +1,9 @@
 //for diffuse values
+//@DiffuseMap
 uniform sampler diffuseTex;
+//@HeightMap
 uniform sampler heightMap;
+//@NormalMap
 uniform sampler normalMap;
 
 varying vec2 texCoord;
@@ -11,10 +14,14 @@ varying vec3 bitangent;
 varying vec3 normal;
 
 //Won't waste time passing stuff in as it is the same for
-//most tiles  
+//most tiles
+//@Ks  
 uniform vec3 Ks = vec3(.14, .14, .1);
+//@Ka
 uniform vec3 Ka = vec3(.01, .01, .01);
+//@Kd
 uniform vec3 Kd = vec3(1, 1, 1);
+//@Shininess
 uniform float alpha = .3;
 
 void main() {

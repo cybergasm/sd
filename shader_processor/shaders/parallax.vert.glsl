@@ -1,15 +1,19 @@
 //vertex position
+//@Position
 attribute vec3 positionIn;
 
 //texture coordinate
+//@TextureCoordinates
 attribute vec2 texCoordIn;
 
 //normal vector
+//@Normal
 attribute vec3 normalIn;
 
 //tangent bitangent vector
 //@Tangent
 attribute vec3 tangentIn;
+//@Bitangent
 attribute vec3 bitangentIn;
 
 varying vec2 texCoord;

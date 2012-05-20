@@ -32,6 +32,7 @@ class ShaderVariable {
       Ka,
       Ks,
       Kd,
+      Shininess,
       NormalMap,
       HeightMap,
       DiffuseMap,

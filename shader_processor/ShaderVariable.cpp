@@ -85,6 +85,8 @@ string ShaderVariable::getSemanticAsString() const {
     return "Ks";
   } else if (semType == Kd) {
     return "Kd";
+  } else if (semType == Shininess) {
+    return "Shininess";
   } else if (semType == NormalMap) {
     return "NormalMap";
   } else if (semType == HeightMap) {
