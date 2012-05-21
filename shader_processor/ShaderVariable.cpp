@@ -40,6 +40,10 @@ ShaderVariable::VarTypes ShaderVariable::getType() const {
   return type;
 }
 
+ShaderVariable::SemanticType ShaderVariable::getSemanticType() const {
+  return semType;
+}
+
 string ShaderVariable::getScopeAsString() const {
   if (scope == Uniform) {
     return "uniform";

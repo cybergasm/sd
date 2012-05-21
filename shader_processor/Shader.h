@@ -109,6 +109,28 @@ class Shader {
      */
     void setUniform1i(std::string idName, int value) const;
 
+
+    /**
+     * The following presents setters for a variety of semantically significant variables
+     * that are likely to be used by many shaders. By default these methods do nothing
+     * and have to be extended by a specific shader type identifying where they store
+     * specified data
+     */
+    virtual void setTangent(bool normalized, GLsizei stride, GLvoid* data);
+    virtual void setBitangent(bool normalized, GLsizei stride, GLvoid* data);
+    virtual void setNormal(bool normalized, GLsizei stride, GLvoid* data);
+    virtual void setPosition(bool normalized, GLsizei stride, GLvoid* data);
+    virtual void setTextureCoords(bool normalized, GLsizei stride, GLvoid* data);
+    virtual void setTime(float in1);
+    virtual void setKa(float in1, float in2, float in3);
+    virtual void setKs(float in1, float in2, float in3);
+    virtual void setKd(float in1, float in2, float in3);
+    virtual void setShininess(float in1);
+    virtual void setNormalMap(int in1);
+    virtual void setHeightMap(int in1);
+    virtual void setDiffuseMap(int in1);
+    virtual void setSpecularMap(int in1);
+
   private:
     std::vector<char> readSource(const std::string& path);
 

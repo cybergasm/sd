@@ -44,6 +44,10 @@ class ShaderClassGenerator {
     void generateMethodDeclarations(ofstream& headerFile,
         const ShaderParser* parsedShader) const;
 
+    //Generates the overwrite declaration of setters for semantic values
+    void
+        genSemanticDeclaration(ofstream& headerFile, const ShaderVariable& var) const;
+
     //Generates a uniform declaration
     void
     genUniformDeclaration(ofstream& headerFile, const ShaderVariable& var) const;
@@ -79,6 +83,10 @@ class ShaderClassGenerator {
     void genAttributeDef(ofstream& classWriter, const string& fileName,
         const ShaderVariable& var) const;
 
+    //Generates a semantic variable setter definition for attribute variable
+    void genAttributeSemanticDef(ofstream& classWriter, const string& fileName,
+        const ShaderVariable& var) const;
+
     //Generates method body by making a call to one of the appropriate
     //setter methods. Note that this does assume use of the vertexAttribPointer
     //to set attribute values
@@ -87,6 +95,10 @@ class ShaderClassGenerator {
 
     //Generates uniform definition
     void genUniformDef(ofstream& classWriter, const string& fileName,
+        const ShaderVariable& var) const;
+
+    //Generates a semantic variable setter definition for uniform variable
+    void genUniformSemanticDef(ofstream& classWriter, const string& fileName,
         const ShaderVariable& var) const;
 
     //Generates method body by making call to one of the setUniform
@@ -100,8 +112,16 @@ class ShaderClassGenerator {
     //camel-case by default so this just capitalizes the first letter
     string getCamelCase(string name) const;
 
-    //Generates a variable's input variables
-    void genInputVars(ofstream& headerFile, const ShaderVariable& var) const;
+    //returns a variable's input variables
+    string genInputVars(const ShaderVariable& var) const;
+
+    //Given a semantic value, returns its method name and inputs
+    string getSemanticMethod(ShaderVariable::SemanticType type) const;
+
+    //Given a semantic value returns the data that is passed in without type
+    //info
+    string getUntypedSemanticData(ShaderVariable::SemanticType type) const;
+
 };
 
 #endif /* SHADERCLASSGENERATOR_H_ */

@@ -51,6 +51,8 @@ class ShaderVariable {
     string getName() const;
     ScopeTypes getScope() const;
     VarTypes getType() const;
+    SemanticType getSemanticType() const;
+
   private:
     string name;
     ScopeTypes scope;

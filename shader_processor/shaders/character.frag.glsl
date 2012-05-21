@@ -1,4 +1,5 @@
 //for opacity mapping
+//@DiffuseMap
 uniform sampler textureImg;
 
 varying vec3 normal;
@@ -7,11 +8,16 @@ varying vec4 color;
 varying vec2 texcoord;
 
 //Won't waste time passing stuff in as it is the same for
-//most tiles  
+//most tiles 
+//@Ks 
 uniform vec3 Ks = vec3(.3, .4, 0.34);
+//@Ka
 uniform vec3 Ka = vec3(.35, .55, .46);
+//@Kd
 uniform vec3 Kd = vec3(.2, .1, .4);
+//@Shininess
 uniform float alpha = .8;
+//@Time
 uniform float t = 0;
 
 void main() {

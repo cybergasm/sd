@@ -1,13 +1,16 @@
 //vertex position
+//@Position
 attribute vec3 positionIn;
 
 //normals
+//@Normal
 attribute vec3 normalIn;
 
 //vertex color
 attribute vec3 colorIn;
 
 //texture coordinate
+//@TextureCoordinates
 attribute vec2 texCoordIn;
 
 varying vec3 normal;

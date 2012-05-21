@@ -188,3 +188,58 @@ void Shader::setUniform1i(std::string idName, int value) const {
   GL_CHECK(glUniform1i(id, value));
 }
 
+void Shader::setTangent(bool normalized, GLsizei stride, GLvoid* data) {
+  cerr << "Call to empty method - setTangent - in shader." << endl;
+}
+
+void Shader::setBitangent(bool normalized, GLsizei stride, GLvoid* data) {
+  cerr << "Call to empty method - setBitangent - in shader." << endl;
+}
+
+void Shader::setNormal(bool normalized, GLsizei stride, GLvoid* data) {
+  cerr << "Call to empty method - setNormal - in shader." << endl;
+}
+
+void Shader::setPosition(bool normalized, GLsizei stride, GLvoid* data) {
+  cerr << "Call to empty method - setPosition - in shader." << endl;
+}
+
+void Shader::setTextureCoords(bool normalized, GLsizei stride, GLvoid* data) {
+  cerr << "Call to empty method - setTextureCoords - in shader." << endl;
+}
+
+void Shader::setTime(float in1) {
+  cerr << "Call to empty method - setTime - in shader." << endl;
+}
+
+void Shader::setKa(float in1, float in2, float in3) {
+  cerr << "Call to empty method - setKa - in shader." << endl;
+}
+
+void Shader::setKs(float in1, float in2, float in3) {
+  cerr << "Call to empty method - setKs - in shader." << endl;
+}
+
+void Shader::setKd(float in1, float in2, float in3) {
+  cerr << "Call to empty method - set Kd - in shader." << endl;
+}
+
+void Shader::setShininess(float in1) {
+  cerr << "Call to empty method - setShininess - in shader." << endl;
+}
+
+void Shader::setNormalMap(int in1) {
+  cerr << "Call to empty method - setNormalMap - in shader." << endl;
+}
+
+void Shader::setHeightMap(int in1) {
+  cerr << "Call to empty method - setHeightMap - in shader." << endl;
+}
+
+void Shader::setDiffuseMap(int in1) {
+  cerr << "Call to empty method - setDiffuseMap - in shader." << endl;
+}
+
+void Shader::setSpecularMap(int in1) {
+  cerr << "Call to empty method - setSpecularMap - in shader." << endl;
+}
