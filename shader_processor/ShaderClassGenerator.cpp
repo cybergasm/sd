@@ -30,7 +30,11 @@ void ShaderClassGenerator::genHeader(const string& fileName,
   headerWriter.open(fileHeaderName.c_str());
   genHeaderPreamble(headerWriter, fileName);
   generateMethodDeclarations(headerWriter, parsedShader);
-  genExportedGetterDef(headerWriter);
+
+  if (getNumberSemanticVars(parsedShader) > 0) {
+    genExportedGetterDef(headerWriter);
+  }
+
   genExportedVars(headerWriter, parsedShader);
   genHeaderConclusion(headerWriter);
 }
@@ -56,32 +60,17 @@ void ShaderClassGenerator::generateMethodDeclarations(ofstream& headerFile,
 }
 
 void ShaderClassGenerator::genExportedGetterDef(ofstream& headerFile) const {
-  headerFile<<"    const Shader::KnownVars* getExpectedVars() const;"<<endl;
+  headerFile << "    const Shader::KnownVars* getExpectedVars() const;" << endl;
 }
 
 void ShaderClassGenerator::genExportedVars(ofstream& headerWriter,
     const ShaderParser* parsedShader) const {
-  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
-  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
+  int count = getNumberSemanticVars(parsedShader);
 
-  //If we have one written out so that we can add ','
-  int count = 0;
-  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
-      != attributeVars.end(); ++iter) {
-    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
-      count++;
-    }
+  if (count > 0) {
+    headerWriter << "  private:" << endl;
+    headerWriter << "    KnownVars exportedVars[" << count << "];" << endl;
   }
-
-  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
-      != uniformVars.end(); ++iter) {
-    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
-      count++;
-    }
-  }
-
-  headerWriter << "  private:" << endl;
-  headerWriter << "    KnownVars exportedVars[" << count << "];" << endl;
 }
 void ShaderClassGenerator::genSemanticDeclaration(ofstream& headerFile,
     const ShaderVariable& var) const {
@@ -139,7 +128,10 @@ void ShaderClassGenerator::genClassFile(const string& fileName,
   classWriter << "#include \"" << fileName << ".h\"" << endl << endl;
   genConstructorDef(classWriter, fileName, parsedShader);
   genMethodDef(classWriter, fileName, parsedShader);
-  genExportedVarGetter(classWriter, fileName);
+
+  if (getNumberSemanticVars(parsedShader) > 0) {
+    genExportedVarGetter(classWriter, fileName);
+  }
 }
 
 void ShaderClassGenerator::genConstructorDef(ofstream& classWriter,
@@ -198,9 +190,10 @@ void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
 
 void ShaderClassGenerator::genExportedVarGetter(ofstream& classWriter,
     const string& fileName) const {
-  classWriter<<"const Shader::KnownVars* "<<fileName<<"::getExpectedVars() const {"<<endl;
-  classWriter<<"  return exportedVars;"<<endl;
-  classWriter<<"}"<<endl;
+  classWriter << "const Shader::KnownVars* " << fileName
+      << "::getExpectedVars() const {" << endl;
+  classWriter << "  return exportedVars;" << endl;
+  classWriter << "}" << endl;
 }
 
 void ShaderClassGenerator::genUniformSemanticDef(ofstream& classWriter,
@@ -241,8 +234,8 @@ void ShaderClassGenerator::genAttributeSemanticDef(ofstream& classWriter,
 void ShaderClassGenerator::genAttributeDef(ofstream& classWriter,
     const string& fileName, const ShaderVariable& var) const {
   classWriter << "void " << fileName << "::setAttribute" << getCamelCase(
-      var.getName()) << "(bool normalized, GLsizei stride, GLvoid* data) const {"
-      << endl;
+      var.getName())
+      << "(bool normalized, GLsizei stride, GLvoid* data) const {" << endl;
   genAttributeBody(classWriter, var);
   classWriter << "}" << endl;
 }
@@ -442,4 +435,27 @@ string ShaderClassGenerator::translateSemanticType(
       return "";
       break;
   }
+}
+
+int ShaderClassGenerator::getNumberSemanticVars(
+    const ShaderParser* parsedShader) const {
+  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
+  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
+
+  int count = 0;
+  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
+      != attributeVars.end(); ++iter) {
+    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
+      count++;
+    }
+  }
+
+  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
+      != uniformVars.end(); ++iter) {
+    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
+      count++;
+    }
+  }
+
+  return count;
 }

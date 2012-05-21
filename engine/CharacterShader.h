@@ -8,34 +8,34 @@ class CharacterShader : public Shader {
     ~CharacterShader();
 
 
-    void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeNormalIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setAttributeNormalIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeColorIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setAttributeColorIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setUniformTextureImg(int in1);
+    void setUniformTextureImg(int in1) const;
 
 
-    void setUniformKs(float in1, float in2, float in3);
+    void setUniformKs(float in1, float in2, float in3) const;
 
 
-    void setUniformKa(float in1, float in2, float in3);
+    void setUniformKa(float in1, float in2, float in3) const;
 
 
-    void setUniformKd(float in1, float in2, float in3);
+    void setUniformKd(float in1, float in2, float in3) const;
 
 
-    void setUniformAlpha(float in1);
+    void setUniformAlpha(float in1) const;
 
 
-    void setUniformT(float in1);
+    void setUniformT(float in1) const;
 
 
 };

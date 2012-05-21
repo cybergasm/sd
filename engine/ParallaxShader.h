@@ -8,42 +8,57 @@ class ParallaxShader : public Shader {
     ~ParallaxShader();
 
 
-    void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setPosition(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setTextureCoords(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeNormalIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setNormal(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributeNormalIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeTangentIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setTangent(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributeTangentIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeBitangentIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setBitangent(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributeBitangentIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setUniformDiffuseTex(int in1);
+    void setDiffuseMap(int in1) const;
+    void setUniformDiffuseTex(int in1) const;
 
 
-    void setUniformHeightMap(int in1);
+    void setHeightMap(int in1) const;
+    void setUniformHeightMap(int in1) const;
 
 
-    void setUniformNormalMap(int in1);
+    void setNormalMap(int in1) const;
+    void setUniformNormalMap(int in1) const;
 
 
-    void setUniformKs(float in1, float in2, float in3);
+    void setKs(float in1, float in2, float in3) const;
+    void setUniformKs(float in1, float in2, float in3) const;
 
 
-    void setUniformKa(float in1, float in2, float in3);
+    void setKa(float in1, float in2, float in3) const;
+    void setUniformKa(float in1, float in2, float in3) const;
 
 
-    void setUniformKd(float in1, float in2, float in3);
+    void setKd(float in1, float in2, float in3) const;
+    void setUniformKd(float in1, float in2, float in3) const;
 
 
-    void setUniformAlpha(float in1);
+    void setShininess(float in1) const;
+    void setUniformAlpha(float in1) const;
 
 
+    const Shader::KnownVars* getExpectedVars() const;
+  private:
+    KnownVars exportedVars[12];
 };
 
 #endif

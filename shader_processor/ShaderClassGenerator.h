@@ -138,6 +138,9 @@ class ShaderClassGenerator {
     //Given a ShaderVariable semantic type, converts it to Shader one
     string translateSemanticType(ShaderVariable::SemanticType type) const;
 
+    //Returns number of semantically significant vars
+    int getNumberSemanticVars(const ShaderParser* parsedShader) const;
+
 };
 
 #endif /* SHADERCLASSGENERATOR_H_ */

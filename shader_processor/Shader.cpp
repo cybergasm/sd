@@ -244,6 +244,6 @@ void Shader::setSpecularMap(int in1) const {
   cerr << "Call to empty method - setSpecularMap - in shader." << endl;
 }
 
-Shader::KnownVars* Shader::getExpectedVars() const{
+const Shader::KnownVars* Shader::getExpectedVars() const{
   return NULL;
 }
