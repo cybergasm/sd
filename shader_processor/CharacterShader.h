@@ -8,45 +8,46 @@ class CharacterShader : public Shader {
     ~CharacterShader();
 
 
-    void setPosition(bool normalized, GLsizei stride, GLvoid* data);
-    void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setPosition(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setNormal(bool normalized, GLsizei stride, GLvoid* data);
-    void setAttributeNormalIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setNormal(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributeNormalIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setAttributeColorIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setAttributeColorIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setTextureCoords(bool normalized, GLsizei stride, GLvoid* data);
-    void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data);
+    void setTextureCoords(bool normalized, GLsizei stride, GLvoid* data) const;
+    void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
-    void setDiffuseMap(int in1);
-    void setUniformTextureImg(int in1);
+    void setDiffuseMap(int in1) const;
+    void setUniformTextureImg(int in1) const;
 
 
-    void setKs(float in1, float in2, float in3);
-    void setUniformKs(float in1, float in2, float in3);
+    void setKs(float in1, float in2, float in3) const;
+    void setUniformKs(float in1, float in2, float in3) const;
 
 
-    void setKa(float in1, float in2, float in3);
-    void setUniformKa(float in1, float in2, float in3);
+    void setKa(float in1, float in2, float in3) const;
+    void setUniformKa(float in1, float in2, float in3) const;
 
 
-    void setKd(float in1, float in2, float in3);
-    void setUniformKd(float in1, float in2, float in3);
+    void setKd(float in1, float in2, float in3) const;
+    void setUniformKd(float in1, float in2, float in3) const;
 
 
-    void setShininess(float in1);
-    void setUniformAlpha(float in1);
+    void setShininess(float in1) const;
+    void setUniformAlpha(float in1) const;
 
 
-    void setTime(float in1);
-    void setUniformT(float in1);
+    void setTime(float in1) const;
+    void setUniformT(float in1) const;
 
 
+    const Shader::KnownVars* getExpectedVars() const;
   private:
     KnownVars exportedVars[9];
 };

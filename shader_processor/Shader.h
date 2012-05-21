@@ -136,26 +136,26 @@ class Shader {
      * and have to be extended by a specific shader type identifying where they store
      * specified data
      */
-    virtual void setTangent(bool normalized, GLsizei stride, GLvoid* data);
-    virtual void setBitangent(bool normalized, GLsizei stride, GLvoid* data);
-    virtual void setNormal(bool normalized, GLsizei stride, GLvoid* data);
-    virtual void setPosition(bool normalized, GLsizei stride, GLvoid* data);
-    virtual void setTextureCoords(bool normalized, GLsizei stride, GLvoid* data);
-    virtual void setTime(float in1);
-    virtual void setKa(float in1, float in2, float in3);
-    virtual void setKs(float in1, float in2, float in3);
-    virtual void setKd(float in1, float in2, float in3);
-    virtual void setShininess(float in1);
-    virtual void setNormalMap(int in1);
-    virtual void setHeightMap(int in1);
-    virtual void setDiffuseMap(int in1);
-    virtual void setSpecularMap(int in1);
+    virtual void setTangent(bool normalized, GLsizei stride, GLvoid* data) const;
+    virtual void setBitangent(bool normalized, GLsizei stride, GLvoid* data) const;
+    virtual void setNormal(bool normalized, GLsizei stride, GLvoid* data) const;
+    virtual void setPosition(bool normalized, GLsizei stride, GLvoid* data) const;
+    virtual void setTextureCoords(bool normalized, GLsizei stride, GLvoid* data) const;
+    virtual void setTime(float in1) const;
+    virtual void setKa(float in1, float in2, float in3) const;
+    virtual void setKs(float in1, float in2, float in3) const;
+    virtual void setKd(float in1, float in2, float in3) const;
+    virtual void setShininess(float in1) const;
+    virtual void setNormalMap(int in1) const;
+    virtual void setHeightMap(int in1) const;
+    virtual void setDiffuseMap(int in1) const;
+    virtual void setSpecularMap(int in1) const;
 
     /**
      * Returns the list of variables this shader expects. Returns NULL unless
      * overridden
      */
-    virtual KnownVars* getExpectedVars();
+    virtual const KnownVars* getExpectedVars() const;
   private:
     std::vector<char> readSource(const std::string& path);
 

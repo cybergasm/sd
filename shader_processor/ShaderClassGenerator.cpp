@@ -30,6 +30,7 @@ void ShaderClassGenerator::genHeader(const string& fileName,
   headerWriter.open(fileHeaderName.c_str());
   genHeaderPreamble(headerWriter, fileName);
   generateMethodDeclarations(headerWriter, parsedShader);
+  genExportedGetterDef(headerWriter);
   genExportedVars(headerWriter, parsedShader);
   genHeaderConclusion(headerWriter);
 }
@@ -52,6 +53,10 @@ void ShaderClassGenerator::generateMethodDeclarations(ofstream& headerFile,
     genSemanticDeclaration(headerFile, *iter);
     genUniformDeclaration(headerFile, *iter);
   }
+}
+
+void ShaderClassGenerator::genExportedGetterDef(ofstream& headerFile) const {
+  headerFile<<"    const Shader::KnownVars* getExpectedVars() const;"<<endl;
 }
 
 void ShaderClassGenerator::genExportedVars(ofstream& headerWriter,
@@ -93,13 +98,13 @@ void ShaderClassGenerator::genUniformDeclaration(ofstream& headerFile,
     const ShaderVariable& var) const {
   headerFile << "    void setUniform" << getCamelCase(var.getName()) << "(";
   headerFile << genInputVars(var);
-  headerFile << ");" << endl << endl << endl;
+  headerFile << ") const;" << endl << endl << endl;
 }
 
 void ShaderClassGenerator::genAttributeDeclaration(ofstream& headerFile,
     const ShaderVariable& var) const {
   headerFile << "    void setAttribute" << getCamelCase(var.getName())
-      << "(bool normalized, GLsizei stride, GLvoid* data);";
+      << "(bool normalized, GLsizei stride, GLvoid* data) const;";
   headerFile << endl << endl << endl;
 }
 
@@ -134,6 +139,7 @@ void ShaderClassGenerator::genClassFile(const string& fileName,
   classWriter << "#include \"" << fileName << ".h\"" << endl << endl;
   genConstructorDef(classWriter, fileName, parsedShader);
   genMethodDef(classWriter, fileName, parsedShader);
+  genExportedVarGetter(classWriter, fileName);
 }
 
 void ShaderClassGenerator::genConstructorDef(ofstream& classWriter,
@@ -156,8 +162,8 @@ void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
   for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
     if (iter->getSemanticType() != ShaderVariable::NoInfo) {
-      classWriter << "  exportedVars[" << count << "] = " << translateSemanticType(
-          iter->getSemanticType()) << ";" << endl;
+      classWriter << "  exportedVars[" << count << "] = "
+          << translateSemanticType(iter->getSemanticType()) << ";" << endl;
       count++;
     }
   }
@@ -165,12 +171,13 @@ void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
   for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
     if (iter->getSemanticType() != ShaderVariable::NoInfo) {
-      classWriter << "  exportedVars[" << count << "] = " << translateSemanticType(
-          iter->getSemanticType()) << ";" << endl;
+      classWriter << "  exportedVars[" << count << "] = "
+          << translateSemanticType(iter->getSemanticType()) << ";" << endl;
       count++;
     }
   }
 }
+
 void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
     const string& fileName, const ShaderParser* parsedShader) const {
   vector<ShaderVariable> uniformVars = parsedShader->getUniformVars();
@@ -187,6 +194,13 @@ void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
     genUniformDef(classWriter, fileName, *iter);
     genUniformSemanticDef(classWriter, fileName, *iter);
   }
+}
+
+void ShaderClassGenerator::genExportedVarGetter(ofstream& classWriter,
+    const string& fileName) const {
+  classWriter<<"const Shader::KnownVars* "<<fileName<<"::getExpectedVars() const {"<<endl;
+  classWriter<<"  return exportedVars;"<<endl;
+  classWriter<<"}"<<endl;
 }
 
 void ShaderClassGenerator::genUniformSemanticDef(ofstream& classWriter,
@@ -206,7 +220,7 @@ void ShaderClassGenerator::genUniformDef(ofstream& classWriter,
   classWriter << "void " << fileName << "::setUniform" << getCamelCase(
       var.getName()) << "(";
   classWriter << genInputVars(var);
-  classWriter << "){" << endl;
+  classWriter << ") const{" << endl;
   genUniformBody(classWriter, var);
   classWriter << "}" << endl;
 }
@@ -227,7 +241,7 @@ void ShaderClassGenerator::genAttributeSemanticDef(ofstream& classWriter,
 void ShaderClassGenerator::genAttributeDef(ofstream& classWriter,
     const string& fileName, const ShaderVariable& var) const {
   classWriter << "void " << fileName << "::setAttribute" << getCamelCase(
-      var.getName()) << "(bool normalized, GLsizei stride, GLvoid* data) {"
+      var.getName()) << "(bool normalized, GLsizei stride, GLvoid* data) const {"
       << endl;
   genAttributeBody(classWriter, var);
   classWriter << "}" << endl;
@@ -323,33 +337,33 @@ string ShaderClassGenerator::getSemanticMethod(
     ShaderVariable::SemanticType type) const {
   switch (type) {
     case ShaderVariable::Tangent:
-      return "setTangent(bool normalized, GLsizei stride, GLvoid* data)";
+      return "setTangent(bool normalized, GLsizei stride, GLvoid* data) const";
     case ShaderVariable::Bitangent:
-      return "setBitangent(bool normalized, GLsizei stride, GLvoid* data)";
+      return "setBitangent(bool normalized, GLsizei stride, GLvoid* data) const";
     case ShaderVariable::Normal:
-      return "setNormal(bool normalized, GLsizei stride, GLvoid* data)";
+      return "setNormal(bool normalized, GLsizei stride, GLvoid* data) const";
     case ShaderVariable::Position:
-      return "setPosition(bool normalized, GLsizei stride, GLvoid* data)";
+      return "setPosition(bool normalized, GLsizei stride, GLvoid* data) const";
     case ShaderVariable::TextureCoord:
-      return "setTextureCoords(bool normalized, GLsizei stride, GLvoid* data)";
+      return "setTextureCoords(bool normalized, GLsizei stride, GLvoid* data) const";
     case ShaderVariable::Time:
-      return "setTime(float in1)";
+      return "setTime(float in1) const";
     case ShaderVariable::Ka:
-      return "setKa(float in1, float in2, float in3)";
+      return "setKa(float in1, float in2, float in3) const";
     case ShaderVariable::Ks:
-      return "setKs(float in1, float in2, float in3)";
+      return "setKs(float in1, float in2, float in3) const";
     case ShaderVariable::Kd:
-      return "setKd(float in1, float in2, float in3)";
+      return "setKd(float in1, float in2, float in3) const";
     case ShaderVariable::Shininess:
-      return "setShininess(float in1)";
+      return "setShininess(float in1) const";
     case ShaderVariable::NormalMap:
-      return "setNormalMap(int in1)";
+      return "setNormalMap(int in1) const";
     case ShaderVariable::HeightMap:
-      return "setHeightMap(int in1)";
+      return "setHeightMap(int in1) const";
     case ShaderVariable::DiffuseMap:
-      return "setDiffuseMap(int in1)";
+      return "setDiffuseMap(int in1) const";
     case ShaderVariable::SpecularMap:
-      return "setSpecularMap(int in1)";
+      return "setSpecularMap(int in1) const";
     default:
       return "";
       break;

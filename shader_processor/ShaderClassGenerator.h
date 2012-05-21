@@ -41,6 +41,9 @@ class ShaderClassGenerator {
     void generateMethodDeclarations(ofstream& headerFile,
         const ShaderParser* parsedShader) const;
 
+    //Generates definition for exported getter
+    void genExportedGetterDef(ofstream& headerFile) const;
+
     //Generates the array declaration storing exported vars
     void
     genExportedVars(ofstream& headerWriter,
@@ -81,9 +84,13 @@ class ShaderClassGenerator {
     //Generates the initialization code for the exported variable array. Have to
     //go through each individually.
     void genExportedVarArrayInit(ofstream& classWriter, const ShaderParser* parsedShader) const;
+
     //Generates definitions for setter methods
     void genMethodDef(ofstream& classWriter, const string& fileName,
         const ShaderParser* parsedShader) const;
+
+    //Generates the getter for exported variables method
+    void genExportedVarGetter(ofstream& classWriter, const string& fileName) const;
 
     //Generates definition for attribute setter
     void genAttributeDef(ofstream& classWriter, const string& fileName,
