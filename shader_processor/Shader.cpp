@@ -243,3 +243,7 @@ void Shader::setDiffuseMap(int in1) {
 void Shader::setSpecularMap(int in1) {
   cerr << "Call to empty method - setSpecularMap - in shader." << endl;
 }
+
+Shader::KnownVars* Shader::getExpectedVars() {
+  return NULL;
+}

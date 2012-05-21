@@ -56,6 +56,8 @@ class ParallaxShader : public Shader {
     void setUniformAlpha(float in1);
 
 
+  private:
+    KnownVars exportedVars[12];
 };
 
 #endif

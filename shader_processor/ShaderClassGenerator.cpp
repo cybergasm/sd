@@ -15,7 +15,6 @@ ShaderClassGenerator::ShaderClassGenerator() {
 }
 
 ShaderClassGenerator::~ShaderClassGenerator() {
-  // TODO Auto-generated destructor stub
 }
 
 void ShaderClassGenerator::generateClass(const string& className,
@@ -31,29 +30,54 @@ void ShaderClassGenerator::genHeader(const string& fileName,
   headerWriter.open(fileHeaderName.c_str());
   genHeaderPreamble(headerWriter, fileName);
   generateMethodDeclarations(headerWriter, parsedShader);
+  genExportedVars(headerWriter, parsedShader);
   genHeaderConclusion(headerWriter);
 }
 
 void ShaderClassGenerator::generateMethodDeclarations(ofstream& headerFile,
     const ShaderParser* parsedShader) const {
-  vector<ShaderVariable> uniformVars = parsedShader->getUniformVars();
-  vector<ShaderVariable> attributeVars = parsedShader->getAttrVars();
+  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
+  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
 
   headerFile << endl << endl;
 
-  for (vector<ShaderVariable>::iterator iter = attributeVars.begin(); iter
+  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
     genSemanticDeclaration(headerFile, *iter);
     genAttributeDeclaration(headerFile, *iter);
   }
 
-  for (vector<ShaderVariable>::iterator iter = uniformVars.begin(); iter
+  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
     genSemanticDeclaration(headerFile, *iter);
     genUniformDeclaration(headerFile, *iter);
   }
 }
 
+void ShaderClassGenerator::genExportedVars(ofstream& headerWriter,
+    const ShaderParser* parsedShader) const {
+  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
+  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
+
+  //If we have one written out so that we can add ','
+  int count = 0;
+  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
+      != attributeVars.end(); ++iter) {
+    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
+      count++;
+    }
+  }
+
+  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
+      != uniformVars.end(); ++iter) {
+    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
+      count++;
+    }
+  }
+
+  headerWriter << "  private:" << endl;
+  headerWriter << "    KnownVars exportedVars[" << count << "];" << endl;
+}
 void ShaderClassGenerator::genSemanticDeclaration(ofstream& headerFile,
     const ShaderVariable& var) const {
   if (var.getSemanticType() == ShaderVariable::NoInfo) {
@@ -108,18 +132,45 @@ void ShaderClassGenerator::genClassFile(const string& fileName,
   string classFileName = fileName + ".cpp";
   classWriter.open(classFileName.c_str());
   classWriter << "#include \"" << fileName << ".h\"" << endl << endl;
-  genConstructorDef(classWriter, fileName);
+  genConstructorDef(classWriter, fileName, parsedShader);
   genMethodDef(classWriter, fileName, parsedShader);
 }
 
 void ShaderClassGenerator::genConstructorDef(ofstream& classWriter,
-    const string& fileName) const {
+    const string& fileName, const ShaderParser* parsedShader) const {
   classWriter << fileName << "::" << fileName
       << "(const std::string& location) : Shader(location) {" << endl;
+
+  genExportedVarArrayInit(classWriter, parsedShader);
+
   classWriter << "}" << endl << endl;
-  ;
 }
 
+void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
+    const ShaderParser* parsedShader) const {
+  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
+  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
+
+  //Array index
+  int count = 0;
+  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
+      != attributeVars.end(); ++iter) {
+    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
+      classWriter << "  exportedVars[" << count << "] = " << translateSemanticType(
+          iter->getSemanticType()) << ";" << endl;
+      count++;
+    }
+  }
+
+  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
+      != uniformVars.end(); ++iter) {
+    if (iter->getSemanticType() != ShaderVariable::NoInfo) {
+      classWriter << "  exportedVars[" << count << "] = " << translateSemanticType(
+          iter->getSemanticType()) << ";" << endl;
+      count++;
+    }
+  }
+}
 void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
     const string& fileName, const ShaderParser* parsedShader) const {
   vector<ShaderVariable> uniformVars = parsedShader->getUniformVars();
@@ -137,6 +188,7 @@ void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
     genUniformSemanticDef(classWriter, fileName, *iter);
   }
 }
+
 void ShaderClassGenerator::genUniformSemanticDef(ofstream& classWriter,
     const string& fileName, const ShaderVariable& var) const {
   if (var.getSemanticType() == ShaderVariable::NoInfo) {
@@ -335,6 +387,43 @@ string ShaderClassGenerator::getUntypedSemanticData(
       return "in1";
     case ShaderVariable::SpecularMap:
       return "in1";
+    default:
+      return "";
+      break;
+  }
+}
+
+string ShaderClassGenerator::translateSemanticType(
+    ShaderVariable::SemanticType type) const {
+  switch (type) {
+    case ShaderVariable::Tangent:
+      return "Tangent";
+    case ShaderVariable::Bitangent:
+      return "Bitangent";
+    case ShaderVariable::Normal:
+      return "Normal";
+    case ShaderVariable::Position:
+      return "Position";
+    case ShaderVariable::TextureCoord:
+      return "TextureCoord";
+    case ShaderVariable::Time:
+      return "Time";
+    case ShaderVariable::Ka:
+      return "Ka";
+    case ShaderVariable::Ks:
+      return "Ks";
+    case ShaderVariable::Kd:
+      return "Kd";
+    case ShaderVariable::Shininess:
+      return "Shininess";
+    case ShaderVariable::NormalMap:
+      return "NormalMap";
+    case ShaderVariable::HeightMap:
+      return "HeightMap";
+    case ShaderVariable::DiffuseMap:
+      return "DiffuseMap";
+    case ShaderVariable::SpecularMap:
+      return "SpecularMap";
     default:
       return "";
       break;

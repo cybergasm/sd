@@ -12,6 +12,26 @@
 class Shader {
   public:
     /**
+     * Enumeration of the known inputs the shader could expect
+     */
+    enum KnownVars {
+      Tangent,
+      Bitangent,
+      Normal,
+      Position,
+      TextureCoord,
+      Time,
+      Ka,
+      Ks,
+      Kd,
+      Shininess,
+      NormalMap,
+      HeightMap,
+      DiffuseMap,
+      SpecularMap,
+    };
+
+    /**
      * Loads a vertex shader and fragment shader, compiles them, and links
      * them into a single GPU program.  The vertex shader file should be
      * at <path>.frag.glsl, and the fragment shader file should be at
@@ -131,6 +151,11 @@ class Shader {
     virtual void setDiffuseMap(int in1);
     virtual void setSpecularMap(int in1);
 
+    /**
+     * Returns the list of variables this shader expects. Returns NULL unless
+     * overridden
+     */
+    virtual KnownVars* getExpectedVars();
   private:
     std::vector<char> readSource(const std::string& path);
 

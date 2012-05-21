@@ -1,6 +1,18 @@
 #include "ParallaxShader.h"
 
 ParallaxShader::ParallaxShader(const std::string& location) : Shader(location) {
+  exportedVars[0] = Position;
+  exportedVars[1] = TextureCoord;
+  exportedVars[2] = Normal;
+  exportedVars[3] = Tangent;
+  exportedVars[4] = Bitangent;
+  exportedVars[5] = DiffuseMap;
+  exportedVars[6] = HeightMap;
+  exportedVars[7] = NormalMap;
+  exportedVars[8] = Ks;
+  exportedVars[9] = Ka;
+  exportedVars[10] = Kd;
+  exportedVars[11] = Shininess;
 }
 
 void ParallaxShader::setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) {

@@ -47,6 +47,8 @@ class CharacterShader : public Shader {
     void setUniformT(float in1);
 
 
+  private:
+    KnownVars exportedVars[9];
 };
 
 #endif

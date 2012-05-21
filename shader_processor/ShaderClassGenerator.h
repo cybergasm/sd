@@ -25,9 +25,6 @@ class ShaderClassGenerator {
     void
         generateClass(const string& className, const ShaderParser* parsedShader) const;
   private:
-    //The parsed variables
-    ShaderParser* parsedShader;
-
     /**
      * Header file generation methods
      */
@@ -43,6 +40,11 @@ class ShaderClassGenerator {
     // set[Uniform|Attribute]<Name>([float|int]...)
     void generateMethodDeclarations(ofstream& headerFile,
         const ShaderParser* parsedShader) const;
+
+    //Generates the array declaration storing exported vars
+    void
+    genExportedVars(ofstream& headerWriter,
+        const ShaderParser* var) const;
 
     //Generates the overwrite declaration of setters for semantic values
     void
@@ -71,10 +73,14 @@ class ShaderClassGenerator {
     genClassFile(const string& fileName, const ShaderParser* parsedShader) const;
 
     //Generates the constructor definition which is basically just a call
-    //to the Shader constructor
+    //to the Shader constructor along with an initialization of the
+    //exported variable array
     void
-    genConstructorDef(ofstream& classWriter, const string& fileName) const;
+    genConstructorDef(ofstream& classWriter, const string& fileName, const ShaderParser* parsedShader) const;
 
+    //Generates the initialization code for the exported variable array. Have to
+    //go through each individually.
+    void genExportedVarArrayInit(ofstream& classWriter, const ShaderParser* parsedShader) const;
     //Generates definitions for setter methods
     void genMethodDef(ofstream& classWriter, const string& fileName,
         const ShaderParser* parsedShader) const;
@@ -121,6 +127,9 @@ class ShaderClassGenerator {
     //Given a semantic value returns the data that is passed in without type
     //info
     string getUntypedSemanticData(ShaderVariable::SemanticType type) const;
+
+    //Given a ShaderVariable semantic type, converts it to Shader one
+    string translateSemanticType(ShaderVariable::SemanticType type) const;
 
 };
 

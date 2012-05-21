@@ -1,6 +1,15 @@
 #include "CharacterShader.h"
 
 CharacterShader::CharacterShader(const std::string& location) : Shader(location) {
+  exportedVars[0] = Position;
+  exportedVars[1] = Normal;
+  exportedVars[2] = TextureCoord;
+  exportedVars[3] = DiffuseMap;
+  exportedVars[4] = Ks;
+  exportedVars[5] = Ka;
+  exportedVars[6] = Kd;
+  exportedVars[7] = Shininess;
+  exportedVars[8] = Time;
 }
 
 void CharacterShader::setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) {
