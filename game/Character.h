@@ -96,7 +96,7 @@ class Character {
     /**
      * Texture to shade with
      */
-    sf::Image texture;
+    sf::Image* texture;
 
     /**
      * Sets up the texture data

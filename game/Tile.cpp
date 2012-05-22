@@ -33,24 +33,13 @@ Tile::Tile(string tileTexture) {
   //load the parallax shader
   shader = (ResourceManager::get())->getParallaxShader();
 
-  if (!diffuse.LoadFromFile("textures/"+tileTexture+"_tile_diffuse.jpg")) {
-    cerr << "Could not load tile diffuse texture." << endl;
-    exit(-1);
-  }
-
-  if (!height.LoadFromFile("textures/"+tileTexture+"_tile_displacement.jpg")) {
-    cerr << "Could not load tile displacement texture." << endl;
-    exit(-1);
-  }
-
-  if (!normal.LoadFromFile("textures/"+tileTexture+"_tile_normal.jpg")) {
-    cerr << "Could not load tile normal texture." << endl;
-    exit(-1);
-  }
+  diffuse = (ResourceManager::get())->getTexture(tileTexture+"_diffuse");
+  height = (ResourceManager::get())->getTexture(tileTexture+"_height");
+  normal = (ResourceManager::get())->getTexture(tileTexture+"_normal");
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
-  height.Bind();
+  height->Bind();
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
   GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
           GL_LINEAR_MIPMAP_NEAREST));
@@ -60,7 +49,7 @@ Tile::Tile(string tileTexture) {
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
-  diffuse.Bind();
+  diffuse->Bind();
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
   GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
           GL_LINEAR_MIPMAP_NEAREST));
@@ -70,7 +59,7 @@ Tile::Tile(string tileTexture) {
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
-  normal.Bind();
+  normal->Bind();
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
   GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
           GL_LINEAR_MIPMAP_NEAREST));
@@ -154,13 +143,13 @@ void Tile::setMeshData(u_int meshIdx) {
 void Tile::setTextures() {
   shader->setUniformDiffuseTex(0);
   glActiveTexture(GL_TEXTURE0);
-  diffuse.Bind();
+  diffuse->Bind();
 
   shader->setUniformHeightMap(1);
   glActiveTexture(GL_TEXTURE1);
-  height.Bind();
+  height->Bind();
 
   shader->setUniformNormalMap(2);
   glActiveTexture(GL_TEXTURE2);
-  normal.Bind();
+  normal->Bind();
 }

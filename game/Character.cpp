@@ -31,13 +31,11 @@ Character::Character() :
   shader = (ResourceManager::get())->getCharacterShader();
 
   //grab our texture
-  if (!texture.LoadFromFile("textures/main_char_tex.jpg")) {
-    cerr << "Error loading character textures." << endl;
-  }
+  texture = (ResourceManager::get())->getTexture("main_char_tex2");
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
-  texture.Bind();
+  texture->Bind();
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
   GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
           GL_LINEAR_MIPMAP_NEAREST));
@@ -204,5 +202,5 @@ void Character::setMeshMaterials(u_int meshIdx) {
 void Character::setTexture() {
   shader->setUniformTextureImg(0);
   glActiveTexture(GL_TEXTURE0);
-  texture.Bind();
+  texture->Bind();
 }

@@ -15,6 +15,7 @@ ResourceManager::ResourceManager() {
   rootResourceFile.printFile();
   populateMeshMap(rootResourceFile.get("meshes"));
   populateShaderMap(rootResourceFile.get("shaders"));
+  populateTextureMap(rootResourceFile.get("textures"));
 
   //initializing known shaders
   //TODO FIX THIS HACK WHERE WE ASSUME WE KNOW WHERE THE ENGINE SHADERS
@@ -25,6 +26,31 @@ ResourceManager::ResourceManager() {
 
 ResourceManager::~ResourceManager() {
   // TODO Auto-generated destructor stub
+}
+
+void ResourceManager::populateTextureMap(set<string> textureFolders) {
+  set<string>::iterator iter;
+  for (iter = textureFolders.begin(); iter != textureFolders.end(); ++iter) {
+    string folder = *iter;
+    CfgFile textureResourceFile(folder + "/textures.rsrc");
+    map<string, set<string> > values = textureResourceFile.getAllPairs();
+    map<string, set<string> >::iterator valuesIter;
+    for (valuesIter = values.begin(); valuesIter != values.end(); ++valuesIter) {
+      //get first element in set as we expect only one key value pair of this type
+      string textureName = *(valuesIter->second.begin());
+      if (textures.find(valuesIter->first) == textures.end()) {
+        sf::Image* img = new sf::Image();
+        if (!img->LoadFromFile(folder + "/" + textureName)) {
+          cerr << "Could not find texture: " << textureName << " in " << folder
+              << endl;
+        } else {
+          cout << "Binding texture name " << valuesIter->first
+              << " to texture at " << (folder + "/" + textureName) << endl;
+          textures[valuesIter->first] = img;
+        }
+      }
+    }
+  }
 }
 
 void ResourceManager::populateMeshMap(set<string> meshFolders) {
@@ -63,7 +89,7 @@ void ResourceManager::populateShaderMap(set<string> shaderFolders) {
         Shader* shader = new Shader(folder + "/" + shaderName);
 
         if (!shader->loaded()) {
-          cerr << shader->errors() <<endl;
+          cerr << shader->errors() << endl;
           exit(-1);
         }
 
@@ -85,6 +111,13 @@ Shader* ResourceManager::getShader(string key) const {
     return NULL;
   }
   return shaders.find(key)->second;
+}
+
+sf::Image* ResourceManager::getTexture(string key) const {
+  if (textures.find(key) == textures.end()) {
+    return NULL;
+  }
+  return textures.find(key)->second;
 }
 
 void ResourceManager::init() {

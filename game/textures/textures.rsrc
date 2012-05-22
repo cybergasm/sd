@@ -1,0 +1,11 @@
+brick_diffuse:brick_tile_diffuse.jpg
+brick_height:brick_tile_displacement.jpg
+brick_normal:brick_tile_normal.jpg
+cobble_diffuse:cobble_tile_diffuse.jpg
+cobble_height:cobble_tile_displacement.jpg
+cobble_normal:cobble_tile_normal.jpg
+main_char_tex1:main_char_tex.jpg
+main_char_tex2:main_char_tex2.jpg
+rock_diffuse:rock_tile_diffuse.jpg
+rock_height:rock_tile_displacement.jpg
+rock_normal:rock_tile_normal.jpg

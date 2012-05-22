@@ -22,6 +22,10 @@
 #include "ParallaxShader.h"
 #include "CharacterShader.h"
 
+// SFML automatically includes SDL headers
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+
 using namespace std;
 
 class ResourceManager {
@@ -51,7 +55,7 @@ class ResourceManager {
      */
     Mesh3DS* getMesh(string key) const;
     Shader* getShader(string key) const;
-
+    sf::Image* getTexture(string key) const;
     /**
      * Accessor method for different shaders exposed by the
      * engine
@@ -63,9 +67,11 @@ class ResourceManager {
     //map holding handles to their respective objects
     map <string, Mesh3DS*> meshes;
     map <string, Shader*> shaders;
+    map <string, sf::Image*> textures;
 
     void populateMeshMap(set<string> meshFolders);
     void populateShaderMap(set<string> shaderFolders);
+    void populateTextureMap(set<string> textureFolders);
 
     //Specific shaders exposed by the game engine
     ParallaxShader* plaxShader;

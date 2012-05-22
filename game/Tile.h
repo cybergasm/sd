@@ -42,17 +42,17 @@ class Tile {
     /**
      * Diffuse texture
      */
-    sf::Image diffuse;
+    sf::Image* diffuse;
 
     /**
      * Height map
      */
-    sf::Image height;
+    sf::Image* height;
 
     /**
      * Normal map
      */
-    sf::Image normal;
+    sf::Image* normal;
 
     /**
      * Renders one node of the mesh
