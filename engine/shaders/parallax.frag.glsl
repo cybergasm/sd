@@ -15,13 +15,9 @@ varying vec3 normal;
 
 //Won't waste time passing stuff in as it is the same for
 //most tiles
-//@Ks  
 uniform vec3 Ks = vec3(.14, .14, .1);
-//@Ka
 uniform vec3 Ka = vec3(.01, .01, .01);
-//@Kd
 uniform vec3 Kd = vec3(1, 1, 1);
-//@Shininess
 uniform float alpha = .3;
 
 void main() {

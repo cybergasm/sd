@@ -9,10 +9,6 @@ ParallaxShader::ParallaxShader(const std::string& location) : Shader(location) {
   exportedVars[5] = DiffuseMap;
   exportedVars[6] = HeightMap;
   exportedVars[7] = NormalMap;
-  exportedVars[8] = Ks;
-  exportedVars[9] = Ka;
-  exportedVars[10] = Kd;
-  exportedVars[11] = Shininess;
 }
 
 void ParallaxShader::setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const {
@@ -74,34 +70,18 @@ void ParallaxShader::setNormalMap(int in1) const{
 void ParallaxShader::setUniformKs(float in1, float in2, float in3) const{
   setUniform3f("Ks", in1, in2, in3);
 }
-void ParallaxShader::setKs(float in1, float in2, float in3) const{
-  setUniformKs(in1, in2, in3);
-}
-
 void ParallaxShader::setUniformKa(float in1, float in2, float in3) const{
   setUniform3f("Ka", in1, in2, in3);
 }
-void ParallaxShader::setKa(float in1, float in2, float in3) const{
-  setUniformKa(in1, in2, in3);
-}
-
 void ParallaxShader::setUniformKd(float in1, float in2, float in3) const{
   setUniform3f("Kd", in1, in2, in3);
 }
-void ParallaxShader::setKd(float in1, float in2, float in3) const{
-  setUniformKd(in1, in2, in3);
-}
-
 void ParallaxShader::setUniformAlpha(float in1) const{
   setUniform1f("alpha", in1);
 }
-void ParallaxShader::setShininess(float in1) const{
-  setUniformAlpha(in1);
-}
-
 const Shader::KnownVars* ParallaxShader::getExpectedVars() const {
   return exportedVars;
 }
 int ParallaxShader::getExpectedVarsCount() const {
-  return 12;
+  return 8;
 }
