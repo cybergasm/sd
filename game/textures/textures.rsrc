@@ -6,3 +6,6 @@ cobble_height:cobble_tile_displacement.jpg
 cobble_normal:cobble_tile_normal.jpg
 main_char_tex1:main_char_tex.jpg
 main_char_tex2:main_char_tex2.jpg
+newbrick_diffuse:newbrick_diffuse.jpg
+newbrick_height:newbrick_displacement.jpg
+newbrick_normal:newbrick_normal.jpg
