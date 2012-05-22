@@ -21,7 +21,18 @@ ResourceManager::ResourceManager() {
   //TODO FIX THIS HACK WHERE WE ASSUME WE KNOW WHERE THE ENGINE SHADERS
   //ARE
   plaxShader = new ParallaxShader("../engine/shaders/parallax");
+  if (!plaxShader->loaded()) {
+    cerr << "Parallax shader not loaded." << endl;
+    cerr << plaxShader->errors() << endl;
+    exit(-1);
+  }
+
   characterShader = new CharacterShader("../engine/shaders/character");
+  if (!characterShader->loaded()) {
+    cerr << "Character shader not loaded." << endl;
+    cerr << characterShader->errors() << endl;
+    exit(-1);
+  }
 }
 
 ResourceManager::~ResourceManager() {

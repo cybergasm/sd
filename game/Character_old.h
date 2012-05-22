@@ -18,9 +18,8 @@
 
 #include "engine/Mesh3DS.h"
 #include "engine/CharacterShader.h"
-#include "engine/MeshRenderer.h"
 
-class Character : public MeshRenderer{
+class Character {
   public:
     Character();
     virtual ~Character();
@@ -46,13 +45,6 @@ class Character : public MeshRenderer{
      * Returns position
      */
     aiVector3D getPos();
-
-    /**
-     * Overrides custom render methods
-     */
-    void setWholeMeshTransform() const;
-    void setCustomTransformation(string meshName) const;
-    float getTime() const;
   private:
     /**
      * Movement rate of the character
@@ -87,9 +79,50 @@ class Character : public MeshRenderer{
     float xPos, yPos, zPos;
 
     /**
+     * Mesh of character and related attributes
+     */
+    Mesh3DS* characterMesh;
+
+    /**
+     * Renders a node in the given mesh
+     */
+    void nodeRender(aiNode* node);
+
+    /**
+     * Character shader.
+     */
+    CharacterShader* shader;
+
+    /**
+     * Texture to shade with
+     */
+    sf::Image* texture;
+
+    /**
+     * Sets up the texture data
+     */
+    void setTexture();
+
+    /**
+     * Sets the material values
+     */
+    void setMeshMaterials(u_int mesh);
+
+    /**
+     * Sets relevant mesh data such as position, texcoords, and normals
+     */
+    void setMeshData(u_int mesh);
+
+    /**
      * Moves time proportional to rate
      */
     void updateTime(float framerate);
+
+    /**
+     * Animates arms and body depending on mesh index
+     * to give sense of liveliness
+     */
+    void meshAnimate(aiString meshName);
 };
 
 #endif /* CHARACTER_H_ */

@@ -102,3 +102,6 @@ void ParallaxShader::setShininess(float in1) const{
 const Shader::KnownVars* ParallaxShader::getExpectedVars() const {
   return exportedVars;
 }
+int ParallaxShader::getExpectedVarsCount() const {
+  return 12;
+}

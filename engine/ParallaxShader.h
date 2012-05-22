@@ -57,6 +57,7 @@ class ParallaxShader : public Shader {
 
 
     const Shader::KnownVars* getExpectedVars() const;
+    int getExpectedVarsCount() const;
   private:
     KnownVars exportedVars[12];
 };

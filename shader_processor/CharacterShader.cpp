@@ -81,3 +81,6 @@ void CharacterShader::setTime(float in1) const{
 const Shader::KnownVars* CharacterShader::getExpectedVars() const {
   return exportedVars;
 }
+int CharacterShader::getExpectedVarsCount() const {
+  return 9;
+}

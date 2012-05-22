@@ -34,9 +34,13 @@ void ShaderClassGenerator::genHeader(const string& fileName,
   if (getNumberSemanticVars(parsedShader) > 0) {
     genExportedGetterDef(headerWriter);
   }
-
+  genSemanticCountDeclaration(headerWriter);
   genExportedVars(headerWriter, parsedShader);
   genHeaderConclusion(headerWriter);
+}
+
+void ShaderClassGenerator::genSemanticCountDeclaration(ofstream& headerFile) const {
+  headerFile << "    int getExpectedVarsCount() const;"<<endl;
 }
 
 void ShaderClassGenerator::generateMethodDeclarations(ofstream& headerFile,
@@ -132,6 +136,8 @@ void ShaderClassGenerator::genClassFile(const string& fileName,
   if (getNumberSemanticVars(parsedShader) > 0) {
     genExportedVarGetter(classWriter, fileName);
   }
+
+  genExportedVarCount(classWriter, fileName, parsedShader);
 }
 
 void ShaderClassGenerator::genConstructorDef(ofstream& classWriter,
@@ -187,6 +193,14 @@ void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
     genUniformSemanticDef(classWriter, fileName, *iter);
   }
 }
+
+void ShaderClassGenerator::genExportedVarCount(ofstream& classWriter,
+    const string& fileName, const ShaderParser* shaderParser) const {
+  classWriter<<"int "<<fileName<<"::getExpectedVarsCount() const {"<<endl;
+  classWriter<<"  return "<<getNumberSemanticVars(shaderParser)<<";"<<endl;
+  classWriter<<"}";
+}
+
 
 void ShaderClassGenerator::genExportedVarGetter(ofstream& classWriter,
     const string& fileName) const {

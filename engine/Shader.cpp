@@ -247,3 +247,8 @@ void Shader::setSpecularMap(int in1) const {
 const Shader::KnownVars* Shader::getExpectedVars() const{
   return NULL;
 }
+
+int Shader::getExpectedVarsCount() const {
+  return 0;
+}
+

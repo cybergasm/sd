@@ -156,6 +156,11 @@ class Shader {
      * overridden
      */
     virtual const KnownVars* getExpectedVars() const;
+
+    /**
+     * Returns count of expected vars
+     */
+    virtual int getExpectedVarsCount() const;
   private:
     std::vector<char> readSource(const std::string& path);
 

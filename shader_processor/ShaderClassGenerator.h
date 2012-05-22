@@ -46,12 +46,14 @@ class ShaderClassGenerator {
 
     //Generates the array declaration storing exported vars
     void
-    genExportedVars(ofstream& headerWriter,
-        const ShaderParser* var) const;
+    genExportedVars(ofstream& headerWriter, const ShaderParser* var) const;
 
     //Generates the overwrite declaration of setters for semantic values
     void
         genSemanticDeclaration(ofstream& headerFile, const ShaderVariable& var) const;
+
+    //Generates the getter for semantic variable count
+    void genSemanticCountDeclaration(ofstream& headerFile) const;
 
     //Generates a uniform declaration
     void
@@ -79,18 +81,25 @@ class ShaderClassGenerator {
     //to the Shader constructor along with an initialization of the
     //exported variable array
     void
-    genConstructorDef(ofstream& classWriter, const string& fileName, const ShaderParser* parsedShader) const;
+    genConstructorDef(ofstream& classWriter, const string& fileName,
+        const ShaderParser* parsedShader) const;
 
     //Generates the initialization code for the exported variable array. Have to
     //go through each individually.
-    void genExportedVarArrayInit(ofstream& classWriter, const ShaderParser* parsedShader) const;
+    void genExportedVarArrayInit(ofstream& classWriter,
+        const ShaderParser* parsedShader) const;
 
     //Generates definitions for setter methods
     void genMethodDef(ofstream& classWriter, const string& fileName,
         const ShaderParser* parsedShader) const;
 
     //Generates the getter for exported variables method
-    void genExportedVarGetter(ofstream& classWriter, const string& fileName) const;
+    void
+    genExportedVarGetter(ofstream& classWriter, const string& fileName) const;
+
+    //Generates getter of count of exported variables
+    void genExportedVarCount(ofstream& classWriter, const string& fileName,
+        const ShaderParser* shaderParser) const;
 
     //Generates definition for attribute setter
     void genAttributeDef(ofstream& classWriter, const string& fileName,
