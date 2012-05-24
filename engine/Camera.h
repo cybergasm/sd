@@ -60,6 +60,11 @@ class Camera {
     void moveDown();
 
     /**
+     * Sets rate of movemement
+     */
+    void setMovementRate(float rate);
+
+    /**
      * Positions the camera in space by setting modelview and projection
      * matrices
      */

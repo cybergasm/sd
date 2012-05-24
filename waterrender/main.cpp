@@ -13,11 +13,13 @@
 #include "engine/RenderingWindow.h"
 #include "engine/InputProcessor.h"
 #include "engine/ResourceManager.h"
-#include "engine/MeshRenderer.h"
 #include "engine/Camera.h"
 
 #include "CloseWindowEvent.h"
+#include "KeyMovement.h"
+#include "MouseLookEvent.h"
 #include "WavesShader.h"
+#include "WaveRenderer.h"
 
 using namespace std;
 
@@ -45,6 +47,7 @@ void glInit() {
   glEnable(GL_DEPTH_TEST);
   glDepthMask(GL_TRUE);
 
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   //lighting
   //Enable lighting and set some color
   GLfloat lightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -65,6 +68,21 @@ void configureInput() {
   //Wire up the event to close window
   CloseWindowEvent* cWindow = new CloseWindowEvent(&window);
   inputProcessor.bind(KeySequence(InputEvent::WinClosed), cWindow);
+
+  //Wire up the event to move the character along the axis
+  KeyMovement* movement = new KeyMovement(camera);
+  KeySequence movementKeys;
+  movementKeys.add(InputEvent::KeyW);
+  movementKeys.add(InputEvent::KeyA);
+  movementKeys.add(InputEvent::KeyS);
+  movementKeys.add(InputEvent::KeyD);
+  movementKeys.add(InputEvent::KeyV);
+  movementKeys.add(InputEvent::Space);
+  inputProcessor.bind(movementKeys, movement);
+
+  //Wire up the mouse to rotate view
+  MouseLookEvent* mouseLook = new MouseLookEvent(&window, camera);
+  inputProcessor.bind(KeySequence(InputEvent::MouseMove), mouseLook);
 }
 
 void getInput() {
@@ -79,6 +97,8 @@ void init() {
 
   camera = new Camera(nearClip, farClip, fieldOfView, window.getHeight(),
       window.getWidth());
+  camera->setMovementRate(.05);
+  window.showMouseCursor(false);
 }
 
 int main() {
@@ -86,12 +106,12 @@ int main() {
   init();
   configureInput();
   ResourceManager::init();
-  MeshRenderer renderer;
-  WavesShader* waves = new WavesShader("shaders/waves");
+  WaveRenderer renderer;
   while (window.isOpened()) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     getInput();
     camera->posCameraSetupView();
+    renderer.render(window.getFramerate());
     window.display();
-    renderer.renderMesh((ResourceManager::get())->getMesh("tile-hr"), waves);
   }
 }

@@ -17,7 +17,8 @@ LIBS = -L../engine  \
 	-lGLEW \
 	-lengine
 	
-OBJS = main.o CloseWindowEvent.o WavesShader.o
+OBJS = main.o CloseWindowEvent.o WavesShader.o KeyMovement.o MouseLookEvent.o \
+ WaveRenderer.o
 
 all: water
 

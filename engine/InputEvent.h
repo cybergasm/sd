@@ -52,6 +52,7 @@ class InputEvent {
 			Key7,
 			Key8,
 			Key9,
+			Space,
 			KeyEnter,
 			WinClosed,
 			LMouse,

@@ -105,6 +105,8 @@ vector<InputEvent::Inputs> RenderingWindow::getEvents(int& mouseX, int& mouseY) 
 					toReturn.push_back(InputEvent::Key8);
 				} else if (evt.Key.Code == sf::Key::Num9) {
 					toReturn.push_back(InputEvent::Key9);
+				} else if (evt.Key.Code == sf::Key::Space) {
+				  toReturn.push_back(InputEvent::Space);
 				} else if (evt.Key.Code == sf::Key::Return) {
 					toReturn.push_back(InputEvent::KeyEnter);
 				}

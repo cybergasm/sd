@@ -12,10 +12,14 @@ class WavesShader : public Shader {
     void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
+    void setTime(float in1) const;
+    void setUniformT(float in1) const;
+
+
     const Shader::KnownVars* getExpectedVars() const;
     int getExpectedVarsCount() const;
   private:
-    KnownVars exportedVars[1];
+    KnownVars exportedVars[2];
 };
 
 #endif
