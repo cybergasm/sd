@@ -1,4 +1,5 @@
 //for diffuse mapping
+//@DiffuseMap
 uniform sampler textureImg;
 
 varying vec2 texcoord;

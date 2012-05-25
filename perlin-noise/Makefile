@@ -17,12 +17,11 @@ LIBS = -L../engine  \
 	-lGLEW \
 	-lengine
 	
-OBJS = main.o CloseWindowEvent.o WavesShader.o KeyMovement.o MouseLookEvent.o \
- WaveRenderer.o
+OBJS = main.o PerlinNoiseGenerator.o TextureShader.o CloseWindowEvent.o
 
-all: water
+all: perlin
 
-water: $(OBJS) ../engine/libengine.so.1.0.1
+perlin: $(OBJS) ../engine/libengine.so.1.0.1
 	g++ -g -Wall -o $@ $^ $(LIBS)
 
 %.o:%.cpp
@@ -30,11 +29,11 @@ water: $(OBJS) ../engine/libengine.so.1.0.1
 
 #Don't want to add this to LD so we do a quick hack while we're coding	
 run: sd
-	LD_LIBRARY_PATH=/home/emint/Documents/Projects/is/sd/engine ./water
+	LD_LIBRARY_PATH=/home/emint/Documents/Projects/is/sd/engine ./perlin 
 	
 clean: 
 	rm -f *.o
 	
 #Rules for making the shaders
-WavesShader.o: $(SHADER_LOCATION)/waves.vert.glsl $(SHADER_LOCATION)/waves.frag.glsl
-	./shader_parser $(SHADER_LOCATION)/waves WavesShader; g++ -c $(CXXFLAGS) WavesShader.cpp -o $@ 	
+TextureShader.o: $(SHADER_LOCATION)/simpletexture.vert.glsl $(SHADER_LOCATION)/simpletexture.frag.glsl
+	./shader_parser $(SHADER_LOCATION)/simpletexture TextureShader; g++ -c $(CXXFLAGS) TextureShader.cpp -o $@ 	
