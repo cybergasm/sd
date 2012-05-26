@@ -53,6 +53,22 @@ void MeshRenderer::setSpecTex(string texName) {
   mipmapTexture();
 }
 
+void MeshRenderer::setDiffuseTex(sf::Image* tex) {
+  diffuseTex = tex;
+}
+
+void MeshRenderer::setHeightTex(sf::Image* tex) {
+  heightTex = tex;
+}
+
+void MeshRenderer::setNormTex(sf::Image* tex) {
+  normalTex = tex;
+}
+
+void MeshRenderer::setSpecTex(sf::Image* tex) {
+  specTex = tex;
+}
+
 void MeshRenderer::renderMesh(Mesh3DS* mesh, Shader* shader) const {
   //Remember the program at time of call so we can
   //reset

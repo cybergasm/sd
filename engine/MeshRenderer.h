@@ -37,6 +37,13 @@ class MeshRenderer {
     void setSpecTex(string texName);
     void setHeightTex(string texName);
 
+    //Sets the appropriate texture to the passed in image. Performs no
+    //mimap
+    void setDiffuseTex(sf::Image* tex);
+    void setNormTex(sf::Image* tex);
+    void setSpecTex(sf::Image* tex);
+    void setHeightTex(sf::Image* tex);
+
     //Render call that goes through rendering passed in mesh with the
     //given shader
     void renderMesh(Mesh3DS* mesh, Shader* shader) const;

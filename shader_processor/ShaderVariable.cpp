@@ -78,7 +78,7 @@ string ShaderVariable::getSemanticAsString() const {
   } else if (semType == Normal) {
     return "Normal";
   } else if (semType == Position) {
-    return "Normal";
+    return "Position";
   } else if (semType == TextureCoord) {
     return "TextureCoords";
   } else if (semType == Time) {

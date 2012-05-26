@@ -19,14 +19,14 @@ PerlinNoiseGenerator::~PerlinNoiseGenerator() {
 
 void PerlinNoiseGenerator::generateNoise(int slices) {
   for (int i = 0; i < slices; i++) {
-    generateSlice(i * 10, slices);
+    generateSlice(i, slices);
   }
 }
 
 void PerlinNoiseGenerator::generateSlice(int slice, int numSlices) {
   float vals[width][height];
   int oCount = 5;
-  float persistence = .5;
+  float persistence = .6;
   float totAmp = getTotAmp(oCount, persistence);
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
@@ -51,10 +51,11 @@ void PerlinNoiseGenerator::generateSlice(int slice, int numSlices) {
               vals[x][y] * 255.0f));
     }
   }
+
   noiseSeries.push_back(img);
 }
 
-float PerlinNoiseGenerator::getTotAmp(int octaves, float persistence) {
+float PerlinNoiseGenerator::getTotAmp(int octaves, float persistence) const {
   float tot = 0;
   for (int octave = octaves; octave >= 0; octave--) {
     tot += pow(persistence, octave);
@@ -63,7 +64,7 @@ float PerlinNoiseGenerator::getTotAmp(int octaves, float persistence) {
 }
 
 float PerlinNoiseGenerator::samplePoint(float x, float y, float slice,
-    int numSlices, int octaveCnt, float persistence) {
+    int numSlices, int octaveCnt, float persistence) const {
   float total = 0;
   //this avoids us having to keep an intermediate smooth noise array
   for (int octave = octaveCnt; octave >= 0; octave--) {
@@ -78,7 +79,7 @@ float PerlinNoiseGenerator::samplePoint(float x, float y, float slice,
 }
 
 float PerlinNoiseGenerator::noise(int x, int y, int slice, int period,
-    float frequency, int numSlices) {
+    float frequency, int numSlices) const {
   //Division to truncate. We are looking for the points
   //around x,y,slice
   int x0 = (x / period) * period;
@@ -111,15 +112,15 @@ float PerlinNoiseGenerator::noise(int x, int y, int slice, int period,
   return lerp(mid0, mid1, w);
 }
 
-float PerlinNoiseGenerator::lerp(float a, float b, float t) {
+float PerlinNoiseGenerator::lerp(float a, float b, float t) const{
   return (1 - t) * a + t * b;
 }
 
-float PerlinNoiseGenerator::interpVal(int t) {
+float PerlinNoiseGenerator::interpVal(int t) const {
   return t * t * t * (t * (t * 6 - 15) + 10);
 }
 
-float PerlinNoiseGenerator::getPseudoRandom(int x, int y, int z) {
+float PerlinNoiseGenerator::getPseudoRandom(int x, int y, int z) const {
   int num = x + y * 57 + z * 809;
   num = (num << 13) ^ num;
   float multiplier = (1.0f - ((num * (num * num * 15731 + 789221) + 1376312589)
@@ -128,4 +129,8 @@ float PerlinNoiseGenerator::getPseudoRandom(int x, int y, int z) {
   multiplier += 1.0f;
   multiplier /= 2.0f;
   return multiplier;
+}
+
+sf::Image* PerlinNoiseGenerator::getSlice(int slice) const {
+  return noiseSeries.at(slice);
 }

@@ -8,9 +8,11 @@ class TextureShader : public Shader {
     ~TextureShader();
 
 
+    void setPosition(bool normalized, GLsizei stride, GLvoid* data) const;
     void setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
+    void setTextureCoords(bool normalized, GLsizei stride, GLvoid* data) const;
     void setAttributeTexCoordIn(bool normalized, GLsizei stride, GLvoid* data) const;
 
 
@@ -21,7 +23,7 @@ class TextureShader : public Shader {
     const Shader::KnownVars* getExpectedVars() const;
     int getExpectedVarsCount() const;
   private:
-    KnownVars exportedVars[1];
+    KnownVars exportedVars[3];
 };
 
 #endif

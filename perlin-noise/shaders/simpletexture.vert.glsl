@@ -1,7 +1,9 @@
 //vertex color
+//@Position
 attribute vec3 positionIn;
 
 //texture coordinate
+//@TextureCoordinates
 attribute vec2 texCoordIn;
 
 varying vec2 texcoord;
