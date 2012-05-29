@@ -20,6 +20,7 @@
 #include "CloseWindowEvent.h"
 #include "KeyMovement.h"
 #include "MouseLookEvent.h"
+#include "LightMovementEvent.h"
 #include "WavesShader.h"
 #include "WaveRenderer.h"
 #include "PerlinWavesRenderer.h"
@@ -28,6 +29,7 @@ using namespace std;
 RenderingWindow window("Water", 1024, 1024);
 InputProcessor inputProcessor(&window);
 Camera* camera;
+GLfloat lightPosition[] = { 0, 0, 0 };
 
 void glInit() {
 #ifdef FRAMEWORK_USE_GLEW
@@ -49,7 +51,7 @@ void glInit() {
   glEnable(GL_DEPTH_TEST);
   glDepthMask(GL_TRUE);
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   //lighting
   //Enable lighting and set some color
   GLfloat lightDiffuse[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -71,7 +73,7 @@ void configureInput() {
   CloseWindowEvent* cWindow = new CloseWindowEvent(&window);
   inputProcessor.bind(KeySequence(InputEvent::WinClosed), cWindow);
 
-  //Wire up the event to move the character along the axis
+  //Wire up the event to move the Camera along the axis
   KeyMovement* movement = new KeyMovement(camera);
   KeySequence movementKeys;
   movementKeys.add(InputEvent::KeyW);
@@ -81,6 +83,15 @@ void configureInput() {
   movementKeys.add(InputEvent::KeyV);
   movementKeys.add(InputEvent::Space);
   inputProcessor.bind(movementKeys, movement);
+
+  //Wire up keys to move light around
+  LightMovementEvent* lMove = new LightMovementEvent(lightPosition);
+  KeySequence lMovementKeys;
+  lMovementKeys.add(InputEvent::KeyI);
+  lMovementKeys.add(InputEvent::KeyJ);
+  lMovementKeys.add(InputEvent::KeyK);
+  lMovementKeys.add(InputEvent::KeyL);
+  inputProcessor.bind(lMovementKeys, lMove);
 
   //Wire up the mouse to rotate view
   MouseLookEvent* mouseLook = new MouseLookEvent(&window, camera);
@@ -108,11 +119,13 @@ int main() {
   init();
   configureInput();
   ResourceManager::init();
-  //WaveRenderer renderer;
-  PerlinWavesRenderer renderer;
+  WaveRenderer renderer;
+  //PerlinWavesRenderer renderer;
   while (window.isOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     getInput();
+
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     camera->posCameraSetupView();
     renderer.render(window.getFramerate());
     window.display();
