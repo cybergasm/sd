@@ -175,7 +175,7 @@ ShaderVariable::VarTypes ShaderParser::getType(string type) {
     return ShaderVariable::Vec3;
   } else if (type == "vec4") {
     return ShaderVariable::Vec4;
-  } else if (type == "sampler") {
+  } else if (type == "sampler" || type == "sampler2D") {
     return ShaderVariable::Sampler;
   } else if (type == "float") {
     return ShaderVariable::Float;
