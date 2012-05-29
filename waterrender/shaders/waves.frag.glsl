@@ -1,9 +1,9 @@
 varying vec3 N;
 varying vec3 eyePosition;
 
-uniform vec3 Ks = vec3(.3, .4, 0.34);
+uniform vec3 Ks = vec3(1, 1, 1);
 uniform vec3 Ka = vec3(.35, .55, .46);
-uniform vec3 Kd = vec3(.2, .1, .4);
+uniform vec3 Kd = vec3(0, .2, .8);
 uniform float alpha = .8;
 
 void main() {
@@ -27,7 +27,7 @@ void main() {
   	float Rs = pow(max(0.0, dot(V, R)), alpha);
 
   
-  	vec3 Ts = vec3(.1, .3, .2);
+  	vec3 Ts = vec3(1, 1, 1);
   	vec3 specular = Rs * Ks * Ts * gl_LightSource[lightIndex].specular.rgb;
 
   	//Ambient
@@ -36,4 +36,5 @@ void main() {
   }
   
   gl_FragColor = finalColor;
+  
 }

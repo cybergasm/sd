@@ -42,6 +42,10 @@ void main() {
 	positionIn.z += waveInfo.z;
 	N.x += waveInfo.x;
 	N.y += waveInfo.y;
+	waveInfo = getWaveHeight(positionIn.xy, vec2(.5,.25), .007, .8, .05);
+	positionIn.z += waveInfo.z;
+	N.x += waveInfo.x;
+	N.y += waveInfo.y;
 	
 	//transform normal
 	N = gl_NormalMatrix * N;
