@@ -15,12 +15,14 @@
 #include "engine/ResourceManager.h"
 #include "engine/Camera.h"
 
+#include "perlin-noise/PerlinNoiseGenerator.h"
+
 #include "CloseWindowEvent.h"
 #include "KeyMovement.h"
 #include "MouseLookEvent.h"
 #include "WavesShader.h"
 #include "WaveRenderer.h"
-
+#include "PerlinWavesRenderer.h"
 using namespace std;
 
 RenderingWindow window("Water", 1024, 1024);
@@ -106,7 +108,8 @@ int main() {
   init();
   configureInput();
   ResourceManager::init();
-  WaveRenderer renderer;
+  //WaveRenderer renderer;
+  PerlinWavesRenderer renderer;
   while (window.isOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     getInput();

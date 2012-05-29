@@ -4,6 +4,8 @@
 CXXFLAGS = -g -Wall -Wno-switch -I../ 
 
 SHADER_LOCATION = shaders
+SHADER_PARSER_LOC = ../shader_processor
+
 #Note that this expects your SFML libraries and headers to be
 #installed as necessary
 #Assumes assimp is installed on search path. 
@@ -18,7 +20,8 @@ LIBS = -L../engine  \
 	-lengine
 	
 OBJS = main.o CloseWindowEvent.o WavesShader.o KeyMovement.o MouseLookEvent.o \
- WaveRenderer.o
+ WaveRenderer.o ../perlin-noise/PerlinNoiseGenerator.o PerlinWavesShader.o \
+ PerlinWavesRenderer.o
 
 all: water
 
@@ -38,3 +41,6 @@ clean:
 #Rules for making the shaders
 WavesShader.o: $(SHADER_LOCATION)/waves.vert.glsl $(SHADER_LOCATION)/waves.frag.glsl
 	./shader_parser $(SHADER_LOCATION)/waves WavesShader; g++ -c $(CXXFLAGS) WavesShader.cpp -o $@ 	
+	
+PerlinWavesShader.o: $(SHADER_LOCATION)/perlinwaves.vert.glsl $(SHADER_LOCATION)/perlinwaves.frag.glsl
+	$(SHADER_PARSER_LOC)/shader_parser $(SHADER_LOCATION)/perlinwaves PerlinWavesShader; g++ -c $(CXXFLAGS) PerlinWavesShader.cpp -o $@ 	
