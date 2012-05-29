@@ -5,7 +5,7 @@
 class ParallaxShader : public Shader {
   public: 
     ParallaxShader(const std::string& location);
-    ~ParallaxShader();
+    virtual ~ParallaxShader();
 
 
     void setPosition(bool normalized, GLsizei stride, GLvoid* data) const;

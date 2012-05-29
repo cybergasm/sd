@@ -15,6 +15,8 @@ ParallaxShader::ParallaxShader(const std::string& location) : Shader(location) {
   exportedVars[11] = Shininess;
 }
 
+ParallaxShader::~ParallaxShader() {
+}
 void ParallaxShader::setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const {
   setVertexAttribArray("positionIn", 3, GL_FLOAT, normalized, stride, data);
 }

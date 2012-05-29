@@ -84,6 +84,9 @@ class ShaderClassGenerator {
     genConstructorDef(ofstream& classWriter, const string& fileName,
         const ShaderParser* parsedShader) const;
 
+    //Generates an empty destructor so linker can find it.
+    void genDestructorDef(ofstream& classWriter, const string& fileName) const;
+
     //Generates the initialization code for the exported variable array. Have to
     //go through each individually.
     void genExportedVarArrayInit(ofstream& classWriter,

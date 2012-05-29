@@ -12,6 +12,8 @@ CharacterShader::CharacterShader(const std::string& location) : Shader(location)
   exportedVars[8] = Time;
 }
 
+CharacterShader::~CharacterShader() {
+}
 void CharacterShader::setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const {
   setVertexAttribArray("positionIn", 3, GL_FLOAT, normalized, stride, data);
 }

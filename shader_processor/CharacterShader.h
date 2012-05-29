@@ -5,7 +5,7 @@
 class CharacterShader : public Shader {
   public: 
     CharacterShader(const std::string& location);
-    ~CharacterShader();
+    virtual ~CharacterShader();
 
 
     void setPosition(bool normalized, GLsizei stride, GLvoid* data) const;

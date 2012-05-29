@@ -110,7 +110,7 @@ void ShaderClassGenerator::genHeaderPreamble(ofstream& headerFile,
   headerFile << "class " << fileName << " : public Shader {" << endl;
   headerFile << "  public: " << endl;
   headerFile << "    " << fileName << "(const std::string& location);" << endl;
-  headerFile << "    ~" << fileName << "();" << endl;
+  headerFile << "    virtual ~" << fileName << "();" << endl;
 
 }
 
@@ -131,6 +131,7 @@ void ShaderClassGenerator::genClassFile(const string& fileName,
   classWriter.open(classFileName.c_str());
   classWriter << "#include \"" << fileName << ".h\"" << endl << endl;
   genConstructorDef(classWriter, fileName, parsedShader);
+  genDestructorDef(classWriter, fileName);
   genMethodDef(classWriter, fileName, parsedShader);
 
   if (getNumberSemanticVars(parsedShader) > 0) {
@@ -150,6 +151,10 @@ void ShaderClassGenerator::genConstructorDef(ofstream& classWriter,
   classWriter << "}" << endl << endl;
 }
 
+void ShaderClassGenerator::genDestructorDef(ofstream& classWriter, const string& fileName) const {
+  classWriter<<fileName<<"::~"<<fileName<<"() {"<<endl;
+  classWriter<<"}"<<endl;
+}
 void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
     const ShaderParser* parsedShader) const {
   const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
