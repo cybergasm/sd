@@ -32,6 +32,8 @@ class PerlinNoiseGenerator {
     int width;
     int height;
 
+    //Random seed to differentiate runs
+    int seed;
     //The textures across the third dimension
     vector<sf::Image*> noiseSeries;
 

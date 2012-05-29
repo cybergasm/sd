@@ -4,6 +4,7 @@
 CXXFLAGS = -g -Wall -Wno-switch -I../ 
 
 SHADER_LOCATION = shaders
+SHADER_PROCESSOR_LOCATION = ../shader_processor
 #Note that this expects your SFML libraries and headers to be
 #installed as necessary
 #Assumes assimp is installed on search path. 
@@ -36,4 +37,4 @@ clean:
 	
 #Rules for making the shaders
 TextureShader.o: $(SHADER_LOCATION)/simpletexture.vert.glsl $(SHADER_LOCATION)/simpletexture.frag.glsl
-	./shader_parser $(SHADER_LOCATION)/simpletexture TextureShader; g++ -c $(CXXFLAGS) TextureShader.cpp -o $@ 	
+	$(SHADER_PROCESSOR_LOCATION)/shader_parser $(SHADER_LOCATION)/simpletexture TextureShader; g++ -c $(CXXFLAGS) TextureShader.cpp -o $@ 	

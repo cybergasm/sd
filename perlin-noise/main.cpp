@@ -94,11 +94,12 @@ int main() {
   inputInit();
   texShader = new TextureShader("shaders/simpletexture");
   PerlinNoiseGenerator gen;
-  int numFrames = 20;
+  int numFrames = 10;
   gen.generateNoise(numFrames);
   int curFrame = 0;
   time_t lastTime = 0;
   timeval curTimeV;
+  long modifier = 1;
   while (window.isOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     inputProcessor.getEvents();
@@ -108,10 +109,11 @@ int main() {
     long curTime = getMs(curTimeV);
     if ((curTime - lastTime) > 100) {
       lastTime = curTime;
-      curFrame++;
+      curFrame += modifier;
     }
-    if (curFrame >= numFrames) {
-      curFrame = 0;
+    if (curFrame >= numFrames || curFrame < 0) {
+      modifier *= -1;
+      curFrame += modifier;
     }
   }
 }

@@ -12,6 +12,8 @@
 
 PerlinNoiseGenerator::PerlinNoiseGenerator() :
   width(256), height(256) {
+  srand(time(NULL));
+  seed = rand()%500;
 }
 
 PerlinNoiseGenerator::~PerlinNoiseGenerator() {
@@ -121,7 +123,7 @@ float PerlinNoiseGenerator::interpVal(int t) const {
 }
 
 float PerlinNoiseGenerator::getPseudoRandom(int x, int y, int z) const {
-  int num = x + y * 57 + z * 809;
+  int num = x + y * 57 + z * 809 + seed * 1487;
   num = (num << 13) ^ num;
   float multiplier = (1.0f - ((num * (num * num * 15731 + 789221) + 1376312589)
       & 0x7fffffff) / 1073741824.0);

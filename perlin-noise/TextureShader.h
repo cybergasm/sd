@@ -5,7 +5,7 @@
 class TextureShader : public Shader {
   public: 
     TextureShader(const std::string& location);
-    ~TextureShader();
+    virtual ~TextureShader();
 
 
     void setPosition(bool normalized, GLsizei stride, GLvoid* data) const;

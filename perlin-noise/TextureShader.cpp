@@ -6,6 +6,8 @@ TextureShader::TextureShader(const std::string& location) : Shader(location) {
   exportedVars[2] = DiffuseMap;
 }
 
+TextureShader::~TextureShader() {
+}
 void TextureShader::setAttributePositionIn(bool normalized, GLsizei stride, GLvoid* data) const {
   setVertexAttribArray("positionIn", 3, GL_FLOAT, normalized, stride, data);
 }
