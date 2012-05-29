@@ -6,7 +6,7 @@ CXXFLAGS = -g -Wall -Wno-switch -I/usr/include/freetype2 -I/usr/include/qt4/Qt -
 
 #Shader location
 SHADER_LOCATION = shaders
-
+SHADER_PROCESSOR_LOCATION = ../shader_processor
 #Note that this expects your SFML libraries and headers to be
 #installed as necessary
 
@@ -43,7 +43,7 @@ clean:
 	
 #Rules for making the shaders
 ParallaxShader.o: $(SHADER_LOCATION)/parallax.vert.glsl $(SHADER_LOCATION)/parallax.frag.glsl
-	./shader_parser $(SHADER_LOCATION)/parallax ParallaxShader; g++ -c $(CXXFLAGS) -fPIC ParallaxShader.cpp -o $@ 
+	$(SHADER_PROCESSOR_LOCATION)/shader_parser $(SHADER_LOCATION)/parallax ParallaxShader; g++ -c $(CXXFLAGS) -fPIC ParallaxShader.cpp -o $@ 
 	
 CharacterShader.o: $(SHADER_LOCATION)/character.vert.glsl $(SHADER_LOCATION)/character.frag.glsl
-	./shader_parser $(SHADER_LOCATION)/character CharacterShader; g++ -c $(CXXFLAGS) -fPIC CharacterShader.cpp -o $@
+	$(SHADER_PROCESSOR_LOCATION)/shader_parser $(SHADER_LOCATION)/character CharacterShader; g++ -c $(CXXFLAGS) -fPIC CharacterShader.cpp -o $@
