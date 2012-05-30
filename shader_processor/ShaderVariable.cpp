@@ -103,3 +103,7 @@ string ShaderVariable::getSemanticAsString() const {
     return "No semantic info.";
   }
 }
+
+bool ShaderVariable::operator<(const ShaderVariable& b) const{
+  return name < b.getName();
+}

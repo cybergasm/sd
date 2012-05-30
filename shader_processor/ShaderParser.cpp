@@ -60,7 +60,7 @@ void ShaderParser::parseLine(string line,
       ShaderVariable var = parseDeclaration(parser, substring,
           ShaderVariable::Uniform, lastSemanticType);
       cout << var.toString() << endl;
-      uniformVars.push_back(var);
+      uniformVars.insert(var);
       //reset the annotation
       lastSemanticType = ShaderVariable::NoInfo;
       return;
@@ -68,7 +68,7 @@ void ShaderParser::parseLine(string line,
       ShaderVariable var = parseDeclaration(parser, substring,
           ShaderVariable::Attribute, lastSemanticType);
       cout << var.toString() << endl;
-      attrVars.push_back(var);
+      attrVars.insert(var);
       //reset the annotation
       lastSemanticType = ShaderVariable::NoInfo;
       return;
@@ -186,10 +186,10 @@ ShaderVariable::VarTypes ShaderParser::getType(string type) {
   }
 }
 
-const vector<ShaderVariable>& ShaderParser::getUniformVars() const {
+const set<ShaderVariable>& ShaderParser::getUniformVars() const {
   return uniformVars;
 }
 
-const vector<ShaderVariable>& ShaderParser::getAttrVars() const {
+const set<ShaderVariable>& ShaderParser::getAttrVars() const {
   return attrVars;
 }

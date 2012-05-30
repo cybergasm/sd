@@ -53,6 +53,8 @@ class ShaderVariable {
     VarTypes getType() const;
     SemanticType getSemanticType() const;
 
+    bool operator< (const ShaderVariable& b) const;
+
   private:
     string name;
     ScopeTypes scope;

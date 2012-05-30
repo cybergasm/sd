@@ -7,7 +7,7 @@
 
 #include "ShaderClassGenerator.h"
 
-#include <vector>
+#include <set>
 #include <iostream>
 
 ShaderClassGenerator::ShaderClassGenerator() {
@@ -45,18 +45,18 @@ void ShaderClassGenerator::genSemanticCountDeclaration(ofstream& headerFile) con
 
 void ShaderClassGenerator::generateMethodDeclarations(ofstream& headerFile,
     const ShaderParser* parsedShader) const {
-  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
-  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
+  const set<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
+  const set<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
 
   headerFile << endl << endl;
 
-  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
+  for (set<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
     genSemanticDeclaration(headerFile, *iter);
     genAttributeDeclaration(headerFile, *iter);
   }
 
-  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
+  for (set<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
     genSemanticDeclaration(headerFile, *iter);
     genUniformDeclaration(headerFile, *iter);
@@ -157,12 +157,12 @@ void ShaderClassGenerator::genDestructorDef(ofstream& classWriter, const string&
 }
 void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
     const ShaderParser* parsedShader) const {
-  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
-  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
+  const set<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
+  const set<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
 
   //Array index
   int count = 0;
-  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
+  for (set<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
     if (iter->getSemanticType() != ShaderVariable::NoInfo) {
       classWriter << "  exportedVars[" << count << "] = "
@@ -171,7 +171,7 @@ void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
     }
   }
 
-  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
+  for (set<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
     if (iter->getSemanticType() != ShaderVariable::NoInfo) {
       classWriter << "  exportedVars[" << count << "] = "
@@ -183,16 +183,16 @@ void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
 
 void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
     const string& fileName, const ShaderParser* parsedShader) const {
-  vector<ShaderVariable> uniformVars = parsedShader->getUniformVars();
-  vector<ShaderVariable> attributeVars = parsedShader->getAttrVars();
+  set<ShaderVariable> uniformVars = parsedShader->getUniformVars();
+  set<ShaderVariable> attributeVars = parsedShader->getAttrVars();
 
-  for (vector<ShaderVariable>::iterator iter = attributeVars.begin(); iter
+  for (set<ShaderVariable>::iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
     genAttributeDef(classWriter, fileName, *iter);
     genAttributeSemanticDef(classWriter, fileName, *iter);
   }
 
-  for (vector<ShaderVariable>::iterator iter = uniformVars.begin(); iter
+  for (set<ShaderVariable>::iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
     genUniformDef(classWriter, fileName, *iter);
     genUniformSemanticDef(classWriter, fileName, *iter);
@@ -458,18 +458,18 @@ string ShaderClassGenerator::translateSemanticType(
 
 int ShaderClassGenerator::getNumberSemanticVars(
     const ShaderParser* parsedShader) const {
-  const vector<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
-  const vector<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
+  const set<ShaderVariable>& uniformVars = parsedShader->getUniformVars();
+  const set<ShaderVariable>& attributeVars = parsedShader->getAttrVars();
 
   int count = 0;
-  for (vector<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
+  for (set<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
     if (iter->getSemanticType() != ShaderVariable::NoInfo) {
       count++;
     }
   }
 
-  for (vector<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
+  for (set<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
     if (iter->getSemanticType() != ShaderVariable::NoInfo) {
       count++;

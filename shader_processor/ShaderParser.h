@@ -10,7 +10,7 @@
 
 #include <string>
 #include <sstream>
-#include <vector>
+#include <set>
 
 #include "ShaderVariable.h"
 
@@ -22,8 +22,8 @@ class ShaderParser {
     virtual ~ShaderParser();
 
     //getters for found variables
-    const vector<ShaderVariable>& getUniformVars() const;
-    const vector<ShaderVariable>& getAttrVars() const;
+    const set<ShaderVariable>& getUniformVars() const;
+    const set<ShaderVariable>& getAttrVars() const;
   private:
     //Given a fragment or vertex shader, this parses it looking
     //for uniform or attribute files
@@ -51,8 +51,8 @@ class ShaderParser {
     ShaderVariable::VarTypes getType(string type);
 
     //Stores the found variables
-    vector<ShaderVariable> uniformVars;
-    vector<ShaderVariable> attrVars;
+    set<ShaderVariable> uniformVars;
+    set<ShaderVariable> attrVars;
 };
 
 #endif /* SHADERPARSER_H_ */
