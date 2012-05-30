@@ -40,7 +40,7 @@ void ShaderClassGenerator::genHeader(const string& fileName,
 }
 
 void ShaderClassGenerator::genSemanticCountDeclaration(ofstream& headerFile) const {
-  headerFile << "    int getExpectedVarsCount() const;"<<endl;
+  headerFile << "    int getExpectedVarsCount() const;" << endl;
 }
 
 void ShaderClassGenerator::generateMethodDeclarations(ofstream& headerFile,
@@ -52,14 +52,18 @@ void ShaderClassGenerator::generateMethodDeclarations(ofstream& headerFile,
 
   for (set<ShaderVariable>::const_iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
-    genSemanticDeclaration(headerFile, *iter);
-    genAttributeDeclaration(headerFile, *iter);
+    if (iter->getType() != ShaderVariable::Unknown) {
+      genSemanticDeclaration(headerFile, *iter);
+      genAttributeDeclaration(headerFile, *iter);
+    }
   }
 
   for (set<ShaderVariable>::const_iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
-    genSemanticDeclaration(headerFile, *iter);
-    genUniformDeclaration(headerFile, *iter);
+    if (iter->getType() != ShaderVariable::Unknown) {
+      genSemanticDeclaration(headerFile, *iter);
+      genUniformDeclaration(headerFile, *iter);
+    }
   }
 }
 
@@ -151,9 +155,10 @@ void ShaderClassGenerator::genConstructorDef(ofstream& classWriter,
   classWriter << "}" << endl << endl;
 }
 
-void ShaderClassGenerator::genDestructorDef(ofstream& classWriter, const string& fileName) const {
-  classWriter<<fileName<<"::~"<<fileName<<"() {"<<endl;
-  classWriter<<"}"<<endl;
+void ShaderClassGenerator::genDestructorDef(ofstream& classWriter,
+    const string& fileName) const {
+  classWriter << fileName << "::~" << fileName << "() {" << endl;
+  classWriter << "}" << endl;
 }
 void ShaderClassGenerator::genExportedVarArrayInit(ofstream& classWriter,
     const ShaderParser* parsedShader) const {
@@ -188,24 +193,29 @@ void ShaderClassGenerator::genMethodDef(ofstream& classWriter,
 
   for (set<ShaderVariable>::iterator iter = attributeVars.begin(); iter
       != attributeVars.end(); ++iter) {
-    genAttributeDef(classWriter, fileName, *iter);
-    genAttributeSemanticDef(classWriter, fileName, *iter);
+    if (iter->getType() != ShaderVariable::Unknown) {
+      genAttributeDef(classWriter, fileName, *iter);
+      genAttributeSemanticDef(classWriter, fileName, *iter);
+    }
   }
 
   for (set<ShaderVariable>::iterator iter = uniformVars.begin(); iter
       != uniformVars.end(); ++iter) {
-    genUniformDef(classWriter, fileName, *iter);
-    genUniformSemanticDef(classWriter, fileName, *iter);
+    if (iter->getType() != ShaderVariable::Unknown) {
+      genUniformDef(classWriter, fileName, *iter);
+      genUniformSemanticDef(classWriter, fileName, *iter);
+    }
   }
 }
 
 void ShaderClassGenerator::genExportedVarCount(ofstream& classWriter,
     const string& fileName, const ShaderParser* shaderParser) const {
-  classWriter<<"int "<<fileName<<"::getExpectedVarsCount() const {"<<endl;
-  classWriter<<"  return "<<getNumberSemanticVars(shaderParser)<<";"<<endl;
-  classWriter<<"}";
+  classWriter << "int " << fileName << "::getExpectedVarsCount() const {"
+      << endl;
+  classWriter << "  return " << getNumberSemanticVars(shaderParser) << ";"
+      << endl;
+  classWriter << "}";
 }
-
 
 void ShaderClassGenerator::genExportedVarGetter(ofstream& classWriter,
     const string& fileName) const {
