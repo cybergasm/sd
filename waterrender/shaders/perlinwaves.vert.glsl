@@ -22,7 +22,7 @@ void main () {
 	texcoord = texCoordsIn;
     
     //generate eye position vector
-	vec4 eyeT = gl_ModelViewMatrix * vec4(positionIn, 1);
+	vec4 eyeT = gl_ModelViewMatrix * vec4(position, 1);
   	eyePosition = eyeT.xyz;
   	
 	gl_Position = (gl_ProjectionMatrix * gl_ModelViewMatrix * vec4(position, 1));

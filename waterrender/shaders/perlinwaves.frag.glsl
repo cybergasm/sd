@@ -41,6 +41,7 @@ vec3 genN() {
 
 void main() {
   vec3 N = normalize(genN());
+  N = gl_NormalMatrix*N;
   //Basis of Phong as in assignment 3/2
   vec3 V = normalize(-eyePosition);
 
