@@ -40,7 +40,7 @@ clean:
 	
 #Rules for making the shaders
 WavesShader.o: $(SHADER_LOCATION)/waves.vert.glsl $(SHADER_LOCATION)/waves.frag.glsl
-	./shader_parser $(SHADER_LOCATION)/waves WavesShader; g++ -c $(CXXFLAGS) WavesShader.cpp -o $@ 	
+	$(SHADER_PARSER_LOC)/shader_parser $(SHADER_LOCATION)/waves WavesShader; g++ -c $(CXXFLAGS) WavesShader.cpp -o $@ 	
 	
 PerlinWavesShader.o: $(SHADER_LOCATION)/perlinwaves.vert.glsl $(SHADER_LOCATION)/perlinwaves.frag.glsl
 	$(SHADER_PARSER_LOC)/shader_parser $(SHADER_LOCATION)/perlinwaves PerlinWavesShader; g++ -c $(CXXFLAGS) PerlinWavesShader.cpp -o $@ 	

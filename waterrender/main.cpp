@@ -119,8 +119,8 @@ int main() {
   init();
   configureInput();
   ResourceManager::init();
-  WaveRenderer renderer;
-  //PerlinWavesRenderer renderer;
+  //WaveRenderer renderer;
+  PerlinWavesRenderer renderer;
   while (window.isOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     getInput();

@@ -10,7 +10,7 @@
 #include <iostream>
 using namespace std;
 
-PerlinWavesRenderer::PerlinWavesRenderer() : curFrame(0), timeCntr(0), modifier(1), numFrames(1), shader("shaders/perlinwaves") {
+PerlinWavesRenderer::PerlinWavesRenderer() : curFrame(0), timeCntr(0), modifier(1), numFrames(100), shader("shaders/perlinwaves") {
   if (!shader.loaded()) {
     cerr<<shader.errors()<<endl;
     exit(-1);
@@ -19,6 +19,8 @@ PerlinWavesRenderer::PerlinWavesRenderer() : curFrame(0), timeCntr(0), modifier(
   pNoise = new PerlinNoiseGenerator();
   pNoise->generateNoise(numFrames);
   cout<<"done."<<endl;
+
+  setDiffuseTex((ResourceManager::get())->getTexture("water1-diff"));
 }
 
 PerlinWavesRenderer::~PerlinWavesRenderer() {
