@@ -11,8 +11,7 @@
 #define PERLINNOISEGENERATOR_H_
 
 // SFML automatically includes SDL headers
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include "engine/Texture.h"
 
 #include <vector>
 using namespace std;
@@ -26,7 +25,7 @@ class PerlinNoiseGenerator {
     void generateNoise(int slices);
 
     //Returns slice
-    sf::Image* getSlice(int slice) const;
+    Texture* getSlice(int slice) const;
   private:
     //Width and height of the Perlin textures
     int width;
@@ -35,7 +34,7 @@ class PerlinNoiseGenerator {
     //Random seed to differentiate runs
     int seed;
     //The textures across the third dimension
-    vector<sf::Image*> noiseSeries;
+    vector<Texture*> noiseSeries;
 
     //Generates a single slice and adds it to the vector of slices
     void generateSlice(int slice, int numSlices);

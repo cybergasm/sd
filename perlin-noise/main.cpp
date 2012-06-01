@@ -66,7 +66,7 @@ void render(const PerlinNoiseGenerator& gen,
   glUseProgram(texShader->programID());
   glActiveTexture(GL_TEXTURE0);
   texShader->setDiffuseMap(0);
-  gen.getSlice(curFrame)->Bind();
+  gen.getSlice(curFrame)->bind();
   unsigned int vertices[4] = { 0, 1, 2, 3 };
   aiVector3D positions[4] = { aiVector3D(-1, -1, -1), aiVector3D(1, -1, -1),
       aiVector3D(1, 1, -1), aiVector3D(-1, 1, -1) };

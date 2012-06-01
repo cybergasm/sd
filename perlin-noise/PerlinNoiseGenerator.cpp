@@ -43,13 +43,13 @@ void PerlinNoiseGenerator::generateSlice(int slice, int numSlices) {
     }
   }
   //Save this in the time series
-  sf::Image* img = new sf::Image(width, height);
+  Texture* img = new Texture(width, height);
   for (int x = 0; x < width; x++) {
     for (int y = 0; y < height; y++) {
-      img->SetPixel(
+      img->setPixel(
           x,
           y,
-          sf::Color(vals[x][y] * 255.0f, vals[x][y] * 255.0f,
+          engine::Color(vals[x][y] * 255.0f, vals[x][y] * 255.0f,
               vals[x][y] * 255.0f));
     }
   }
@@ -133,6 +133,6 @@ float PerlinNoiseGenerator::getPseudoRandom(int x, int y, int z) const {
   return multiplier;
 }
 
-sf::Image* PerlinNoiseGenerator::getSlice(int slice) const {
+Texture* PerlinNoiseGenerator::getSlice(int slice) const {
   return noiseSeries.at(slice);
 }
