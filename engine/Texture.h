@@ -23,7 +23,11 @@ class Texture {
     Texture(string path);
     virtual ~Texture();
 
+    //Whether or not the image was initialized correctly
     bool isLoaded() const;
+
+    //Binds image using appropriate OpenGL calls
+    void bind() const;
   private:
     //Path to image on disk
     string path;

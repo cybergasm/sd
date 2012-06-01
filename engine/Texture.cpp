@@ -18,3 +18,7 @@ Texture::~Texture() {
 bool Texture::isLoaded() const {
   return loadSuccesful;
 }
+
+void Texture::bind()  const {
+  img->Bind();
+}
