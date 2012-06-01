@@ -18,7 +18,7 @@ LIBS = -L../engine  \
 	-lGLEW \
 	-lengine
 	
-OBJS = main.o PerlinNoiseGenerator.o TextureShader.o CloseWindowEvent.o
+OBJS = main.o TextureShader.o CloseWindowEvent.o
 
 all: perlin
 

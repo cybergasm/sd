@@ -15,8 +15,8 @@
 #include "engine/InputProcessor.h"
 #include "engine/RenderingWindow.h"
 #include "engine/ResourceManager.h"
+#include "engine/PerlinNoiseGenerator.h"
 
-#include "PerlinNoiseGenerator.h"
 #include "CloseWindowEvent.h"
 #include "TextureShader.h"
 

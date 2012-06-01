@@ -20,8 +20,7 @@ LIBS = -L../engine  \
 	-lengine
 	
 OBJS = main.o CloseWindowEvent.o WavesShader.o KeyMovement.o MouseLookEvent.o \
- WaveRenderer.o ../perlin-noise/PerlinNoiseGenerator.o PerlinWavesShader.o \
- PerlinWavesRenderer.o LightMovementEvent.o
+ WaveRenderer.o PerlinWavesShader.o PerlinWavesRenderer.o LightMovementEvent.o
 
 all: water
 

@@ -15,7 +15,7 @@
 #include "engine/ResourceManager.h"
 #include "engine/Camera.h"
 
-#include "perlin-noise/PerlinNoiseGenerator.h"
+#include "engine/PerlinNoiseGenerator.h"
 
 #include "CloseWindowEvent.h"
 #include "KeyMovement.h"

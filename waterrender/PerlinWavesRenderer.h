@@ -11,7 +11,7 @@
 #include "engine/MeshRenderer.h"
 
 #include "PerlinWavesShader.h"
-#include "perlin-noise/PerlinNoiseGenerator.h"
+#include "engine/PerlinNoiseGenerator.h"
 
 class PerlinWavesRenderer : public MeshRenderer {
   public:
