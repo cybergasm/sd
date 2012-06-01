@@ -27,45 +27,45 @@ MeshRenderer::~MeshRenderer() {
 
 void MeshRenderer::setDiffuseTex(string texName) {
   diffuseTex = (ResourceManager::get())->getTexture(texName);
-  diffuseTex->Bind();
+  diffuseTex->bind();
   glActiveTexture(GL_TEXTURE0);
   mipmapTexture();
 }
 
 void MeshRenderer::setHeightTex(string texName) {
   heightTex = (ResourceManager::get())->getTexture(texName);
-  heightTex->Bind();
+  heightTex->bind();
   glActiveTexture(GL_TEXTURE0);
   mipmapTexture();
 }
 
 void MeshRenderer::setNormTex(string texName) {
   normalTex = (ResourceManager::get())->getTexture(texName);
-  normalTex->Bind();
+  normalTex->bind();
   glActiveTexture(GL_TEXTURE0);
   mipmapTexture();
 }
 
 void MeshRenderer::setSpecTex(string texName) {
   specTex = (ResourceManager::get())->getTexture(texName);
-  specTex->Bind();
+  specTex->bind();
   glActiveTexture(GL_TEXTURE0);
   mipmapTexture();
 }
 
-void MeshRenderer::setDiffuseTex(sf::Image* tex) {
+void MeshRenderer::setDiffuseTex(Texture* tex) {
   diffuseTex = tex;
 }
 
-void MeshRenderer::setHeightTex(sf::Image* tex) {
+void MeshRenderer::setHeightTex(Texture* tex) {
   heightTex = tex;
 }
 
-void MeshRenderer::setNormTex(sf::Image* tex) {
+void MeshRenderer::setNormTex(Texture* tex) {
   normalTex = tex;
 }
 
-void MeshRenderer::setSpecTex(sf::Image* tex) {
+void MeshRenderer::setSpecTex(Texture* tex) {
   specTex = tex;
 }
 
@@ -198,22 +198,22 @@ void MeshRenderer::setTextures(Mesh3DS* mesh, Shader* shader, u_int meshIdx) con
     if (vars[i] == Shader::NormalMap) {
       shader->setNormalMap(textureCount);
       glActiveTexture(GL_TEXTURE0 + textureCount);
-      normalTex->Bind();
+      normalTex->bind();
       textureCount++;
     } else if (vars[i] == Shader::HeightMap) {
       shader->setHeightMap(textureCount);
       glActiveTexture(GL_TEXTURE0 + textureCount);
-      heightTex->Bind();
+      heightTex->bind();
       textureCount++;
     } else if (vars[i] == Shader::DiffuseMap) {
       shader->setDiffuseMap(textureCount);
       glActiveTexture(GL_TEXTURE0 + textureCount);
-      diffuseTex->Bind();
+      diffuseTex->bind();
       textureCount++;
     } else if (vars[i] == Shader::SpecularMap) {
       shader->setSpecularMap(textureCount);
       glActiveTexture(GL_TEXTURE0 + textureCount);
-      specTex->Bind();
+      specTex->bind();
       textureCount++;
     }
   }

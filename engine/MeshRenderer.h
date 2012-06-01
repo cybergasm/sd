@@ -11,10 +11,8 @@
 #include "Shader.h"
 #include "Mesh3DS.h"
 #include "ResourceManager.h"
+#include "Texture.h"
 
-// SFML automatically includes SDL headers
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
 // Open Asset Import Library
 #include <assimp/assimp.hpp>
 #include <assimp/aiScene.h>
@@ -39,10 +37,10 @@ class MeshRenderer {
 
     //Sets the appropriate texture to the passed in image. Performs no
     //mimap
-    void setDiffuseTex(sf::Image* tex);
-    void setNormTex(sf::Image* tex);
-    void setSpecTex(sf::Image* tex);
-    void setHeightTex(sf::Image* tex);
+    void setDiffuseTex(Texture* tex);
+    void setNormTex(Texture* tex);
+    void setSpecTex(Texture* tex);
+    void setHeightTex(Texture* tex);
 
     //Render call that goes through rendering passed in mesh with the
     //given shader
@@ -61,10 +59,10 @@ class MeshRenderer {
 
   private:
     //Pointers to different textures which we might need
-    sf::Image* diffuseTex;
-    sf::Image* normalTex;
-    sf::Image* heightTex;
-    sf::Image* specTex;
+    Texture* diffuseTex;
+    Texture* normalTex;
+    Texture* heightTex;
+    Texture* specTex;
 
     //Helper function to Mipmap
     void mipmapTexture() const;

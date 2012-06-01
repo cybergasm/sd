@@ -50,8 +50,8 @@ void ResourceManager::populateTextureMap(set<string> textureFolders) {
       //get first element in set as we expect only one key value pair of this type
       string textureName = *(valuesIter->second.begin());
       if (textures.find(valuesIter->first) == textures.end()) {
-        sf::Image* img = new sf::Image();
-        if (!img->LoadFromFile(folder + "/" + textureName)) {
+        Texture* img = new Texture(folder+"/"+textureName);
+        if (!img->isLoaded()) {
           cerr << "Could not find texture: " << textureName << " in " << folder
               << endl;
         } else {
@@ -124,7 +124,7 @@ Shader* ResourceManager::getShader(string key) const {
   return shaders.find(key)->second;
 }
 
-sf::Image* ResourceManager::getTexture(string key) const {
+Texture* ResourceManager::getTexture(string key) const {
   if (textures.find(key) == textures.end()) {
     return NULL;
   }
