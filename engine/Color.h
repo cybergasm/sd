@@ -17,7 +17,7 @@ class Color {
 
     float r() const;
     float g() const;
-    float b();
+    float b() const;
 
   private:
     //Color values. I am switching the naming convention
