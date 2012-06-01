@@ -39,7 +39,7 @@ Tile::Tile(string tileTexture) {
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
-  height->Bind();
+  height->bind();
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
   GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
           GL_LINEAR_MIPMAP_NEAREST));
@@ -49,7 +49,7 @@ Tile::Tile(string tileTexture) {
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
-  diffuse->Bind();
+  diffuse->bind();
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
   GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
           GL_LINEAR_MIPMAP_NEAREST));
@@ -59,7 +59,7 @@ Tile::Tile(string tileTexture) {
 
   glActiveTexture(GL_TEXTURE0);
   //mipmap the texture
-  normal->Bind();
+  normal->bind();
   GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
   GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
           GL_LINEAR_MIPMAP_NEAREST));
@@ -143,13 +143,13 @@ void Tile::setMeshData(u_int meshIdx) {
 void Tile::setTextures() {
   shader->setUniformDiffuseTex(0);
   glActiveTexture(GL_TEXTURE0);
-  diffuse->Bind();
+  diffuse->bind();
 
   shader->setUniformHeightMap(1);
   glActiveTexture(GL_TEXTURE1);
-  height->Bind();
+  height->bind();
 
   shader->setUniformNormalMap(2);
   glActiveTexture(GL_TEXTURE2);
-  normal->Bind();
+  normal->bind();
 }

@@ -18,6 +18,7 @@
 #include "engine/Mesh3DS.h"
 #include "engine/ParallaxShader.h"
 #include "engine/Camera.h"
+#include "engine/Texture.h"
 
 class Tile {
   public:
@@ -42,17 +43,17 @@ class Tile {
     /**
      * Diffuse texture
      */
-    sf::Image* diffuse;
+    Texture* diffuse;
 
     /**
      * Height map
      */
-    sf::Image* height;
+    Texture* height;
 
     /**
      * Normal map
      */
-    sf::Image* normal;
+    Texture* normal;
 
     /**
      * Renders one node of the mesh
