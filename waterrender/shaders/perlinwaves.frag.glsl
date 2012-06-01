@@ -48,7 +48,7 @@ void main() {
   vec4 finalColor;
   
   for (int lightIndex = 0; lightIndex < 1; lightIndex++) {
-  	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz - eyePosition);
+  	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz);
   
   	//Diffuse
   	float Rd = max(0.0, dot(L, N));

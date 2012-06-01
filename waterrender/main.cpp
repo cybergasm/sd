@@ -29,7 +29,7 @@ using namespace std;
 RenderingWindow window("Water", 1024, 1024);
 InputProcessor inputProcessor(&window);
 Camera* camera;
-GLfloat lightPosition[] = { 0, 0, 0 };
+GLfloat lightPosition[] = { 0, 2, 0 };
 
 void glInit() {
 #ifdef FRAMEWORK_USE_GLEW
@@ -126,6 +126,7 @@ int main(int argc, char* argv[]) {
   while (window.isOpened()) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     getInput();
+    cout<<lightPosition[0]<<" "<<lightPosition[1]<<" "<<lightPosition[2]<<endl;
     camera->posCameraSetupView();
     glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
     renderer.render(window.getFramerate());
