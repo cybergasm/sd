@@ -27,7 +27,8 @@ LIBS = -lsfml-network \
 	
 OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o InputProcessor.o \
 InputEvent.o KeySequence.o TrackedSequence.o RenderingWindow.o ParallaxShader.o \
-CharacterShader.o MeshRenderer.o Texture.o Color.o PerlinNoiseGenerator.o
+CharacterShader.o MeshRenderer.o Texture.o Color.o PerlinNoiseGenerator.o \
+PostprocessUtils.o PostprocessEffect.o
 
 all: engine
 

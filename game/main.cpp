@@ -16,6 +16,7 @@
 #include "engine/InputProcessor.h"
 #include "engine/RenderingWindow.h"
 #include "engine/MeshRenderer.h"
+#include "engine/PostprocessUtils.h"
 
 #include "Framework.h"
 
@@ -115,73 +116,6 @@ void init() {
   blurFilter = (ResourceManager::get())->getShader("blur");
   bloomEffect = (ResourceManager::get())->getShader("bloom");
 
-}
-
-/**
- * Initializes a texture to be bound to the color attachment of a framebuffer
- */
-void initColorTexture(GLuint& texture) {
-  GL_CHECK(glGenTextures(1, &texture));
-  GL_CHECK(glBindTexture(GL_TEXTURE_2D, texture));
-
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
-
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024,
-          1024, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0));
-}
-
-/**
- * Initializes a texture to be bound to the depth attachment of a framebuffer
- */
-void initDepthTexture(GLuint& depthTexture) {
-  GL_CHECK(glGenTextures(1, &depthTexture));
-  GL_CHECK(glBindTexture(GL_TEXTURE_2D, depthTexture));
-
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
-
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, 1024 ,
-          1024, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0));
-}
-
-/**
- * Binds color and depth textures to buffer which is bound to the frame buffer
- */
-void bindTexturesToBuffer(GLuint colorTex, GLuint depthTex, GLuint fbo) {
-  GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo));
-
-  GL_CHECK(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTex, 0));
-  GL_CHECK(glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTex, 0));
-
-  if (GL_FRAMEBUFFER_COMPLETE
-      != glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)) {
-    cout << "FBO fail" << endl;
-  }
-}
-
-/**
- * Initialization routine for setting up a texture, mipmapping it and then
- * allocating a FBO and binding the texture to it. This leaves the buffer as
- * it was when entered, just allocating the buffer and texture and wiring it
- * all up.
- */
-void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture) {
-  initColorTexture(texture);
-  initDepthTexture(depthTexture);
-
-  GL_CHECK(glGenFramebuffersEXT(1, &fbo));
-
-  bindTexturesToBuffer(texture, depthTexture, fbo);
-
-  //reset the buffer
-  GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
 }
 
 void displayTexture(GLuint texture, Shader* shader) {
@@ -293,10 +227,10 @@ int main() {
   GLuint renderDepthTexture = 0;
   GLuint effectDepthTexture = 0;
 
-  initFBOAndTexture(renderFbo, initialRenderTexture, renderDepthTexture);
-  initDepthTexture(effectDepthTexture);
-  initColorTexture(luminanceTexture);
-  initColorTexture(bluredTexture);
+  PostprocessUtils::initFBOAndTexture(renderFbo, initialRenderTexture, renderDepthTexture);
+  PostprocessUtils::initDepthTexture(effectDepthTexture);
+  PostprocessUtils::initColorTexture(luminanceTexture);
+  PostprocessUtils::initColorTexture(bluredTexture);
   while (window.isOpened()) {
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, renderFbo));
 
@@ -343,11 +277,11 @@ int main() {
 
     mainCharacter->render(window.getFramerate());
     //bind the luminance texture so that we render to it
-    bindTexturesToBuffer(luminanceTexture, effectDepthTexture, renderFbo);
+    PostprocessUtils::bindTexturesToBuffer(luminanceTexture, effectDepthTexture, renderFbo);
     //render to texture
     displayTexture(initialRenderTexture, illuminanceFilter);
     //bind the blur texture so that we render to it
-    bindTexturesToBuffer(bluredTexture, effectDepthTexture, renderFbo);
+    PostprocessUtils::bindTexturesToBuffer(bluredTexture, effectDepthTexture, renderFbo);
     //blur the current luminance storing it to the bound blured texture
     displayTexture(luminanceTexture, blurFilter);
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
@@ -355,6 +289,6 @@ int main() {
     bloomTexture(initialRenderTexture, bluredTexture, bloomEffect);
     window.display();
 
-    bindTexturesToBuffer(initialRenderTexture, renderDepthTexture, renderFbo);
+    PostprocessUtils::bindTexturesToBuffer(initialRenderTexture, renderDepthTexture, renderFbo);
   }
 }
