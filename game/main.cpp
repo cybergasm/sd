@@ -117,8 +117,12 @@ void init() {
   bloomEffect = (ResourceManager::get())->getShader("bloom");
 
 }
-
-void displayTexture(GLuint texture, Shader* shader) {
+/*
+ * Method for actually rendering the vertices and texture coords. Assumes
+ * the appropriate textures have been set on shader and shader has been called
+ * as active program.
+ */
+void setupQuadAndRenderTexture(Shader* shader) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glMatrixMode(GL_MODELVIEW);
@@ -132,6 +136,19 @@ void displayTexture(GLuint texture, Shader* shader) {
   aiVector3D texCoords[4] = { aiVector3D(0, 0, 0), aiVector3D(1, 0, 0),
       aiVector3D(1, 1, 0), aiVector3D(0, 1, 0) };
   unsigned int vertexIndex[4] = { 0, 1, 2, 3 };
+
+
+  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
+      sizeof(aiVector3D), &vertices[0]);
+  shader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
+      sizeof(aiVector3D), &texCoords[0]);
+
+  GL_CHECK(
+        glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT,
+            &vertexIndex[0]));
+}
+
+void displayTexture(GLuint texture, Shader* shader) {
 
   GLint oldId;
   glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
@@ -140,38 +157,18 @@ void displayTexture(GLuint texture, Shader* shader) {
   glActiveTexture(GL_TEXTURE0);
   GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, texture));
 
-  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), &vertices[0]);
-  shader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), &texCoords[0]);
-
   GLint textureId = glGetUniformLocation(shader->programID(), "textureImg");
   if (textureId == -1) {
     cerr << "Error getting texture handle for texture." << endl;
   }
   GL_CHECK(glUniform1i(textureId,0));
 
-  GL_CHECK(
-      glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT,
-          &vertexIndex[0]));
+  setupQuadAndRenderTexture(shader);
 
   GL_CHECK(glUseProgram(oldId));
 }
 
 void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  //frame-buffer origin is bottom left (-1,-1) which corresponds to the origin
-  //of the texture at (0,0)
-  aiVector3D vertices[4] = { aiVector3D(-1, -1, -1), aiVector3D(1, -1, -1),
-      aiVector3D(1, 1, 1), aiVector3D(-1, 1, -1) };
-  aiVector3D texCoords[4] = { aiVector3D(0, 0, 0), aiVector3D(1, 0, 0),
-      aiVector3D(1, 1, 0), aiVector3D(0, 1, 0) };
-  unsigned int vertexIndex[4] = { 0, 1, 2, 3 };
 
   GLint oldId;
   glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
@@ -182,11 +179,6 @@ void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
 
   glActiveTexture(GL_TEXTURE1);
   GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, lightTexture));
-
-  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), &vertices[0]);
-  shader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), &texCoords[0]);
 
   GLint textureId = glGetUniformLocation(shader->programID(), "textureImg");
   GLint lightId = glGetUniformLocation(shader->programID(), "lightImg");
@@ -201,9 +193,8 @@ void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
 
   GL_CHECK(glUniform1i(textureId,0));
   GL_CHECK(glUniform1i(lightId,1));
-  GL_CHECK(
-      glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT,
-          &vertexIndex[0]));
+
+  setupQuadAndRenderTexture(shader);
 
   GL_CHECK(glUseProgram(oldId));
 }
@@ -227,7 +218,8 @@ int main() {
   GLuint renderDepthTexture = 0;
   GLuint effectDepthTexture = 0;
 
-  PostprocessUtils::initFBOAndTexture(renderFbo, initialRenderTexture, renderDepthTexture);
+  PostprocessUtils::initFBOAndTexture(renderFbo, initialRenderTexture,
+      renderDepthTexture);
   PostprocessUtils::initDepthTexture(effectDepthTexture);
   PostprocessUtils::initColorTexture(luminanceTexture);
   PostprocessUtils::initColorTexture(bluredTexture);
@@ -277,11 +269,13 @@ int main() {
 
     mainCharacter->render(window.getFramerate());
     //bind the luminance texture so that we render to it
-    PostprocessUtils::bindTexturesToBuffer(luminanceTexture, effectDepthTexture, renderFbo);
+    PostprocessUtils::bindTexturesToBuffer(luminanceTexture,
+        effectDepthTexture, renderFbo);
     //render to texture
     displayTexture(initialRenderTexture, illuminanceFilter);
     //bind the blur texture so that we render to it
-    PostprocessUtils::bindTexturesToBuffer(bluredTexture, effectDepthTexture, renderFbo);
+    PostprocessUtils::bindTexturesToBuffer(bluredTexture, effectDepthTexture,
+        renderFbo);
     //blur the current luminance storing it to the bound blured texture
     displayTexture(luminanceTexture, blurFilter);
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
@@ -289,6 +283,7 @@ int main() {
     bloomTexture(initialRenderTexture, bluredTexture, bloomEffect);
     window.display();
 
-    PostprocessUtils::bindTexturesToBuffer(initialRenderTexture, renderDepthTexture, renderFbo);
+    PostprocessUtils::bindTexturesToBuffer(initialRenderTexture,
+        renderDepthTexture, renderFbo);
   }
 }
