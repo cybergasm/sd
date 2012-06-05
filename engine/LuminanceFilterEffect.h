@@ -23,6 +23,11 @@ class LuminanceFilterEffect : public PostprocessEffect{
     //Applies filtering to initTexture. prev is not used
     void processEffect(GLuint initTexture, GLuint initDepthTexture,
             GLuint prevTexture);
+
+    //Set/get the threshold
+    void setLumThresh(float thresh);
+    float getLumThresh() const;
+
   private:
     GLuint outputTex;
 

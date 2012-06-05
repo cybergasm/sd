@@ -23,9 +23,9 @@ class BloomFilterEffect: public PostprocessEffect {
     void processEffect(GLuint initTexture, GLuint initDepthTexture,
         GLuint prevTexture);
 
-    //Sets bloom factor
+    //Sets/Gets bloom factor
     void setBloomFactor(float bloomF);
-
+    float getBloomFactor() const;
   private:
     GLuint outputTex;
 

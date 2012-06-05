@@ -45,6 +45,10 @@ void BloomFilterEffect::setBloomFactor(float bloomF) {
   bloomFactor = bloomF;
 }
 
+float BloomFilterEffect::getBloomFactor() const {
+  return bloomFactor;
+}
+
 void BloomFilterEffect::processEffect(GLuint initTexture,
     GLuint initDepthTexture, GLuint prevTexture) {
   GLint oldId;

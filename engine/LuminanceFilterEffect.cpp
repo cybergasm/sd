@@ -40,6 +40,14 @@ GLuint LuminanceFilterEffect::getResultTextureHandle() const {
   return outputTex;
 }
 
+void LuminanceFilterEffect::setLumThresh(float thresh) {
+  lumThresh = thresh;
+}
+
+float LuminanceFilterEffect::getLumThresh() const {
+  return lumThresh;
+}
+
 void LuminanceFilterEffect::processEffect(GLuint initTexture,
     GLuint initDepthTexture, GLuint prevTexture) {
   GLint oldId;
