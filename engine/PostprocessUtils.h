@@ -12,6 +12,8 @@
 #define POSTPROCESSUTILS_H_
 #include <GL/glew.h>
 
+#include "Shader.h"
+
 class PostprocessUtils {
   public:
     PostprocessUtils();
@@ -40,7 +42,17 @@ class PostprocessUtils {
      */
     static void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture);
 
+    /*
+     * Method for actually rendering the vertices and texture coords of a full
+     * screen textured quad. Assumes the appropriate textures have been set
+     * on shader and shader has been called as active program.
+     */
+    static void setupQuadAndRenderTexture(Shader* shader);
 
+    /*
+     * Given texture and shader passes in texture as textureImg
+     */
+    static void displayTexture(GLuint texture, Shader* shader);
 };
 
 #endif /* POSTPROCESSUTILS_H_ */

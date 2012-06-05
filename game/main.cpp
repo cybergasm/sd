@@ -148,26 +148,6 @@ void setupQuadAndRenderTexture(Shader* shader) {
             &vertexIndex[0]));
 }
 
-void displayTexture(GLuint texture, Shader* shader) {
-
-  GLint oldId;
-  glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
-  GL_CHECK(glUseProgram(shader->programID()));
-
-  glActiveTexture(GL_TEXTURE0);
-  GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, texture));
-
-  GLint textureId = glGetUniformLocation(shader->programID(), "textureImg");
-  if (textureId == -1) {
-    cerr << "Error getting texture handle for texture." << endl;
-  }
-  GL_CHECK(glUniform1i(textureId,0));
-
-  setupQuadAndRenderTexture(shader);
-
-  GL_CHECK(glUseProgram(oldId));
-}
-
 void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
 
   GLint oldId;
@@ -194,7 +174,7 @@ void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
   GL_CHECK(glUniform1i(textureId,0));
   GL_CHECK(glUniform1i(lightId,1));
 
-  setupQuadAndRenderTexture(shader);
+  PostprocessUtils::setupQuadAndRenderTexture(shader);
 
   GL_CHECK(glUseProgram(oldId));
 }
@@ -272,14 +252,14 @@ int main() {
     PostprocessUtils::bindTexturesToBuffer(luminanceTexture,
         effectDepthTexture, renderFbo);
     //render to texture
-    displayTexture(initialRenderTexture, illuminanceFilter);
+    PostprocessUtils::displayTexture(initialRenderTexture, illuminanceFilter);
     //bind the blur texture so that we render to it
     PostprocessUtils::bindTexturesToBuffer(bluredTexture, effectDepthTexture,
         renderFbo);
     //blur the current luminance storing it to the bound blured texture
-    displayTexture(luminanceTexture, blurFilter);
+    PostprocessUtils::displayTexture(luminanceTexture, blurFilter);
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
-    displayTexture(luminanceTexture, textureShader);
+    PostprocessUtils::displayTexture(luminanceTexture, textureShader);
     bloomTexture(initialRenderTexture, bluredTexture, bloomEffect);
     window.display();
 

@@ -9,6 +9,11 @@
 #include <stdio.h>
 #include <iostream>
 
+// Open Asset Import Library
+#include <assimp/assimp.hpp>
+#include <assimp/aiScene.h>
+#include <assimp/aiPostProcess.h>
+
 using namespace std;
 
 #define GL_CHECK(x) {\
@@ -79,4 +84,44 @@ void PostprocessUtils::initFBOAndTexture(GLuint& fbo, GLuint& texture,
 
   //reset the buffer
   GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
+}
+
+void PostprocessUtils::setupQuadAndRenderTexture(Shader* shader) {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  //frame-buffer origin is bottom left (-1,-1) which corresponds to the origin
+  //of the texture at (0,0)
+  aiVector3D vertices[4] = { aiVector3D(-1, -1, -1), aiVector3D(1, -1, -1),
+      aiVector3D(1, 1, 1), aiVector3D(-1, 1, -1) };
+  aiVector3D texCoords[4] = { aiVector3D(0, 0, 0), aiVector3D(1, 0, 0),
+      aiVector3D(1, 1, 0), aiVector3D(0, 1, 0) };
+  unsigned int vertexIndex[4] = { 0, 1, 2, 3 };
+
+  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
+      sizeof(aiVector3D), &vertices[0]);
+  shader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
+      sizeof(aiVector3D), &texCoords[0]);
+
+  GL_CHECK(
+      glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT,
+          &vertexIndex[0]));
+}
+
+void PostprocessUtils::displayTexture(GLuint texture, Shader* shader) {
+  GLint oldId;
+  glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
+  GL_CHECK(glUseProgram(shader->programID()));
+
+  glActiveTexture(GL_TEXTURE0);
+  GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, texture));
+
+  shader->setUniform1i("textureImg", 0);
+
+  setupQuadAndRenderTexture(shader);
+
+  GL_CHECK(glUseProgram(oldId));
 }
