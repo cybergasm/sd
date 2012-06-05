@@ -90,6 +90,7 @@ void lightingPosition() {
   static GLfloat lightPosition[] = { 13.4, 5, -15.6 };
   glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
+
 void init() {
   // Set up the projection and model-view matrices
   GLfloat nearClip = 0.1f;
@@ -134,6 +135,23 @@ void initColorTexture(GLuint& texture) {
 }
 
 /**
+ * Initializes a texture to be bound to the depth attachment of a framebuffer
+ */
+void initDepthTexture(GLuint& depthTexture) {
+  GL_CHECK(glGenTextures(1, &depthTexture));
+  GL_CHECK(glBindTexture(GL_TEXTURE_2D, depthTexture));
+
+  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
+
+  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, 1024 ,
+          1024, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0));
+}
+
+/**
  * Binds color and depth textures to buffer which is bound to the frame buffer
  */
 void bindTexturesToBuffer(GLuint colorTex, GLuint depthTex, GLuint fbo) {
@@ -156,18 +174,7 @@ void bindTexturesToBuffer(GLuint colorTex, GLuint depthTex, GLuint fbo) {
  */
 void initFBOAndTexture(GLuint& fbo, GLuint& texture, GLuint& depthTexture) {
   initColorTexture(texture);
-
-  GL_CHECK(glGenTextures(1, &depthTexture));
-  GL_CHECK(glBindTexture(GL_TEXTURE_2D, depthTexture));
-
-  GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-  GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-  GL_CHECK(glGenerateMipmapEXT(GL_TEXTURE_2D));
-
-  GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, 1024 ,
-          1024, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, 0));
+  initDepthTexture(depthTexture);
 
   GL_CHECK(glGenFramebuffersEXT(1, &fbo));
 
@@ -284,8 +291,10 @@ int main() {
   GLuint luminanceTexture = 0;
   GLuint bluredTexture = 0;
   GLuint renderDepthTexture = 0;
+  GLuint effectDepthTexture = 0;
 
   initFBOAndTexture(renderFbo, initialRenderTexture, renderDepthTexture);
+  initDepthTexture(effectDepthTexture);
   initColorTexture(luminanceTexture);
   initColorTexture(bluredTexture);
   while (window.isOpened()) {
@@ -334,15 +343,15 @@ int main() {
 
     mainCharacter->render(window.getFramerate());
     //bind the luminance texture so that we render to it
-    bindTexturesToBuffer(luminanceTexture, renderDepthTexture, renderFbo);
+    bindTexturesToBuffer(luminanceTexture, effectDepthTexture, renderFbo);
     //render to texture
     displayTexture(initialRenderTexture, illuminanceFilter);
     //bind the blur texture so that we render to it
-    bindTexturesToBuffer(bluredTexture, renderDepthTexture, renderFbo);
+    bindTexturesToBuffer(bluredTexture, effectDepthTexture, renderFbo);
     //blur the current luminance storing it to the bound blured texture
     displayTexture(luminanceTexture, blurFilter);
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
-    //displayTexture(luminanceTexture, textureShader);
+    displayTexture(luminanceTexture, textureShader);
     bloomTexture(initialRenderTexture, bluredTexture, bloomEffect);
     window.display();
 
