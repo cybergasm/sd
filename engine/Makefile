@@ -29,7 +29,8 @@ OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o InputProcessor.o 
 InputEvent.o KeySequence.o TrackedSequence.o RenderingWindow.o ParallaxShader.o \
 CharacterShader.o MeshRenderer.o Texture.o Color.o PerlinNoiseGenerator.o \
 PostprocessUtils.o PostprocessEffect.o PostprocessPipeline.o LuminanceFilterEffect.o\
-LuminanceFilterShader.o BlurFilterEffect.o BlurFilterShader.o
+LuminanceFilterShader.o BlurFilterEffect.o BlurFilterShader.o BloomFilterShader.o\
+BloomFilterEffect.o
 
 all: engine
 
@@ -55,3 +56,6 @@ LuminanceFilterShader.o: $(SHADER_LOCATION)/luminancefilter.vert.glsl $(SHADER_L
 	
 BlurFilterShader.o: $(SHADER_LOCATION)/blurfilter.vert.glsl $(SHADER_LOCATION)/blurfilter.frag.glsl
 	$(SHADER_PROCESSOR_LOCATION)/shader_parser $(SHADER_LOCATION)/blurfilter BlurFilterShader; g++ -c $(CXXFLAGS) -fPIC BlurFilterShader.cpp -o $@
+	
+BloomFilterShader.o: $(SHADER_LOCATION)/bloomfilter.vert.glsl $(SHADER_LOCATION)/bloomfilter.frag.glsl
+	$(SHADER_PROCESSOR_LOCATION)/shader_parser $(SHADER_LOCATION)/bloomfilter BloomFilterShader; g++ -c $(CXXFLAGS) -fPIC BloomFilterShader.cpp -o $@
