@@ -17,6 +17,7 @@
 #include "engine/RenderingWindow.h"
 #include "engine/MeshRenderer.h"
 #include "engine/PostprocessUtils.h"
+#include "engine/PostprocessPipeline.h"
 
 #include "Framework.h"
 
@@ -45,6 +46,12 @@ Shader* illuminanceFilter;
 Shader* blurFilter;
 Shader* bloomEffect;
 
+//Pipeline to apply postprocess
+PostprocessPipeline* pipeline;
+
+//Tiles
+MeshRenderer cobbleTile;
+MeshRenderer brickTile;
 using namespace std;
 
 void glInit() {
@@ -111,6 +118,8 @@ void init() {
 
   camera->setAnchor(mainCharacter->getPos());
 
+  pipeline = new PostprocessPipeline();
+
   textureShader = (ResourceManager::get())->getShader("simpletex");
   illuminanceFilter = (ResourceManager::get())->getShader("luminance");
   blurFilter = (ResourceManager::get())->getShader("blur");
@@ -137,15 +146,14 @@ void setupQuadAndRenderTexture(Shader* shader) {
       aiVector3D(1, 1, 0), aiVector3D(0, 1, 0) };
   unsigned int vertexIndex[4] = { 0, 1, 2, 3 };
 
-
   shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
       sizeof(aiVector3D), &vertices[0]);
   shader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
       sizeof(aiVector3D), &texCoords[0]);
 
   GL_CHECK(
-        glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT,
-            &vertexIndex[0]));
+      glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT,
+          &vertexIndex[0]));
 }
 
 void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
@@ -178,20 +186,64 @@ void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
 
   GL_CHECK(glUseProgram(oldId));
 }
-int main() {
-  glInit();
-  init();
 
-  MeshRenderer cobbleTile;
+void renderScene() {
+  //This is a little weird, but here is what happens. The light
+  //position needs to get multiplied by the MV matrix, which is set
+  //to identity by the display call below. This is an oops, since the loop
+  //back around, the MV is still identity when lighting is set in handleInput.
+  //We can not just switch these two calls as camera->pos...() depends on
+  //having the most up to date position, so we have a circular dependency.
+  //This pulls out the lighting position (which is temporary anyway),
+  lightingPosition();
+
+  glPushMatrix();
+  glTranslatef(0, 0, 6);
+  glRotatef(-90, 1, 0, 0);
+  for (int j = 0; j < 5; j++) {
+    glPushMatrix();
+    glTranslatef(-1.6 * j, 0, 0);
+    for (int i = 0; i < 5; i++) {
+      brickTile.renderMesh((ResourceManager::get())->getMesh("tile"),
+          (ResourceManager::get())->getParallaxShader());
+      glTranslatef(0, 0, 1.6);
+    }
+    glPopMatrix();
+  }
+  glPopMatrix();
+
+  glPushMatrix();
+  for (int j = 0; j < 5; j++) {
+    glPushMatrix();
+    glTranslatef(-1.6 * j, 0, 0);
+    for (int i = 0; i < 5; i++) {
+      cobbleTile.renderMesh((ResourceManager::get())->getMesh("tile"),
+          (ResourceManager::get())->getParallaxShader());
+      glTranslatef(0, 0, 1.6);
+    }
+    glPopMatrix();
+  }
+  glPopMatrix();
+
+  mainCharacter->render(window.getFramerate());
+}
+
+void initScenery() {
   cobbleTile.setDiffuseTex("cobble_diffuse");
   cobbleTile.setNormTex("cobble_normal");
   cobbleTile.setHeightTex("cobble_height");
-  MeshRenderer brickTile;
   brickTile.setDiffuseTex("brick_diffuse");
   brickTile.setNormTex("brick_normal");
   brickTile.setHeightTex("brick_height");
+}
 
-  GLuint renderFbo = 0;
+int main() {
+  glInit();
+  init();
+  initScenery();
+
+  //TODO: Remove once pipeline is up and running
+  /*GLuint renderFbo = 0;
   GLuint initialRenderTexture = 0;
   GLuint luminanceTexture = 0;
   GLuint bluredTexture = 0;
@@ -203,67 +255,37 @@ int main() {
   PostprocessUtils::initDepthTexture(effectDepthTexture);
   PostprocessUtils::initColorTexture(luminanceTexture);
   PostprocessUtils::initColorTexture(bluredTexture);
+*/
   while (window.isOpened()) {
-    GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, renderFbo));
-
+    //GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, renderFbo));
+    pipeline->captureBuffer();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     handleInput();
     camera->posCameraSetupView();
 
-    //This is a little weird, but here is what happens. The light
-    //position needs to get multiplied by the MV matrix, which is set
-    //to identity by the display call below. This is an oops, since the loop
-    //back around, the MV is still identity when lighting is set in handleInput.
-    //We can not just switch these two calls as camera->pos...() depends on
-    //having the most up to date position, so we have a circular dependency.
-    //This pulls out the lighting position (which is temporary anyway),
-    lightingPosition();
+    renderScene();
 
-    glPushMatrix();
-    glTranslatef(0, 0, 6);
-    glRotatef(-90, 1, 0, 0);
-    for (int j = 0; j < 5; j++) {
-      glPushMatrix();
-      glTranslatef(-1.6 * j, 0, 0);
-      for (int i = 0; i < 5; i++) {
-        brickTile.renderMesh((ResourceManager::get())->getMesh("tile"),
-            (ResourceManager::get())->getParallaxShader());
-        glTranslatef(0, 0, 1.6);
-      }
-      glPopMatrix();
-    }
-    glPopMatrix();
+    //TODO:Will remove once the effects pipeline is up
+    /*//bind the luminance texture so that we render to it
+     PostprocessUtils::bindTexturesToBuffer(luminanceTexture,
+     effectDepthTexture, renderFbo);
+     //render to texture
+     PostprocessUtils::displayTexture(initialRenderTexture, illuminanceFilter);
+     //bind the blur texture so that we render to it
+     PostprocessUtils::bindTexturesToBuffer(bluredTexture, effectDepthTexture,
+     renderFbo);
+     //blur the current luminance storing it to the bound blured texture
+     PostprocessUtils::displayTexture(luminanceTexture, blurFilter);
+     //PostprocessUtils::displayTexture(luminanceTexture, textureShader);
+     bloomTexture(initialRenderTexture, bluredTexture, bloomEffect);*/
 
-    glPushMatrix();
-    for (int j = 0; j < 5; j++) {
-      glPushMatrix();
-      glTranslatef(-1.6 * j, 0, 0);
-      for (int i = 0; i < 5; i++) {
-        cobbleTile.renderMesh((ResourceManager::get())->getMesh("tile"),
-            (ResourceManager::get())->getParallaxShader());
-        glTranslatef(0, 0, 1.6);
-      }
-      glPopMatrix();
-    }
-    glPopMatrix();
-
-    mainCharacter->render(window.getFramerate());
-    //bind the luminance texture so that we render to it
-    PostprocessUtils::bindTexturesToBuffer(luminanceTexture,
-        effectDepthTexture, renderFbo);
-    //render to texture
-    PostprocessUtils::displayTexture(initialRenderTexture, illuminanceFilter);
-    //bind the blur texture so that we render to it
-    PostprocessUtils::bindTexturesToBuffer(bluredTexture, effectDepthTexture,
-        renderFbo);
-    //blur the current luminance storing it to the bound blured texture
-    PostprocessUtils::displayTexture(luminanceTexture, blurFilter);
+    GLuint texture = pipeline->applyEffects();
+    pipeline->releaseBuffer();
     GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
-    PostprocessUtils::displayTexture(luminanceTexture, textureShader);
-    bloomTexture(initialRenderTexture, bluredTexture, bloomEffect);
+    PostprocessUtils::displayTexture(texture, textureShader);
     window.display();
 
-    PostprocessUtils::bindTexturesToBuffer(initialRenderTexture,
-        renderDepthTexture, renderFbo);
+    //PostprocessUtils::bindTexturesToBuffer(initialRenderTexture,
+    //renderDepthTexture, renderFbo);
   }
 }
