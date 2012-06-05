@@ -1,3 +1,4 @@
+//What we're blurring
 uniform sampler textureImg;
 
 varying vec2 texcoord;
