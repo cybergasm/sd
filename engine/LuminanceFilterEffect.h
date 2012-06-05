@@ -28,6 +28,9 @@ class LuminanceFilterEffect : public PostprocessEffect{
 
     //The shader for the filter
     LuminanceFilterShader shader;
+
+    //Illuminance filter threshold
+    float lumThresh;
 };
 
 #endif /* LUMINANCEFILTEREFFECT_H_ */

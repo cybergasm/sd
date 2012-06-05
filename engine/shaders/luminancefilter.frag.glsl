@@ -3,7 +3,8 @@ uniform sampler textureImg;
 
 varying vec2 texcoord;
 
-uniform float illuminanceThresh = .5f;
+uniform float illuminanceThresh;
+
 void main() {
 	vec4 pixelVal = texture2D(textureImg, texcoord);
 	float illuminance = .2126*pixelVal.r + .7152*pixelVal.g + .0733*pixelVal.b;

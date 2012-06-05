@@ -22,11 +22,18 @@ class BloomFilterEffect: public PostprocessEffect {
     //Applies filtering to prev texture and init texture
     void processEffect(GLuint initTexture, GLuint initDepthTexture,
         GLuint prevTexture);
+
+    //Sets bloom factor
+    void setBloomFactor(float bloomF);
+
   private:
     GLuint outputTex;
 
     //Shader that applies bloom
     BloomFilterShader shader;
+
+    //Level of bloom to preserve
+    float bloomFactor;
 };
 
 #endif /* BLOOMFILTEREFFECT_H_ */

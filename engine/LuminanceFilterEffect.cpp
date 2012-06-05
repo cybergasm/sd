@@ -5,15 +5,29 @@
  *      Author: emint
  */
 
-#include "LuminanceFilterEffect.h"
-#include "PostprocessUtils.h"
 #include <iostream>
 #include <cstdlib>
+#include <stdio.h>
+
+#include "LuminanceFilterEffect.h"
+#include "PostprocessUtils.h"
+
+
+#define GL_CHECK(x) {\
+  (x);\
+  GLenum error = glGetError();\
+  if (GL_NO_ERROR != error) {\
+    printf("%s\n", gluErrorString(error));\
+  }\
+}
+
+
 using namespace std;
-LuminanceFilterEffect::LuminanceFilterEffect() : shader("shaders/luminancefilter"){
+LuminanceFilterEffect::LuminanceFilterEffect() :
+  shader("shaders/luminancefilter"), lumThresh(.5f) {
   PostprocessUtils::initColorTexture(outputTex);
   if (!shader.loaded()) {
-    cerr<<shader.errors()<<endl;
+    cerr << shader.errors() << endl;
     exit(-1);
   }
 }
@@ -26,6 +40,20 @@ GLuint LuminanceFilterEffect::getResultTextureHandle() const {
   return outputTex;
 }
 
-void LuminanceFilterEffect::processEffect(GLuint initTexture, GLuint initDepthTexture, GLuint prevTexture) {
-  PostprocessUtils::displayTexture(initTexture, &shader);
+void LuminanceFilterEffect::processEffect(GLuint initTexture,
+    GLuint initDepthTexture, GLuint prevTexture) {
+  GLint oldId;
+  glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
+  GL_CHECK(glUseProgram(shader.programID()));
+
+  glActiveTexture(GL_TEXTURE0);
+  GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, initTexture));
+
+
+  shader.setUniformTextureImg(0);
+  shader.setUniformIlluminanceThresh(lumThresh);
+
+  PostprocessUtils::setupQuadAndRenderTexture(&shader);
+
+  GL_CHECK(glUseProgram(oldId));
 }

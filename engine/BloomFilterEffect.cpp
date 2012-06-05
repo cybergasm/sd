@@ -24,7 +24,7 @@
 
 using namespace std;
 BloomFilterEffect::BloomFilterEffect() :
-  shader("shaders/bloomfilter") {
+  shader("shaders/bloomfilter"), bloomFactor(.8f) {
 
   PostprocessUtils::initColorTexture(outputTex);
   if (!shader.loaded()) {
@@ -41,6 +41,10 @@ GLuint BloomFilterEffect::getResultTextureHandle() const {
   return outputTex;
 }
 
+void BloomFilterEffect::setBloomFactor(float bloomF) {
+  bloomFactor = bloomF;
+}
+
 void BloomFilterEffect::processEffect(GLuint initTexture,
     GLuint initDepthTexture, GLuint prevTexture) {
   GLint oldId;
@@ -55,7 +59,7 @@ void BloomFilterEffect::processEffect(GLuint initTexture,
 
   shader.setUniformTextureImg(0);
   shader.setUniformLightImg(1);
-
+  shader.setUniformBloomFactor(bloomFactor);
   PostprocessUtils::setupQuadAndRenderTexture(&shader);
 
   GL_CHECK(glUseProgram(oldId));
