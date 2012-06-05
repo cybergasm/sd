@@ -18,6 +18,8 @@
 #include "engine/MeshRenderer.h"
 #include "engine/PostprocessUtils.h"
 #include "engine/PostprocessPipeline.h"
+#include "engine/PostprocessEffect.h"
+#include "engine/LuminanceFilterEffect.h"
 
 #include "Framework.h"
 
@@ -237,11 +239,16 @@ void initScenery() {
   brickTile.setHeightTex("brick_height");
 }
 
+void initPostprocess() {
+  LuminanceFilterEffect* luminance = new LuminanceFilterEffect();
+  pipeline->addEffect(luminance);
+}
+
 int main() {
   glInit();
   init();
   initScenery();
-
+  initPostprocess();
   //TODO: Remove once pipeline is up and running
   /*GLuint renderFbo = 0;
   GLuint initialRenderTexture = 0;
@@ -281,7 +288,6 @@ int main() {
 
     GLuint texture = pipeline->applyEffects();
     pipeline->releaseBuffer();
-    GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0));
     PostprocessUtils::displayTexture(texture, textureShader);
     window.display();
 
