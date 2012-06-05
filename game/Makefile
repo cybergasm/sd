@@ -24,7 +24,8 @@ LIBS = -L../engine  \
 	-lGLEW \
 	-lengine
 	
-OBJS = main.o Character.o InputResponder.o Tile.o CloseWindowEvent.o KeyMovement.o MouseLookEvent.o
+OBJS = main.o Character.o InputResponder.o Tile.o CloseWindowEvent.o KeyMovement.o MouseLookEvent.o \
+PostprocessParameterInputEvent.o
 
 all: sd
 
