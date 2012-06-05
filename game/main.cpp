@@ -124,9 +124,6 @@ void init() {
   //Set initial anchor around character
   camera->setAnchor(mainCharacter->getPos());
 
-  //Initilize Input handler
-  input = new InputResponder(&window, mainCharacter, camera);
-
   //Configure window
   window.showMouseCursor(false);
 
@@ -140,6 +137,9 @@ void init() {
   luminance = new LuminanceFilterEffect();
   blur = new BlurFilterEffect();
   bloom = new BloomFilterEffect();
+
+  //Initilize Input handler
+  input = new InputResponder(&window, mainCharacter, camera, bloom, luminance);
 }
 
 void renderScene() {

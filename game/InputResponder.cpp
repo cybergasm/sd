@@ -13,7 +13,7 @@
 
 
 InputResponder::InputResponder(RenderingWindow* window, Character* character,
-    Camera* camera, BloomFilterEffect* bloom, LuminanceFilterEffect* luminance) {
+    Camera* camera, BloomFilterEffect* bloom, LuminanceFilterEffect* luminance) : inputProc(window){
 
 	//Wire up the event to close window
 	CloseWindowEvent* cWindow = new CloseWindowEvent(window);
@@ -34,6 +34,12 @@ InputResponder::InputResponder(RenderingWindow* window, Character* character,
 
 	//Wire up the postprocesseffects controller
 	PostprocessParameterInputEvent* pprocessInputs = new PostprocessParameterInputEvent(bloom, luminance);
+	KeySequence paramKeys;
+	paramKeys.add(InputEvent::Key1);
+	paramKeys.add(InputEvent::Key2);
+	paramKeys.add(InputEvent::Key3);
+	paramKeys.add(InputEvent::Key4);
+	inputProc.bind(paramKeys, pprocessInputs);
 }
 
 InputResponder::~InputResponder() {
