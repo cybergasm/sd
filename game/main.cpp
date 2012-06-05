@@ -19,6 +19,7 @@
 #include "engine/PostprocessUtils.h"
 #include "engine/PostprocessPipeline.h"
 #include "engine/PostprocessEffect.h"
+#include "engine/BlurFilterEffect.h"
 #include "engine/LuminanceFilterEffect.h"
 
 #include "Framework.h"
@@ -241,7 +242,9 @@ void initScenery() {
 
 void initPostprocess() {
   LuminanceFilterEffect* luminance = new LuminanceFilterEffect();
+  BlurFilterEffect* blur = new BlurFilterEffect();
   pipeline->addEffect(luminance);
+  pipeline->addEffect(blur);
 }
 
 int main() {
