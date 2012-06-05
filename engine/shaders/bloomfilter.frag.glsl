@@ -1,4 +1,6 @@
+//original rendering
 uniform sampler textureImg;
+//light to add
 uniform sampler lightImg;
 
 varying vec2 texcoord;
