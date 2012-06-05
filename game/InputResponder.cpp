@@ -9,10 +9,11 @@
 #include "CloseWindowEvent.h"
 #include "KeyMovement.h"
 #include "MouseLookEvent.h"
+#include "PostprocessParameterInputEvent.h"
 
-InputResponder::InputResponder(RenderingWindow* window_, Character* character_,
-    Camera* camera_) :
-	character(character_), camera(camera_), window(window_), inputProc(window) {
+
+InputResponder::InputResponder(RenderingWindow* window, Character* character,
+    Camera* camera, BloomFilterEffect* bloom, LuminanceFilterEffect* luminance) {
 
 	//Wire up the event to close window
 	CloseWindowEvent* cWindow = new CloseWindowEvent(window);
@@ -30,6 +31,9 @@ InputResponder::InputResponder(RenderingWindow* window_, Character* character_,
 	//Wire up the mouse to rotate view
 	MouseLookEvent* mouseLook = new MouseLookEvent(character, window, camera);
 	inputProc.bind(KeySequence(InputEvent::MouseMove), mouseLook);
+
+	//Wire up the postprocesseffects controller
+	PostprocessParameterInputEvent* pprocessInputs = new PostprocessParameterInputEvent(bloom, luminance);
 }
 
 InputResponder::~InputResponder() {

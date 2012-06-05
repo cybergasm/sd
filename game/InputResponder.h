@@ -15,10 +15,12 @@
 #include "engine/RenderingWindow.h"
 #include "engine/InputProcessor.h"
 #include "engine/InputEvent.h"
+#include "engine/BloomFilterEffect.h"
+#include "engine/LuminanceFilterEffect.h"
 
 class InputResponder {
   public:
-    InputResponder(RenderingWindow* window, Character* character, Camera* camera);
+    InputResponder(RenderingWindow* window, Character* character, Camera* camera, BloomFilterEffect* bloom, LuminanceFilterEffect* luminance);
     virtual ~InputResponder();
 
     /**
@@ -26,22 +28,6 @@ class InputResponder {
      */
     void processEvents();
   private:
-    /**
-     * User character
-     */
-    Character* character;
-
-    /**
-     * Camera to control movement
-     */
-    Camera* camera;
-
-    /**
-     * Window to respond to windowing events like
-     * close
-     */
-    RenderingWindow* window;
-
     /**
      * The input processor
      */
