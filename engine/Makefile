@@ -28,7 +28,8 @@ LIBS = -lsfml-network \
 OBJS = Mesh3DS.o Shader.o Camera.o ResourceManager.o CfgFile.o InputProcessor.o \
 InputEvent.o KeySequence.o TrackedSequence.o RenderingWindow.o ParallaxShader.o \
 CharacterShader.o MeshRenderer.o Texture.o Color.o PerlinNoiseGenerator.o \
-PostprocessUtils.o PostprocessEffect.o PostprocessPipeline.o
+PostprocessUtils.o PostprocessEffect.o PostprocessPipeline.o LuminanceFilterEffect.o\
+LuminanceFilterShader.o
 
 all: engine
 
@@ -48,3 +49,7 @@ ParallaxShader.o: $(SHADER_LOCATION)/parallax.vert.glsl $(SHADER_LOCATION)/paral
 	
 CharacterShader.o: $(SHADER_LOCATION)/character.vert.glsl $(SHADER_LOCATION)/character.frag.glsl
 	$(SHADER_PROCESSOR_LOCATION)/shader_parser $(SHADER_LOCATION)/character CharacterShader; g++ -c $(CXXFLAGS) -fPIC CharacterShader.cpp -o $@
+
+LuminanceFilterShader.o: $(SHADER_LOCATION)/luminancefilter.vert.glsl $(SHADER_LOCATION)/luminancefilter.frag.glsl
+	$(SHADER_PROCESSOR_LOCATION)/shader_parser $(SHADER_LOCATION)/luminancefilter LuminanceFilterShader; g++ -c $(CXXFLAGS) -fPIC LuminanceFilterShader.cpp -o $@
+	
