@@ -46,9 +46,6 @@ Camera* camera;
 
 //Shader to texture quad
 Shader* textureShader;
-Shader* illuminanceFilter;
-Shader* blurFilter;
-Shader* bloomEffect;
 
 //Pipeline to apply postprocess
 PostprocessPipeline* pipeline;
@@ -56,6 +53,12 @@ PostprocessPipeline* pipeline;
 //Tiles
 MeshRenderer cobbleTile;
 MeshRenderer brickTile;
+
+//Filters
+LuminanceFilterEffect* luminance;
+BlurFilterEffect* blur;
+BloomFilterEffect* bloom;
+
 using namespace std;
 
 void glInit() {
@@ -112,86 +115,36 @@ void init() {
   camera = new Camera(nearClip, farClip, fieldOfView, window.getHeight(),
       window.getWidth());
 
+  //Initialize resource manager to find all resources
   ResourceManager::init();
 
+  //Initialize main character
   mainCharacter = new Character();
 
-  input = new InputResponder(&window, mainCharacter, camera);
-
-  window.showMouseCursor(false);
-
+  //Set initial anchor around character
   camera->setAnchor(mainCharacter->getPos());
 
+  //Initilize Input handler
+  input = new InputResponder(&window, mainCharacter, camera);
+
+  //Configure window
+  window.showMouseCursor(false);
+
+  //Initialize postprocessing pipeline
   pipeline = new PostprocessPipeline();
 
+  //Initialize shader to output postprocessing
   textureShader = (ResourceManager::get())->getShader("simpletex");
-  illuminanceFilter = (ResourceManager::get())->getShader("luminance");
-  blurFilter = (ResourceManager::get())->getShader("blur");
-  bloomEffect = (ResourceManager::get())->getShader("bloom");
 
-}
-/*
- * Method for actually rendering the vertices and texture coords. Assumes
- * the appropriate textures have been set on shader and shader has been called
- * as active program.
- */
-void setupQuadAndRenderTexture(Shader* shader) {
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  //frame-buffer origin is bottom left (-1,-1) which corresponds to the origin
-  //of the texture at (0,0)
-  aiVector3D vertices[4] = { aiVector3D(-1, -1, -1), aiVector3D(1, -1, -1),
-      aiVector3D(1, 1, 1), aiVector3D(-1, 1, -1) };
-  aiVector3D texCoords[4] = { aiVector3D(0, 0, 0), aiVector3D(1, 0, 0),
-      aiVector3D(1, 1, 0), aiVector3D(0, 1, 0) };
-  unsigned int vertexIndex[4] = { 0, 1, 2, 3 };
-
-  shader->setVertexAttribArray("positionIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), &vertices[0]);
-  shader->setVertexAttribArray("texCoordIn", 3, GL_FLOAT, 0,
-      sizeof(aiVector3D), &texCoords[0]);
-
-  GL_CHECK(
-      glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT,
-          &vertexIndex[0]));
-}
-
-void bloomTexture(GLuint baseTexture, GLuint lightTexture, Shader* shader) {
-
-  GLint oldId;
-  glGetIntegerv(GL_CURRENT_PROGRAM, &oldId);
-  GL_CHECK(glUseProgram(shader->programID()));
-
-  glActiveTexture(GL_TEXTURE0);
-  GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, baseTexture));
-
-  glActiveTexture(GL_TEXTURE1);
-  GL_CHECK(glBindTextureEXT(GL_TEXTURE_2D, lightTexture));
-
-  GLint textureId = glGetUniformLocation(shader->programID(), "textureImg");
-  GLint lightId = glGetUniformLocation(shader->programID(), "lightImg");
-
-  if (textureId == -1) {
-    cerr << "Error getting texture handle for base texture." << endl;
-  }
-
-  if (lightId == -1) {
-    cerr << "Error getting texture handle for light texture." << endl;
-  }
-
-  GL_CHECK(glUniform1i(textureId,0));
-  GL_CHECK(glUniform1i(lightId,1));
-
-  PostprocessUtils::setupQuadAndRenderTexture(shader);
-
-  GL_CHECK(glUseProgram(oldId));
+  //Postprocessing effects init
+  luminance = new LuminanceFilterEffect();
+  blur = new BlurFilterEffect();
+  bloom = new BloomFilterEffect();
 }
 
 void renderScene() {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   //This is a little weird, but here is what happens. The light
   //position needs to get multiplied by the MV matrix, which is set
   //to identity by the display call below. This is an oops, since the loop
@@ -242,10 +195,6 @@ void initScenery() {
 }
 
 void initPostprocess() {
-  LuminanceFilterEffect* luminance = new LuminanceFilterEffect();
-  BlurFilterEffect* blur = new BlurFilterEffect();
-  BloomFilterEffect* bloom = new BloomFilterEffect();
-
   pipeline->addEffect(luminance);
   pipeline->addEffect(blur);
   pipeline->addEffect(bloom);
@@ -256,49 +205,20 @@ int main() {
   init();
   initScenery();
   initPostprocess();
-  //TODO: Remove once pipeline is up and running
-  /*GLuint renderFbo = 0;
-  GLuint initialRenderTexture = 0;
-  GLuint luminanceTexture = 0;
-  GLuint bluredTexture = 0;
-  GLuint renderDepthTexture = 0;
-  GLuint effectDepthTexture = 0;
 
-  PostprocessUtils::initFBOAndTexture(renderFbo, initialRenderTexture,
-      renderDepthTexture);
-  PostprocessUtils::initDepthTexture(effectDepthTexture);
-  PostprocessUtils::initColorTexture(luminanceTexture);
-  PostprocessUtils::initColorTexture(bluredTexture);
-*/
   while (window.isOpened()) {
-    //GL_CHECK(glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, renderFbo));
     pipeline->captureBuffer();
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     handleInput();
+
     camera->posCameraSetupView();
 
     renderScene();
 
-    //TODO:Will remove once the effects pipeline is up
-    /*//bind the luminance texture so that we render to it
-     PostprocessUtils::bindTexturesToBuffer(luminanceTexture,
-     effectDepthTexture, renderFbo);
-     //render to texture
-     PostprocessUtils::displayTexture(initialRenderTexture, illuminanceFilter);
-     //bind the blur texture so that we render to it
-     PostprocessUtils::bindTexturesToBuffer(bluredTexture, effectDepthTexture,
-     renderFbo);
-     //blur the current luminance storing it to the bound blured texture
-     PostprocessUtils::displayTexture(luminanceTexture, blurFilter);
-     //PostprocessUtils::displayTexture(luminanceTexture, textureShader);
-     bloomTexture(initialRenderTexture, bluredTexture, bloomEffect);*/
-
     GLuint texture = pipeline->applyEffects();
     pipeline->releaseBuffer();
+
     PostprocessUtils::displayTexture(texture, textureShader);
     window.display();
-
-    //PostprocessUtils::bindTexturesToBuffer(initialRenderTexture,
-    //renderDepthTexture, renderFbo);
   }
 }
