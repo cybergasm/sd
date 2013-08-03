@@ -21,24 +21,24 @@ uniform vec3 Kd = vec3(1, 1, 1);
 uniform float alpha = .3;
 
 void main() {
-	float height = texture2D(heightMap, texCoord).r;
-	
-	//scale and bias to try and represent physical property of
-	//surface better.
-	float scale = .05;
-	float bias = .04;
-	
-	float newHeight = scale*height - bias;
-	
-	vec3 eyeVec = normalize(eyePosition);
-	
-	//move the original texture coordinates
-	vec2 texCoordsToUse = texCoord + (eyeVec.xy * newHeight);
-	
-	//sample diffuse as usual
-	vec4 diffuseColor = texture2D(diffuseTex, texCoordsToUse);
-	
-	//get the normal from texture
+float height = texture2D(heightMap, texCoord).r;
+
+    //scale and bias to try and represent physical property of
+    //surface better.
+    float scale = .05;
+    float bias = .04;
+
+    float newHeight = scale*height - bias;
+
+    vec3 eyeVec = normalize(eyePosition);
+
+    //move the original texture coordinates
+    vec2 texCoordsToUse = texCoord + (eyeVec.xy * newHeight);
+
+    //sample diffuse as usual
+    vec4 diffuseColor = texture2D(diffuseTex, texCoordsToUse);
+
+    //get the normal from texture
     vec3 sampledNormal = texture2D(normalMap, texCoord).xyz;
     //expand it
     sampledNormal = (sampledNormal - .5) * 2.0;
@@ -49,26 +49,26 @@ void main() {
     vec3 N = gl_NormalMatrix * tbn * sampledNormal;
     N = normalize(N);
     vec3 V = normalize(-eye);
-
-	vec4 finalColor;
+    
+    vec4 finalColor;
 	
-	for (int lightIndex = 0; lightIndex < 1; lightIndex++) {
-    	vec3 L = normalize(gl_LightSource[lightIndex].position.xyz);
+    for (int lightIndex = 0; lightIndex < 1; lightIndex++) {
+        vec3 L = normalize(gl_LightSource[lightIndex].position.xyz);
 	
-		// Calculate the diffuse color coefficient, and sample the diffuse texture
-		float Rd = max(0.0, dot(L, N));
-		vec3 Td = diffuseColor.rgb;
-   		vec3 diffuse = Rd * Kd * Td * gl_LightSource[lightIndex].diffuse.rgb;
+	// Calculate the diffuse color coefficient, and sample the diffuse texture
+	float Rd = max(0.0, dot(L, N));
+	vec3 Td = diffuseColor.rgb;
+   	vec3 diffuse = Rd * Kd * Td * gl_LightSource[lightIndex].diffuse.rgb;
    	
-   		// Calculate the specular coefficient
-  		vec3 R = reflect(-L, N);
-  		float Rs = pow(max(0.0, dot(V, R)), alpha);
-  		vec3 Ts = vec3(.1);
-  		vec3 specular = Rs * Ks * Ts * gl_LightSource[lightIndex].specular.rgb;
+   	// Calculate the specular coefficient
+  	vec3 R = reflect(-L, N);
+  	float Rs = pow(max(0.0, dot(V, R)), alpha);
+  	vec3 Ts = vec3(.1);
+  	vec3 specular = Rs * Ks * Ts * gl_LightSource[lightIndex].specular.rgb;
   	
-  		// Ambient
+  	// Ambient
     	vec3 ambient = Ka * gl_LightSource[lightIndex].ambient.rgb;
     	finalColor += vec4(diffuse + specular + ambient, 1);
-	}
-	gl_FragColor = finalColor;
+    }
+    gl_FragColor = finalColor;
 }
