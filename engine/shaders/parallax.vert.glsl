@@ -29,19 +29,19 @@ varying vec3 eyePosition;
 varying vec3 eye;
 
 void main() {
-	texCoord = texCoordIn;
-	tangent = tangentIn;
-	bitangent = bitangentIn;
-	normal = normalIn;
+    texCoord = texCoordIn;
+    tangent = tangentIn;
+    bitangent = bitangentIn;
+    normal = normalIn;
 		
-	//form the TBN matrix to get the position in tangent space where
-	//our height is
-	mat3 tangentBitangentNormal = mat3(normalize(tangent), normalize(bitangent), normalize(normal));  
+    //form the TBN matrix to get the position in tangent space where
+    //our height is
+    mat3 tangentBitangentNormal = mat3(normalize(tangent), normalize(bitangent), normalize(normal));  
     vec4 eyeTemp = gl_ModelViewMatrix * vec4(positionIn, 1);
     eyePosition = eyeTemp.xyz;
-	eyePosition *= tangentBitangentNormal;	
-	eye = eyeTemp.xyz;
+    eyePosition *= tangentBitangentNormal;	
+    eye = eyeTemp.xyz;
 	
-	gl_Position = (gl_ProjectionMatrix * gl_ModelViewMatrix * vec4(positionIn, 1));
+    gl_Position = (gl_ProjectionMatrix * gl_ModelViewMatrix * vec4(positionIn, 1));
 
 }
